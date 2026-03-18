@@ -71,32 +71,36 @@ Step X of 3 complete | XX% of Phase 1
 
 ---
 
-## Step 2: Optional Elicitation Methods
+## Step 2: Advanced Elicitation Methods
 
-1. **Read the elicitation methods** from `the plugin's `elicitation-methods.md``.
+1. **Read the full elicitation engine** from `the plugin's `elicitation-methods.md``. Follow its Execution Engine section EXACTLY.
 
-2. **Always ask** (never skip silently):
-   > Would you like to use elicitation methods to explore different approaches, identify risks, and enhance requirements?
-   >
-   > 1. Skip, proceed — Requirements are clear enough
-   > 2. User journey walkthrough
-   > 3. Edge case brainstorm
-   > 4. Quick picks (top 5 recommended methods)
-   > 5. Browse all 50 methods
+2. **Always ask** (never skip silently). Present 5 smart-selected methods based on the requirement context. Use the Smart Selection rules from the elicitation engine (analyze content type, complexity, stakeholder needs, risk level). Format EXACTLY as:
 
-3. **If user picks option 4 or 5:** Present methods from the elicitation methods file. Follow the execution flow defined there:
-   - Present 5 context-relevant methods (or all if option 5)
-   - User picks by number, `r` to reshuffle, `x` to proceed
-   - Execute selected method(s) on the requirement
-   - After each method ask: "Apply these insights? (y/n)"
-   - Build enhanced understanding iteratively
-   - Continue until user says `x` to finalize
+   ```
+   Advanced Elicitation Options
+   Choose a number (1-5), [r] to Reshuffle, [a] List All 50, or [x] to Skip/Proceed:
 
-4. **If user picks option 2 (User journey walkthrough):** Walk through the step-by-step user experience of the requirement. Map the end-to-end journey.
+   1. [Method Name] — [short description relevant to THIS requirement]
+   2. [Method Name] — [short description relevant to THIS requirement]
+   3. [Method Name] — [short description relevant to THIS requirement]
+   4. [Method Name] — [short description relevant to THIS requirement]
+   5. [Method Name] — [short description relevant to THIS requirement]
+   r. Reshuffle — show 5 different methods
+   a. List all 50 methods with descriptions
+   x. Skip — proceed without elicitation
+   ```
 
-5. **If user picks option 3 (Edge case brainstorm):** Explore unusual scenarios, boundary conditions, and what happens when things go wrong — from a business perspective only.
+3. **Handle responses per the elicitation engine:**
+   - **1-5**: Execute selected method on the requirement. Show enhanced insights. Ask: "Apply these changes? (y/n)". If yes: apply. If no: discard. **Re-present the 1-5,r,a,x menu.**
+   - **r**: Select 5 DIFFERENT methods (diverse categories, slots 1-2 most useful for this requirement). Present new list with same format.
+   - **a**: Show all 50 methods in a compact table grouped by category. Allow selection by number or name. After selection, execute and re-present menu.
+   - **x**: Complete elicitation and proceed to Step 3.
+   - **Multiple numbers** (e.g. `1,3`): Execute methods in sequence, then re-offer choices.
 
-6. **If user picks option 1:** Note "elicitation skipped" and proceed.
+4. **CRITICAL: Always re-present the 1-5,r,a,x menu after each method execution.** The loop continues until user selects `x`. Each method builds on previous enhancements.
+
+5. **If user selects `x` immediately:** Note "elicitation skipped" and proceed.
 
 ---
 
