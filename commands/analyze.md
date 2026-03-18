@@ -52,18 +52,45 @@ Step X of 3 complete | XX% of Phase 1
    - If Jira format detected: note it, auto-skip questions already answered in the ticket
    - If plain text: proceed with full question flow
 
-3. **Ask clarifying questions using the Analyst persona's 8 categories.**
-   Present the user with answering options:
-   - **Option 1:** Answer questions category by category
-   - **Option 2:** Skip all questions and proceed with requirement as-is
-   - **Option 3:** Answer only essential questions (Scope & Goal, Business Context, Scope & Boundaries)
-   - **Option 4:** Answer all questions (comprehensive mode)
+3. **INTERACTIVE QUESTIONING — ONE CATEGORY AT A TIME.**
+
+   **CRITICAL RULE: Ask ONE category of questions, then STOP AND WAIT for the user's answer before proceeding to the next category. NEVER present all questions at once.**
+
+   First, ask the user their preferred mode:
+   ```
+   How would you like to answer clarifying questions?
+   1. One category at a time (recommended — interactive)
+   2. Skip all — proceed with requirement as-is
+   3. Essential only (Scope, Business Context, Boundaries)
+   ```
+
+   **Then, for each category, follow this exact loop:**
+   ```
+   a) Show category name and progress: "Category 1 of 8: Scope, Behavior & Goal"
+   b) Ask 2-4 questions for ONLY this category
+   c) STOP. Wait for user response.
+   d) Accept the answer (or "skip" / "N/A" / "defer")
+   e) Only AFTER receiving the answer, move to next category
+   f) Show progress: "✓ 1/8 complete — Next: User Interface"
+   ```
+
+   **Category order:**
+   1. Scope, Behavior & Goal
+   2. User Interface
+   3. Default State
+   4. Integration (Business Logic Only)
+   5. User Roles & Permissions
+   6. Edge Cases
+   7. Scope & Boundaries
+   8. Business Context
+
+   **The user can say "proceed" or "done" at any point to skip remaining categories.**
 
 4. **Flexible answering rules:**
-   - Accept "skip", "N/A", "I don't know", "defer" as valid responses
+   - Accept "skip", "N/A", "I don't know", "defer" as valid responses for any question
    - Allow partial answers
    - Minimum 3 categories to proceed (but allow override if user explicitly says "proceed")
-   - Show progress: "X of 8 categories completed"
+   - User can type "proceed" at any time to skip remaining categories
 
 5. **CRITICAL: ONLY non-technical business questions.** If tempted to ask about databases, APIs, caching, or code — DON'T. Defer to: "This will be addressed by the Architect during development."
 
