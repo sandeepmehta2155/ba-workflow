@@ -1,0 +1,24 @@
+{
+  "name": "ba-workflow",
+  "description": "BMAD-style 9-step Business Analysis workflow: requirements gathering, elicitation, PRD creation, PO review, story generation, and Jira sync",
+  "version": "1.0.0",
+  "author": {
+    "name": "Sandeep Mehta",
+    "email": "sandeepmehta2155@users.noreply.github.com"
+  },
+  "homepage": "https://github.com/sandeepmehta2155/ba-workflow",
+  "repository": "https://github.com/sandeepmehta2155/ba-workflow",
+  "license": "MIT",
+  "keywords": [
+    "business-analysis",
+    "prd",
+    "user-stories",
+    "requirements",
+    "jira",
+    "bmad",
+    "workflow",
+    "elicitation",
+    "product-owner",
+    "analyst"
+  ]
+}
