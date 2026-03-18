@@ -9,7 +9,7 @@
     {
       "name": "ba-workflow",
       "description": "9-step BA workflow: requirements → elicitation → PRD → PO review → stories → Jira sync. Includes 50 elicitation methods, analyst/PO agent personas, and full Jira MCP integration.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "source": "./"
     }
   ]
