@@ -2,12 +2,14 @@ BA Workflow - Phase 2: PRD Creation (Steps 4-5): $ARGUMENTS
 
 ## Prerequisites
 1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-init`.
-2. Read workflow state from `{output_folder}/ba-workflow-state.json`. Phase 1 must be complete. If not, tell user to run `/ba-analyze` first.
-3. Read the Analyst agent from the plugin's `agents/analyst.md`. Adopt this persona.
+2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. If only one in-progress, use it. Read `{workspace}/{workflow_id}/state.json`. Phase 1 must be complete.
+3. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona.
+
+All outputs go to `{workspace}/{workflow_id}/`.
 
 ## Progress Tracking
 ```
-BA Workflow | Phase 2: PRD Creation
+BA Workflow | {workflow_id} | Phase 2: PRD Creation
 Step X of 2 complete | XX% of Phase 2
 ```
 
@@ -45,7 +47,7 @@ Step X of 2 complete | XX% of Phase 2
 4. Store the chosen complexity level.
 
 ### PRD File Handling
-5. Check for existing PRD files in `{output_folder}` matching `*PRD.md` or `*_PRD.md`.
+5. Check for existing PRD files in `{workspace}/{workflow_id}/` matching `*PRD.md`.
 
 6. **If existing PRDs found**, ask:
    ```
@@ -68,7 +70,7 @@ Step X of 2 complete | XX% of Phase 2
 ## Step 5: PRD Creation
 
 ### Generate PRD
-1. Read the PRD template from the plugin's `templates/prd-template.md`.
+1. Read the PRD template from `the plugin's `templates/`prd-template.md`.
 
 2. **If a story title wasn't established**, ask:
    > What should this PRD be titled? (This will be used for the filename too)
@@ -91,14 +93,14 @@ Step X of 2 complete | XX% of Phase 2
 
 5. **If edit mode** (choice 2 from file handling): Load existing PRD, merge new requirements without duplicating existing content. Preserve structure.
 
-6. **Save PRD** to: `{output_folder}/{story_title}_PRD.md`
+6. **Save PRD** to: `{workspace}/{workflow_id}/{story_title}_PRD.md`
 
 ### PRD Confirmation
 7. **Display PRD summary** (section headers + requirement counts, not full content).
 
 8. **Ask user how to proceed:**
    ```
-   PRD saved to: {output_folder}/{story_title}_PRD.md
+   PRD saved to: {workspace}/{workflow_id}/{story_title}_PRD.md
 
    How would you like to proceed?
    1. Proceed with PO Review (recommended)
@@ -112,13 +114,13 @@ Step X of 2 complete | XX% of Phase 2
 
 ## Phase 2 Complete
 
-Update `{output_folder}/ba-workflow-state.json`:
+Update `{workspace}/{workflow_id}/state.json`:
 ```json
 {
   "phase": 2,
-  "status": "complete",
+  "status": "phase_2_complete",
   "story_complexity": X,
-  "prd_file": "{output_folder}/{story_title}_PRD.md",
+  "prd_file": "{workspace}/{workflow_id}/{story_title}_PRD.md",
   "prd_mode": "fresh|edit",
   "next_step_choice": 1|2|3,
   "story_title": "...",
@@ -129,9 +131,9 @@ Update `{output_folder}/ba-workflow-state.json`:
 Display:
 ```
 Phase 2: PRD Creation - COMPLETE
+  Workflow: {workflow_id}
   Step 4: Complexity & Preparation  - Done (Level X)
-  Step 5: PRD Created               - Done ({prd_file})
-  Next step: [PO Review | Story Creation | Direct Story]
+  Step 5: PRD Created               - Done
 
 Next: Run /ba-review for PO Review (Phase 3)
   Or: Run /ba-stories for Story Creation (Phase 4)

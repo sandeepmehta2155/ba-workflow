@@ -5,33 +5,29 @@ Set up the BA workflow by asking configuration questions and saving preferences.
 
 ## Steps
 
-1. **Read current config** from the plugin's `config.md` to understand defaults.
+1. **Read current config** from `the plugin's `config.md`` to understand defaults.
 
 2. **Ask the user these setup questions** one at a time, showing the current default in brackets:
 
-   **Q1: Output Folder**
-   Where should PRDs and review feedback be saved? [default: `docs/`]
+   **Q1: Workspace Root**
+   Where should all BA workflow outputs be organized? Each workflow run gets its own subfolder here. [default: `docs/ba-workflows/`]
 
-   **Q2: Story Directory**
-   Where should generated story files be saved? [default: `docs/stories/`]
-
-   **Q3: Jira Integration**
+   **Q2: Jira Integration**
    Do you want Jira sync enabled? The workflow will always ASK before syncing. (yes/no) [default: yes]
 
-   **Q4: Jira Project Key**
+   **Q3: Jira Project Key**
    What is your Jira project key? (e.g., OUTAGE) Leave blank to be asked each time. [default: blank]
 
-3. **Validate paths exist** — if output_folder or story_dir don't exist, create them.
+3. **Validate paths exist** — if workspace root doesn't exist, create it.
 
-4. **Verify business rules** — check if `docs/business-docs/` directory exists. If missing, warn user and suggest creating it with their project's workflow documentation.
+4. **Verify business rules** — check that ``docs/business-docs/` index` exists and `docs/business-docs/` directory exists. Warn if missing.
 
 5. **Verify Jira MCP** — if Jira is enabled, check that the Atlassian MCP server is available. Warn if not connected.
 
-6. **Save configuration** — write the user's answers to `docs/ba-workflow-config.json` (in the project, not in the plugin):
+6. **Save configuration** — write the user's answers to `docs/ba-workflow-config.json`:
    ```json
    {
-     "output_folder": "docs/",
-     "story_dir": "docs/stories/",
+     "workspace": "docs/ba-workflows/",
      "jira_mcp_enabled": true,
      "jira_project_key": "",
      "jira_story_type": "Story",
@@ -41,19 +37,38 @@ Set up the BA workflow by asking configuration questions and saving preferences.
    }
    ```
 
-7. **Display summary** of saved configuration and available commands:
+7. **List existing workflows** — scan workspace for existing workflow folders and display:
+   ```
+   Existing workflows:
+     admin-storm-creation/  (complete, 8 stories, synced to Jira)
+     entity-history-log/    (phase 2, PRD created)
+     [empty - no workflows yet]
+   ```
+
+8. **Display summary** of saved configuration and available commands:
    ```
    BA Workflow initialized!
 
    Configuration saved to: docs/ba-workflow-config.json
+   Workspace: docs/ba-workflows/
+
+   Each workflow creates its own folder:
+     docs/ba-workflows/{feature-name}/
+       state.json                    # Workflow progress
+       {title}_PRD.md                # Product Requirements Document
+       {title}_PO-review-feedback.md # PO review feedback
+       jira-sync-status.json         # Jira sync mapping
+       stories/                      # Generated user stories
+         01-story-title.md
+         02-another-story.md
 
    Available commands:
-     /ba-workflow   - Run full 9-step workflow (master)
-     /ba-analyze    - Steps 1-3: Requirements + Elicitation + Workflow Detection
-     /ba-prd        - Steps 4-5: Complexity + PRD Creation
-     /ba-review     - Step 6: PO Review + Correction Loop
-     /ba-stories    - Steps 7-8: Story Creation + Jira Sync
-     /ba-init       - Reconfigure settings (this command)
+     /ba-workflow <requirement>  - Run full 9-step workflow (master)
+     /ba-analyze <requirement>   - Steps 1-3: Requirements + Elicitation + Workflow Detection
+     /ba-prd                     - Steps 4-5: Complexity + PRD Creation
+     /ba-review                  - Step 6: PO Review + Correction Loop
+     /ba-stories                 - Steps 7-8: Story Creation + Jira Sync
+     /ba-init                    - Reconfigure settings (this command)
    ```
 
 ## Key Rules
@@ -61,4 +76,4 @@ Set up the BA workflow by asking configuration questions and saving preferences.
 - All paths are relative to project root
 - Create directories if they don't exist
 - Never hardcode absolute paths
-- Config is saved in the PROJECT (docs/), not in the plugin directory
+- Config is global; each workflow run creates its own scoped folder

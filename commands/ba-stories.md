@@ -2,14 +2,16 @@ BA Workflow - Phase 4: Story Creation & Jira Sync (Steps 7-8): $ARGUMENTS
 
 ## Prerequisites
 1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-init`.
-2. Read workflow state from `{output_folder}/ba-workflow-state.json`. Phase 2 must be complete (Phase 3 is optional based on `next_step_choice`).
+2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. Read `{workspace}/{workflow_id}/state.json`. Phase 2 must be complete.
 3. Read the PRD file from the path stored in state (`prd_file`).
-4. Read the story template from the plugin's `templates/story-template.md`.
-5. Read the Analyst agent from the plugin's `agents/analyst.md`. Adopt this persona.
+4. Read the story template from `the plugin's `templates/`story-template.md`.
+5. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona.
+
+Stories go to `{workspace}/{workflow_id}/stories/`.
 
 ## Progress Tracking
 ```
-BA Workflow | Phase 4: Story Creation & Jira Sync
+BA Workflow | {workflow_id} | Phase 4: Story Creation & Jira Sync
 Step X of 2 complete | XX% of Phase 4
 ```
 
@@ -18,11 +20,11 @@ Step X of 2 complete | XX% of Phase 4
 ## Step 7: Create User Stories from PRD
 
 ### Check for Existing Stories
-1. Check `{story_dir}` for existing story files.
+1. Check `{workspace}/{workflow_id}/stories/` for existing story files.
 
 2. **If existing stories found**, ask:
    ```
-   Existing story files found in {story_dir}:
+   Existing story files found in {workflow_id}/stories/:
    - [list files]
 
    How would you like to proceed?
@@ -68,7 +70,7 @@ Step X of 2 complete | XX% of Phase 4
    - Link to PRD requirement IDs (FR001, etc.)
    - Status: "drafted"
 
-8. **Save each story** as: `{story_dir}/{story_num}-{story-title-kebab}.md`
+8. **Save each story** as: `{workspace}/{workflow_id}/stories/{story_num}-{story-title-kebab}.md`
 
 9. **Present story summary:**
    ```
@@ -76,9 +78,6 @@ Step X of 2 complete | XX% of Phase 4
 
    1. {filename} — "{title}"
       ACs: X | Dependencies: X | Tasks: X
-
-   2. {filename} — "{title}"
-      ...
 
    Options:
    1. Review and refine stories (edit individual)
@@ -93,7 +92,7 @@ If `next_step_choice` was `3` in state:
 - Detect original requirement format (Jira vs text)
 - If Jira: map PRD content to Jira ticket sections, preserve Jira structure
 - If text: create comprehensive story from PRD inputs
-- Save to `{story_dir}/`
+- Save to `{workspace}/{workflow_id}/stories/`
 
 ---
 
@@ -103,7 +102,7 @@ If `next_step_choice` was `3` in state:
 
 2. **If disabled:**
    ```
-   Jira sync is disabled. Stories saved locally to {story_dir}.
+   Jira sync is disabled. Stories saved locally.
    To enable: run /ba-init and enable Jira integration.
    ```
    Skip to completion.
@@ -116,23 +115,14 @@ If `next_step_choice` was `3` in state:
 4. **If yes:**
    a. **Auto-detect Jira project key** from config or previous syncs. If found, confirm with user. If not, ask.
    b. **For each story file:**
-      - Create Jira issue using Atlassian MCP (`createJiraIssue`) with:
+      - Create Jira issue using `mcp__Atlassian-MCP__createJiraIssue` with:
         - Summary: Story title
         - Description: Full story content (formatted for Jira)
         - Project: `{jira_project_key}`
         - Issue Type: `{jira_story_type}`
       - Store returned Jira issue key
       - Update local story file with Jira key
-   c. **Save sync mapping** to `{output_folder}/jira-sync-status.json`:
-      ```json
-      {
-        "jira_project_key": "PROJ",
-        "synced_at": "...",
-        "stories": [
-          { "file": "1-story-title.md", "jira_key": "PROJ-123" }
-        ]
-      }
-      ```
+   c. **Save sync mapping** to `{workspace}/{workflow_id}/jira-sync-status.json`
    d. **Handle errors:** Log failures, report to user, offer to retry.
 
 5. **If no:** Skip Jira sync, stories remain local.
@@ -141,7 +131,7 @@ If `next_step_choice` was `3` in state:
 
 ## Phase 4 Complete — Workflow Done!
 
-Update `{output_folder}/ba-workflow-state.json`:
+Update `{workspace}/{workflow_id}/state.json`:
 ```json
 {
   "phase": 4,
@@ -149,7 +139,6 @@ Update `{output_folder}/ba-workflow-state.json`:
   "stories_created": X,
   "story_files": [ ... ],
   "jira_synced": true|false,
-  "jira_sync_file": "...",
   "completed_at": "..."
 }
 ```
@@ -158,19 +147,25 @@ Display:
 ```
 BA Workflow - COMPLETE!
 
-Summary:
+  Workflow: {workflow_id}
+  Folder:  {workspace}/{workflow_id}/
+
   Phase 1: Requirements Analysis  - Done
-  Phase 2: PRD Creation           - Done ({prd_file})
+  Phase 2: PRD Creation           - Done
   Phase 3: PO Review              - Done|Skipped
   Phase 4: Story Creation         - Done (X stories)
   Jira Sync                       - Done|Skipped
 
-Output Files:
-  PRD:       {prd_file}
-  Stories:   {story_dir}/ (X files)
-  PO Review: {po_feedback_file}
-  Jira Sync: {jira_sync_file}
-  State:     {output_folder}/ba-workflow-state.json
+  Files:
+    {workflow_id}/
+      state.json
+      {title}_PRD.md
+      {title}_PO-review-feedback.md
+      jira-sync-status.json
+      stories/
+        01-story-name.md
+        02-story-name.md
+        ...
 
 Stories are ready for the development team!
 ```

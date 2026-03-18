@@ -2,14 +2,16 @@ BA Workflow - Phase 3: PO Review & Correction Loop (Step 6): $ARGUMENTS
 
 ## Prerequisites
 1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-init`.
-2. Read workflow state from `{output_folder}/ba-workflow-state.json`. Phase 2 must be complete. If not, tell user to run `/ba-prd` first.
+2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. Read `{workspace}/{workflow_id}/state.json`. Phase 2 must be complete.
 3. Verify `next_step_choice` from state is `1` (PO Review selected). If it was `2` or `3`, inform user: "PO Review was skipped in Phase 2. Run `/ba-stories` instead."
 4. Read the PRD file from the path stored in state (`prd_file`).
-5. Read the PO agent from the plugin's `agents/product-owner.md`. Adopt this persona for the review.
+5. Read the PO agent from `the plugin's `agents/`product-owner.md`. Adopt this persona for the review.
+
+All outputs go to `{workspace}/{workflow_id}/`.
 
 ## Progress Tracking
 ```
-BA Workflow | Phase 3: PO Review
+BA Workflow | {workflow_id} | Phase 3: PO Review
 Correction Loop: Iteration X
 ```
 
@@ -47,7 +49,7 @@ Correction Loop: Iteration X
    1. [Question]
    ```
 
-4. **Save feedback** to: `{output_folder}/{story_title}_PO-review-feedback.md`
+4. **Save feedback** to: `{workspace}/{workflow_id}/{story_title}_PO-review-feedback.md`
 
 5. **Present feedback to user.**
 
@@ -57,7 +59,7 @@ Correction Loop: Iteration X
    a. Present the required changes to the user
    b. Ask: "Would you like me to update the PRD based on this feedback? (y/n)"
    c. **If yes:**
-      - Switch back to Analyst persona (read plugin's `agents/analyst.md`)
+      - Switch back to Analyst persona
       - Update the PRD addressing each required change
       - Save updated PRD to the same file path
       - Switch back to PO persona
@@ -74,13 +76,13 @@ Correction Loop: Iteration X
 
 ## Phase 3 Complete
 
-Update `{output_folder}/ba-workflow-state.json`:
+Update `{workspace}/{workflow_id}/state.json`:
 ```json
 {
   "phase": 3,
-  "status": "complete",
+  "status": "phase_3_complete",
   "po_approval_status": "approved|needs-revision-overridden",
-  "po_feedback_file": "{output_folder}/{story_title}_PO-review-feedback.md",
+  "po_feedback_file": "...",
   "correction_iterations": X,
   "timestamp": "..."
 }
@@ -89,8 +91,8 @@ Update `{output_folder}/ba-workflow-state.json`:
 Display:
 ```
 Phase 3: PO Review - COMPLETE
-  Step 6: PO Review           - [Approved | Approved after X revisions | Overridden]
-  Feedback saved to: {po_feedback_file}
+  Workflow: {workflow_id}
+  Step 6: PO Review  - [Approved | Approved after X revisions | Overridden]
 
 Next: Run /ba-stories for Story Creation (Phase 4)
   Or: Run /ba-workflow to continue automatically

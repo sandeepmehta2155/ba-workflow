@@ -2,13 +2,36 @@ BA Workflow - Phase 1: Requirements Analysis (Steps 1-3): $ARGUMENTS
 
 ## Prerequisites
 1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, tell user to run `/ba-init` first.
-2. Read the Analyst agent from the plugin's `agents/analyst.md`. Adopt this persona for ALL interactions in this phase.
+2. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona for ALL interactions in this phase.
 3. If `docs/business-docs/` exists, note it for Step 3 workflow detection.
+
+## Workflow Scoping (CRITICAL)
+
+Before starting, establish the **workflow folder** for this run:
+
+1. **If resuming**: Check if user specifies an existing workflow folder. Scan `{workspace}/` for folders with incomplete `state.json`. If found, ask:
+   ```
+   Found in-progress workflow(s):
+     1. admin-storm-creation/ (phase 1, started 2026-03-18)
+     2. [Start new workflow]
+
+   Resume existing or start new?
+   ```
+
+2. **If new**: After Step 1 (once the requirement is understood), derive a `workflow_id` (kebab-case, e.g. `admin-storm-creation`, `entity-history-log`, `user-auth-google`). Ask user to confirm or edit:
+   ```
+   Workflow folder: {workspace}/{workflow_id}/
+   Accept or enter different name:
+   ```
+
+3. **Create the folder**: `{workspace}/{workflow_id}/` and `{workspace}/{workflow_id}/stories/`
+
+All outputs for this workflow go into this folder.
 
 ## Progress Tracking
 Display progress after each step completion:
 ```
-BA Workflow | Phase 1: Requirements Analysis
+BA Workflow | {workflow_id} | Phase 1: Requirements Analysis
 Step X of 3 complete | XX% of Phase 1
 ```
 
@@ -45,7 +68,7 @@ Step X of 3 complete | XX% of Phase 1
 
 ## Step 2: Optional Elicitation Methods
 
-1. **Read the elicitation methods** from the plugin's `elicitation-methods.md`.
+1. **Read the elicitation methods** from `the plugin's `elicitation-methods.md``.
 
 2. **Always ask** (never skip silently):
    > Would you like to use elicitation methods to explore different approaches, identify risks, and enhance requirements?
@@ -74,7 +97,7 @@ Step X of 3 complete | XX% of Phase 1
 
 ## Step 3: Workflow Detection
 
-1. **Scan `docs/business-docs/` folder** for all workflow documentation files. If folder doesn't exist, skip this step and note "no business docs found."
+1. **Scan `docs/business-docs/` folder** for all workflow documentation files. If folder doesn't exist, skip and note "no business docs found."
 
 2. **For each file found**, analyze relevance to the requirement:
    - Read the file content
@@ -91,9 +114,6 @@ Step X of 3 complete | XX% of Phase 1
       Dependencies: [extracted from file]
       Key steps that apply: [specific sections]
 
-   2. [filename.md] — Relevance: XX%
-      ...
-
    Recommended Additional Workflows:
    - [filename.md] — Recommendation: [why to consider]
    ```
@@ -107,11 +127,14 @@ Step X of 3 complete | XX% of Phase 1
 
 ## Phase 1 Complete
 
-Save all gathered data to `{output_folder}/ba-workflow-state.json`:
+Save all gathered data to `{workspace}/{workflow_id}/state.json`:
 ```json
 {
+  "workflow_id": "{workflow_id}",
+  "story_title": "...",
   "phase": 1,
-  "status": "complete",
+  "status": "phase_1_complete",
+  "started_at": "...",
   "requirement": "...",
   "requirement_format": "text|jira",
   "clarifying_answers": { ... },
@@ -128,6 +151,8 @@ Save all gathered data to `{output_folder}/ba-workflow-state.json`:
 Display:
 ```
 Phase 1: Requirements Analysis - COMPLETE
+  Workflow: {workflow_id}
+  Folder:  {workspace}/{workflow_id}/
   Step 1: Requirements Gathering    - Done (X/8 categories answered)
   Step 2: Elicitation Methods       - Done|Skipped
   Step 3: Workflow Detection         - Done (X workflows selected)
