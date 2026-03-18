@@ -7,8 +7,6 @@ BA Workflow - Phase 1: Requirements Analysis (Steps 1-3): $ARGUMENTS
 
 ## Skills Injected (read these before starting)
 - **`skills/socratic-discovery.md`** — Apply in Step 1 after receiving requirement. Parse explicit asks → surface implicit requirements → identify unmade decisions → ask targeted questions with options + defaults.
-- **`skills/requirement-quality-scoring.md`** — Apply after Step 1 completes. Score the requirement (Clarity/Specificity/Actionability/Grammar/Scope). Gate: score < 60% → force refinement before Step 2.
-- **`skills/confidence-scoring.md`** — Apply at Phase 1 completion. Self-rate confidence. LOW → halt and ask user.
 
 ## Workflow Scoping (CRITICAL)
 

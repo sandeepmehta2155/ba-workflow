@@ -7,21 +7,14 @@ This is the master command that orchestrates the complete BA workflow through al
 1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, run the `/ba-workflow:init` setup flow first (ask the setup questions inline).
 2. If config exists, verify workspace directory exists. Create if missing.
 
-## Skills (read ALL from `skills/` directory before starting)
-All skills are loaded and applied at their integration points throughout the workflow:
+## Skills (read from `skills/` directory before starting)
 
 | Skill | Applied In | Purpose |
 |-------|-----------|---------|
 | `skills/socratic-discovery.md` | Phase 1, Step 1 | Surface implicit requirements, identify unmade decisions |
-| `skills/requirement-quality-scoring.md` | Phase 1 end, Phase 2 end | Score requirement/PRD quality (60% gate) |
-| `skills/verification-checklist.md` | Phase 2 end, Phase 4 end | Three-level verification before claiming completion |
 | `skills/two-stage-review.md` | Phase 3 | Structured PO review: spec compliance + quality |
-| `skills/feedback-protocol.md` | Phase 3 correction loop | Verify-Assess-Respond-Implement feedback handling |
-| `skills/confidence-scoring.md` | All phase gates | HIGH/MEDIUM/LOW self-rating. LOW = halt |
 | `skills/codebase-context.md` | Phase 4, before stories | Scan code patterns for story alignment |
 | `skills/testable-criteria.md` | Phase 4, story creation | Enforce Given/When/Then on all ACs |
-| `skills/parallel-stories.md` | Phase 4, Level 2+ | Wave-based parallel story generation |
-| `skills/receipts.md` | All phase completions | JSON proof-of-work per phase |
 
 ## Workflow Scoping
 

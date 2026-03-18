@@ -12,10 +12,6 @@ Stories go to `{workspace}/{workflow_id}/stories/`.
 ## Skills Injected (read these before starting)
 - **`skills/codebase-context.md`** — Run BEFORE generating stories. Scan existing code patterns. Generate `system-context.md` in the workflow folder. Stories reference these patterns in Dev Notes.
 - **`skills/testable-criteria.md`** — ENFORCE Given/When/Then format on ALL acceptance criteria. If an AC can't be expressed as GWT, it's too vague — force refinement. Flag vague phrases.
-- **`skills/parallel-stories.md`** — For complexity Level 2+, offer parallel wave-based generation. Group stories by epic, dispatch per wave, two-stage review per story.
-- **`skills/verification-checklist.md`** — Apply at end of Phase 4 (before Jira sync). Run Level 1 + Level 2 + Level 3 checks. Verify PRD-to-story coverage is 100%.
-- **`skills/confidence-scoring.md`** — Apply at Phase 4 completion. Self-rate confidence. LOW → halt.
-- **`skills/receipts.md`** — Generate Phase 4 receipt at completion (includes Jira sync results).
 
 ## Progress Tracking
 ```

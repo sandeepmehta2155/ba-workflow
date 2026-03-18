@@ -11,9 +11,6 @@ All outputs go to `{workspace}/{workflow_id}/`.
 
 ## Skills Injected (read these before starting)
 - **`skills/two-stage-review.md`** — Structures the PO review. Stage 1: Spec Compliance (PRD matches all requirements?). Stage 2: Quality (testable ACs, unambiguous rules, edge cases). Use severity levels: CRITICAL/IMPORTANT/MINOR.
-- **`skills/feedback-protocol.md`** — Apply during correction loop. VERIFY feedback → ASSESS impact → RESPOND with evidence → IMPLEMENT one change at a time. Push back if feedback breaks other requirements or expands scope.
-- **`skills/confidence-scoring.md`** — Apply at Phase 3 completion. Self-rate confidence. LOW → halt.
-- **`skills/receipts.md`** — Generate Phase 3 receipt at completion.
 
 ## Progress Tracking
 ```

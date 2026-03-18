@@ -1,7 +1,7 @@
 {
   "name": "ba-workflow",
   "description": "BMAD-style 9-step Business Analysis workflow: requirements gathering, elicitation, PRD creation, PO review, story generation, and Jira sync",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "author": {
     "name": "Sandeep Mehta",
     "email": "sandeepmehta2155@users.noreply.github.com"

@@ -1,15 +1,15 @@
 # BA Workflow Plugin for Claude Code
 
-A BMAD-style 9-step Business Analysis workflow plugin that takes you from a rough requirement all the way to Jira-ready user stories — with quality scoring, verification gates, confidence tracking, and structured PO review.
+A streamlined 9-step Business Analysis workflow plugin that takes you from a rough requirement to Jira-ready user stories — with Socratic discovery, structured PO review, and Given/When/Then enforcement.
 
 ## What It Does
 
 | Phase | Steps | Description |
 |-------|-------|-------------|
 | **Phase 1** | Steps 1-3 | Requirements gathering, Socratic discovery, elicitation methods (50 techniques), workflow detection |
-| **Phase 2** | Steps 4-5 | Story complexity scoring (0-4), PRD creation with quality gate (60% minimum) |
-| **Phase 3** | Step 6 | Two-stage PO review (spec compliance + quality) with feedback protocol |
-| **Phase 4** | Steps 7-8 | User story generation (Given/When/Then enforced), parallel waves, Jira sync |
+| **Phase 2** | Steps 4-5 | Story complexity scoring (0-4), PRD creation |
+| **Phase 3** | Step 6 | Two-stage PO review (spec compliance + quality) |
+| **Phase 4** | Steps 7-8 | User story generation (Given/When/Then enforced), Jira sync |
 
 ---
 
@@ -172,22 +172,16 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 
 ---
 
-## Skills (Quality Gates & Automation)
+## Skills (Quality & Automation)
 
-10 skills are injected at specific integration points throughout the workflow:
+4 focused skills are injected at specific integration points:
 
 | Skill | Phase | What It Does |
 |-------|-------|-------------|
 | **Socratic Discovery** | Phase 1 | Surfaces implicit requirements, identifies unmade decisions, asks targeted questions with defaults |
-| **Requirement Quality Scoring** | Phase 1, 2 | 5-dimension scoring: Clarity/Specificity/Actionability/Grammar/Scope. Gate: < 60% forces refinement |
-| **Verification Checklist** | Phase 2, 4 | 3-level check: Clarity + Completeness + Technical Alignment. Maps every requirement to PRD/story |
 | **Two-Stage Review** | Phase 3 | Stage 1: Spec compliance. Stage 2: Quality. Severity: CRITICAL/IMPORTANT/MINOR |
-| **Feedback Protocol** | Phase 3 | Verify-Assess-Respond-Implement. Push back if feedback breaks other requirements |
-| **Confidence Scoring** | All phases | HIGH/MEDIUM/LOW per phase. LOW = halt and ask human |
 | **Codebase Context** | Phase 4 | Scans existing code patterns so stories align with real architecture |
 | **Testable Criteria** | Phase 4 | Enforces Given/When/Then on all acceptance criteria. Flags vague phrases |
-| **Parallel Stories** | Phase 4 | Wave-based parallel generation for Level 2+ complexity |
-| **Receipts** | All phases | JSON proof-of-work per phase with audit trail |
 
 ---
 
@@ -225,11 +219,7 @@ docs/ba-workflows/
     PRD.md
     PO-review-feedback.md
     jira-sync-status.json
-    quality-scores.json
     system-context.md
-    receipts/
-      phase-1-receipt.json
-      phase-2-receipt.json
     stories/
       01-login-flow.md
       02-oauth-callback.md
@@ -278,16 +268,10 @@ ba-workflow/
   agents/                     # Agent personas
     analyst.md                # Mary — Business Analyst
     product-owner.md          # John — Product Owner
-  skills/                     # 10 quality & automation skills
-    requirement-quality-scoring.md
-    verification-checklist.md
+  skills/                     # 4 focused quality & automation skills
     socratic-discovery.md
     two-stage-review.md
-    confidence-scoring.md
     codebase-context.md
-    receipts.md
-    parallel-stories.md
-    feedback-protocol.md
     testable-criteria.md
   templates/                  # Output templates
     prd-template.md           # PRD document template
