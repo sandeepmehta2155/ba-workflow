@@ -22,7 +22,36 @@ Set up the BA workflow by asking configuration questions and saving preferences.
 
 4. **Verify business rules** — check that `the plugin's `business-rules.md`` exists and `docs/business-docs/` directory exists. Warn if missing.
 
-5. **Verify Jira MCP** — if Jira is enabled, check that the Atlassian MCP server is available. Warn if not connected.
+5. **Verify Jira MCP** — if Jira is enabled, check if the Atlassian MCP server is available by listing MCP tools. If NOT available, display:
+   ```
+   ⚠️  Atlassian MCP server not detected.
+
+   Jira sync requires the Atlassian MCP server. You have two options:
+
+   Option A: Add to ~/.claude/settings.json (global — all projects):
+   {
+     "mcpServers": {
+       "Atlassian-MCP": {
+         "type": "stdio",
+         "command": "npx",
+         "args": ["-y", "mcp-remote@latest", "https://mcp.atlassian.com/v1/sse"]
+       }
+     }
+   }
+
+   Option B: Add to .claude/settings.local.json (this project only):
+   Same config as above.
+
+   After adding, restart Claude Code for MCP to connect.
+
+   How would you like to proceed?
+   1. I'll set up Jira MCP now — pause init, I'll restart and re-run /ba-workflow:init
+   2. Skip Jira for now — disable Jira sync, I can enable it later
+   3. Jira MCP is already configured elsewhere — continue
+   ```
+   - If user picks 1: halt init, remind to restart Claude Code after adding MCP config
+   - If user picks 2: set `jira_mcp_enabled: false` in config and continue
+   - If user picks 3: continue with Jira enabled
 
 6. **Save configuration** — write the user's answers to `docs/ba-workflow-config.json`:
    ```json
@@ -63,12 +92,12 @@ Set up the BA workflow by asking configuration questions and saving preferences.
          02-another-story.md
 
    Available commands:
-     /ba-workflow <requirement>  - Run full 9-step workflow (master)
-     /ba-analyze <requirement>   - Steps 1-3: Requirements + Elicitation + Workflow Detection
-     /ba-prd                     - Steps 4-5: Complexity + PRD Creation
-     /ba-review                  - Step 6: PO Review + Correction Loop
-     /ba-stories                 - Steps 7-8: Story Creation + Jira Sync
-     /ba-init                    - Reconfigure settings (this command)
+     /ba-workflow:go <requirement>  - Run full 9-step workflow (master)
+     /ba-workflow:analyze <req>     - Steps 1-3: Requirements + Elicitation + Workflow Detection
+     /ba-workflow:prd               - Steps 4-5: Complexity + PRD Creation
+     /ba-workflow:review            - Step 6: PO Review + Correction Loop
+     /ba-workflow:stories           - Steps 7-8: Story Creation + Jira Sync
+     /ba-workflow:init              - Reconfigure settings (this command)
    ```
 
 ## Key Rules

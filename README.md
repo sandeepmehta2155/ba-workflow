@@ -301,8 +301,32 @@ ba-workflow/
 ## Requirements
 
 - **Claude Code** CLI
-- **Atlassian MCP** server (optional, for Jira sync)
+- **Atlassian MCP** server (optional, for Jira sync — see setup below)
 - A `docs/business-docs/` folder with your project's workflow documentation (optional, for workflow detection)
+
+### Setting Up Jira MCP (Optional)
+
+Jira sync requires the Atlassian MCP server. The plugin works without it — you just won't be able to push stories to Jira. `/ba-workflow:init` will detect if it's missing and guide you.
+
+**To set up manually:**
+
+Add to `~/.claude/settings.json` (global) or `.claude/settings.local.json` (project-only):
+
+```json
+{
+  "mcpServers": {
+    "Atlassian-MCP": {
+      "type": "stdio",
+      "command": "npx",
+      "args": ["-y", "mcp-remote@latest", "https://mcp.atlassian.com/v1/sse"]
+    }
+  }
+}
+```
+
+After adding, **restart Claude Code** for the MCP server to connect. On first use, it will prompt you to authenticate with your Atlassian account.
+
+> **No Jira?** No problem. Run `/ba-workflow:init` and choose "Skip Jira". The plugin generates all PRDs and stories locally — Jira sync is just the optional last step.
 
 ---
 
