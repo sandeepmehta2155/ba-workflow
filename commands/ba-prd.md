@@ -7,6 +7,12 @@ BA Workflow - Phase 2: PRD Creation (Steps 4-5): $ARGUMENTS
 
 All outputs go to `{workspace}/{workflow_id}/`.
 
+## Skills Injected (read these before starting)
+- **`skills/requirement-quality-scoring.md`** — Apply after PRD is created (Step 5). Score the PRD. Gate: score < 60% → refine before PO review.
+- **`skills/verification-checklist.md`** — Apply at end of Phase 2. Run Level 1 (Clarity) + Level 2 (Completeness) checks. Map every requirement → PRD section. Blocked if issues found.
+- **`skills/confidence-scoring.md`** — Apply at Phase 2 completion. Self-rate confidence. LOW → halt.
+- **`skills/receipts.md`** — Generate Phase 2 receipt at completion.
+
 ## Progress Tracking
 ```
 BA Workflow | {workflow_id} | Phase 2: PRD Creation
@@ -70,7 +76,7 @@ Step X of 2 complete | XX% of Phase 2
 ## Step 5: PRD Creation
 
 ### Generate PRD
-1. Read the PRD template from `the plugin's `templates/`prd-template.md`.
+1. Read the PRD template from `the plugin's `templates/``prd-template.md`.
 
 2. **If a story title wasn't established**, ask:
    > What should this PRD be titled? (This will be used for the filename too)

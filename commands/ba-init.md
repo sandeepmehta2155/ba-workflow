@@ -20,7 +20,7 @@ Set up the BA workflow by asking configuration questions and saving preferences.
 
 3. **Validate paths exist** — if workspace root doesn't exist, create it.
 
-4. **Verify business rules** — check that ``docs/business-docs/` index` exists and `docs/business-docs/` directory exists. Warn if missing.
+4. **Verify business rules** — check that `the plugin's `business-rules.md`` exists and `docs/business-docs/` directory exists. Warn if missing.
 
 5. **Verify Jira MCP** — if Jira is enabled, check that the Atlassian MCP server is available. Warn if not connected.
 

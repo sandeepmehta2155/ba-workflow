@@ -7,6 +7,22 @@ This is the master command that orchestrates the complete BA workflow through al
 1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, run the `/ba-init` setup flow first (ask the setup questions inline).
 2. If config exists, verify workspace directory exists. Create if missing.
 
+## Skills (read ALL from `skills/` directory before starting)
+All skills are loaded and applied at their integration points throughout the workflow:
+
+| Skill | Applied In | Purpose |
+|-------|-----------|---------|
+| `skills/socratic-discovery.md` | Phase 1, Step 1 | Surface implicit requirements, identify unmade decisions |
+| `skills/requirement-quality-scoring.md` | Phase 1 end, Phase 2 end | Score requirement/PRD quality (60% gate) |
+| `skills/verification-checklist.md` | Phase 2 end, Phase 4 end | Three-level verification before claiming completion |
+| `skills/two-stage-review.md` | Phase 3 | Structured PO review: spec compliance + quality |
+| `skills/feedback-protocol.md` | Phase 3 correction loop | Verify-Assess-Respond-Implement feedback handling |
+| `skills/confidence-scoring.md` | All phase gates | HIGH/MEDIUM/LOW self-rating. LOW = halt |
+| `skills/codebase-context.md` | Phase 4, before stories | Scan code patterns for story alignment |
+| `skills/testable-criteria.md` | Phase 4, story creation | Enforce Given/When/Then on all ACs |
+| `skills/parallel-stories.md` | Phase 4, Level 2+ | Wave-based parallel story generation |
+| `skills/receipts.md` | All phase completions | JSON proof-of-work per phase |
+
 ## Workflow Scoping
 
 Each run creates its own folder under `{workspace}/{workflow_id}/`:
@@ -53,7 +69,7 @@ Phase 1 COMPLETE — Transitioning to Phase 2...
 Execute the full `/ba-prd` workflow:
 - **Step 4:** Determine story complexity (auto-suggest, let user confirm 0-4)
   - Handle existing PRD files (create/edit/backup/remove)
-- **Step 5:** Create PRD using template from `the plugin's `templates/`prd-template.md`
+- **Step 5:** Create PRD using template from `the plugin's `templates/``prd-template.md`
   - Auto-populate from Phase 1 data
   - ONLY business requirements — NO technical details
   - Save to `{workspace}/{workflow_id}/{story_title}_PRD.md`
@@ -94,7 +110,7 @@ Phase 3 SKIPPED (per user choice) — Transitioning to Phase 4...
 
 Execute the full `/ba-stories` workflow:
 - **Step 7:** Generate stories from PRD
-  - Use story template from `the plugin's `templates/`story-template.md`
+  - Use story template from `the plugin's `templates/``story-template.md`
   - Auto-determine count from complexity level
   - Group PRD requirements into stories
   - Save to `{workspace}/{workflow_id}/stories/`
@@ -144,5 +160,5 @@ Stories are ready for the development team!
 5. **State persistence** — Save state after each phase to `{workspace}/{workflow_id}/state.json`
 6. **Flexible answering** — Accept skip/N/A/partial for clarifying questions
 7. **Workflow detection** — Only reference workflows from `docs/business-docs/`
-8. **Templates** — Use templates from `the plugin's `templates/`` for PRD and stories
+8. **Templates** — Use templates from `the plugin's `templates/``` for PRD and stories
 9. **Resume support** — Scan for in-progress workflows before starting new ones
