@@ -143,29 +143,31 @@ rm -f docs/ba-workflow-config.json
 
 ## Commands
 
+All commands are namespaced under `ba-workflow:`. Use them as shown below:
+
 | Command | Purpose |
 |---------|---------|
-| `/ba-init` | Configure workspace, Jira settings |
-| `/ba-workflow <requirement>` | Run full 9-step workflow (master command) |
-| `/ba-analyze <requirement>` | Phase 1: Requirements + Elicitation + Workflow Detection |
-| `/ba-prd` | Phase 2: Complexity + PRD Creation |
-| `/ba-review` | Phase 3: PO Review + Correction Loop |
-| `/ba-stories` | Phase 4: Story Creation + Jira Sync |
+| `/ba-workflow:init` | Configure workspace, Jira settings (one-time setup) |
+| `/ba-workflow:go <requirement>` | Run full 9-step workflow (master command) |
+| `/ba-workflow:analyze <requirement>` | Phase 1: Requirements + Elicitation + Workflow Detection |
+| `/ba-workflow:prd` | Phase 2: Complexity + PRD Creation |
+| `/ba-workflow:review` | Phase 3: PO Review + Correction Loop |
+| `/ba-workflow:stories` | Phase 4: Story Creation + Jira Sync |
 
 ## Quick Start
 
 ```bash
 # 1. Initialize (one-time setup)
-/ba-init
+/ba-workflow:init
 
 # 2. Run the full workflow
-/ba-workflow Add user authentication with Google OAuth
+/ba-workflow:go Add user authentication with Google OAuth
 
 # Or run phases individually:
-/ba-analyze Add user authentication with Google OAuth
-/ba-prd
-/ba-review
-/ba-stories
+/ba-workflow:analyze Add user authentication with Google OAuth
+/ba-workflow:prd
+/ba-workflow:review
+/ba-workflow:stories
 ```
 
 ---
@@ -199,7 +201,20 @@ rm -f docs/ba-workflow-config.json
 Ported from BMAD's advanced elicitation system across 10 categories:
 - Core, Creative, Risk, Collaboration, Advanced, Competitive, Technical, Research, Learning, Philosophical
 
-Interactive selection: pick by number, reshuffle, browse all, or use quick picks.
+Interactive selection with full engine:
+```
+Advanced Elicitation Options
+Choose a number (1-5), [r] to Reshuffle, [a] List All 50, or [x] to Skip/Proceed:
+
+1. Pre-mortem Analysis — Imagine failure, work backwards to prevent
+2. User Persona Focus Group — Role-play as different users
+3. What-If Scenarios — Explore edge cases and alternatives
+4. SCAMPER Method — 7 creativity lenses for innovation
+5. Stakeholder Round Table — Multiple perspectives on requirements
+r. Reshuffle — show 5 different methods
+a. List all 50 methods with descriptions
+x. Skip — proceed without elicitation
+```
 
 ### Centralized Workspace
 Each workflow run gets its own isolated folder — no file collisions between features:
@@ -253,13 +268,13 @@ ba-workflow/
   .claude-plugin/
     plugin.json               # Plugin metadata
     marketplace.json          # Marketplace registry
-  commands/                   # 6 slash commands
-    ba-init.md
-    ba-workflow.md
-    ba-analyze.md
-    ba-prd.md
-    ba-review.md
-    ba-stories.md
+  commands/                   # 6 slash commands (namespaced as ba-workflow:*)
+    init.md                   # /ba-workflow:init
+    go.md                     # /ba-workflow:go
+    analyze.md                # /ba-workflow:analyze
+    prd.md                    # /ba-workflow:prd
+    review.md                 # /ba-workflow:review
+    stories.md                # /ba-workflow:stories
   agents/                     # Agent personas
     analyst.md                # Mary — Business Analyst
     product-owner.md          # John — Product Owner
