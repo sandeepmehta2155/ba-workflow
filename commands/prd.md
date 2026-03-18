@@ -1,7 +1,7 @@
 BA Workflow - Phase 2: PRD Creation (Steps 4-5): $ARGUMENTS
 
 ## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-init`.
+1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-workflow:init`.
 2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. If only one in-progress, use it. Read `{workspace}/{workflow_id}/state.json`. Phase 1 must be complete.
 3. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona.
 
@@ -141,7 +141,7 @@ Phase 2: PRD Creation - COMPLETE
   Step 4: Complexity & Preparation  - Done (Level X)
   Step 5: PRD Created               - Done
 
-Next: Run /ba-review for PO Review (Phase 3)
-  Or: Run /ba-stories for Story Creation (Phase 4)
-  Or: Run /ba-workflow to continue automatically
+Next: Run /ba-workflow:review for PO Review (Phase 3)
+  Or: Run /ba-workflow:stories for Story Creation (Phase 4)
+  Or: Run /ba-workflow:go to continue automatically
 ```

@@ -1,7 +1,7 @@
 BA Workflow - Phase 4: Story Creation & Jira Sync (Steps 7-8): $ARGUMENTS
 
 ## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-init`.
+1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-workflow:init`.
 2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. Read `{workspace}/{workflow_id}/state.json`. Phase 2 must be complete.
 3. Read the PRD file from the path stored in state (`prd_file`).
 4. Read the story template from `the plugin's `templates/``story-template.md`.
@@ -111,7 +111,7 @@ If `next_step_choice` was `3` in state:
 2. **If disabled:**
    ```
    Jira sync is disabled. Stories saved locally.
-   To enable: run /ba-init and enable Jira integration.
+   To enable: run /ba-workflow:init and enable Jira integration.
    ```
    Skip to completion.
 

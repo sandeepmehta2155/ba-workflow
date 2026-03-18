@@ -4,7 +4,7 @@ BA Workflow - Full 9-Step Business Analysis Workflow (Master Command): $ARGUMENT
 This is the master command that orchestrates the complete BA workflow through all 4 phases (9 steps). It runs each phase sequentially, maintaining state between them. Each workflow run is scoped to its own folder.
 
 ## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, run the `/ba-init` setup flow first (ask the setup questions inline).
+1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, run the `/ba-workflow:init` setup flow first (ask the setup questions inline).
 2. If config exists, verify workspace directory exists. Create if missing.
 
 ## Skills (read ALL from `skills/` directory before starting)
@@ -48,7 +48,7 @@ Execute each phase in sequence. Between phases, display a transition banner and 
 
 ### Phase 1: Requirements Analysis (Steps 1-3)
 
-Execute the full `/ba-analyze` workflow:
+Execute the full `/ba-workflow:analyze` workflow:
 - **Step 1:** Gather requirements using Analyst agent (read `the plugin's `agents/`analyst.md`)
   - Use `$ARGUMENTS` as the initial requirement if provided
   - Ask clarifying business questions (8 categories, flexible answering)
@@ -66,7 +66,7 @@ Phase 1 COMPLETE — Transitioning to Phase 2...
 
 ### Phase 2: PRD Creation (Steps 4-5)
 
-Execute the full `/ba-prd` workflow:
+Execute the full `/ba-workflow:prd` workflow:
 - **Step 4:** Determine story complexity (auto-suggest, let user confirm 0-4)
   - Handle existing PRD files (create/edit/backup/remove)
 - **Step 5:** Create PRD using template from `the plugin's `templates/``prd-template.md`
@@ -87,7 +87,7 @@ Phase 2 COMPLETE — Transitioning to Phase 3...
 
 **Only if user chose option 1 in Step 5 confirmation.**
 
-Execute the full `/ba-review` workflow:
+Execute the full `/ba-workflow:review` workflow:
 - Switch to PO agent (read `the plugin's `agents/`product-owner.md`)
 - Review PRD for completeness, clarity, business alignment, gaps
 - Save feedback to `{workspace}/{workflow_id}/{story_title}_PO-review-feedback.md`
@@ -108,7 +108,7 @@ Phase 3 SKIPPED (per user choice) — Transitioning to Phase 4...
 
 ### Phase 4: Story Creation & Jira Sync (Steps 7-8)
 
-Execute the full `/ba-stories` workflow:
+Execute the full `/ba-workflow:stories` workflow:
 - **Step 7:** Generate stories from PRD
   - Use story template from `the plugin's `templates/``story-template.md`
   - Auto-determine count from complexity level

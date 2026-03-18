@@ -1,9 +1,9 @@
 BA Workflow - Phase 3: PO Review & Correction Loop (Step 6): $ARGUMENTS
 
 ## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-init`.
+1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-workflow:init`.
 2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. Read `{workspace}/{workflow_id}/state.json`. Phase 2 must be complete.
-3. Verify `next_step_choice` from state is `1` (PO Review selected). If it was `2` or `3`, inform user: "PO Review was skipped in Phase 2. Run `/ba-stories` instead."
+3. Verify `next_step_choice` from state is `1` (PO Review selected). If it was `2` or `3`, inform user: "PO Review was skipped in Phase 2. Run `/ba-workflow:stories` instead."
 4. Read the PRD file from the path stored in state (`prd_file`).
 5. Read the PO agent from `the plugin's `agents/`product-owner.md`. Adopt this persona for the review.
 
@@ -73,7 +73,7 @@ Correction Loop: Iteration X
       - Repeat until APPROVED or user says to stop
    d. **If no:** Ask user what they'd like to do:
       - Proceed to stories anyway (override PO)
-      - Make manual edits and re-run `/ba-review`
+      - Make manual edits and re-run `/ba-workflow:review`
       - Stop workflow
 
 7. **If APPROVED:** Proceed.
@@ -100,6 +100,6 @@ Phase 3: PO Review - COMPLETE
   Workflow: {workflow_id}
   Step 6: PO Review  - [Approved | Approved after X revisions | Overridden]
 
-Next: Run /ba-stories for Story Creation (Phase 4)
-  Or: Run /ba-workflow to continue automatically
+Next: Run /ba-workflow:stories for Story Creation (Phase 4)
+  Or: Run /ba-workflow:go to continue automatically
 ```

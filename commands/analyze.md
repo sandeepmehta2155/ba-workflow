@@ -1,7 +1,7 @@
 BA Workflow - Phase 1: Requirements Analysis (Steps 1-3): $ARGUMENTS
 
 ## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, tell user to run `/ba-init` first.
+1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, tell user to run `/ba-workflow:init` first.
 2. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona for ALL interactions in this phase.
 3. If `docs/business-docs/` exists, note it for Step 3 workflow detection.
 
@@ -166,6 +166,6 @@ Phase 1: Requirements Analysis - COMPLETE
   Step 2: Elicitation Methods       - Done|Skipped
   Step 3: Workflow Detection         - Done (X workflows selected)
 
-Next: Run /ba-prd to create the PRD (Phase 2)
-Or: Run /ba-workflow to continue automatically
+Next: Run /ba-workflow:prd to create the PRD (Phase 2)
+Or: Run /ba-workflow:go to continue automatically
 ```
