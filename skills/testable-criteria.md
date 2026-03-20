@@ -4,8 +4,7 @@
 If an acceptance criterion can't be expressed as **Given/When/Then**, it's too vague. Force refinement until it's testable.
 
 ## When to Apply
-- Phase 4 (ba-stories Step 7) — enforce on every AC in every story
-- Phase 2 (ba-prd Step 5) — encourage GWT in PRD functional requirements
+- Phase 2 (ba-stories Step 5) — enforce on every AC in every story
 - Quality gate: stories with non-GWT criteria are flagged as incomplete
 
 ## Given/When/Then Format
@@ -66,29 +65,27 @@ Every story's Acceptance Criteria section MUST use this format:
 ## Acceptance Criteria
 
 ### AC1: [Short description]
-**Given** [precondition]
-**When** [action]
-**Then** [expected outcome]
+- [bullet point describing the condition or context]
+- [bullet point describing what the user or system does]
+- [bullet point describing the expected outcome]
 
 ### AC2: [Short description]
-**Given** [precondition]
-**When** [action]
-**Then** [expected outcome]
+- [bullet point]
+- [bullet point]
+- [bullet point]
 
 ### AC3: Edge case — [description]
-**Given** [edge condition]
-**When** [action]
-**Then** [expected behavior]
+- [bullet point]
+- [bullet point]
 ```
 
 ## Quality Checks
 
 | Check | Pass | Fail |
 |-------|------|------|
-| Every AC has Given/When/Then | All ACs follow format | Any AC is prose-only |
-| "Then" is observable | QA can verify by looking/clicking/querying | "Then system handles it correctly" |
-| "When" is a single action | One trigger per AC | "When user does X and Y and Z" (split into multiple ACs) |
-| "Given" is achievable | Precondition can be set up in test | "Given the system is working properly" (too vague) |
+| Every AC uses bullet points | All ACs follow format | Any AC is prose-only paragraph |
+| Outcome bullet is observable | QA can verify by looking/clicking/querying | "system handles it correctly" |
+| Each AC covers one scenario | One clear scenario per AC | Multiple unrelated behaviours in one AC |
 | Edge cases included | At least 1 negative/edge AC per story | Only happy path ACs |
 
 ## Vague AC Detector

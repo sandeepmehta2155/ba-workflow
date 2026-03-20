@@ -12,11 +12,38 @@
 ### Flow
 
 **Step 1: Smart Selection**
-1. Analyze context: content type, complexity, stakeholder needs, risk level, creative potential
-2. Parse method descriptions from the registry below
-3. Select 5 methods that best match the context
-4. Balance: include mix of foundational and specialized techniques
-5. Slots 1-2 should be the most useful for the current requirement
+1. Analyze the requirement for **context signals** (see Context-to-Method Mapping below)
+2. Match detected signals to the recommended methods in the mapping table
+3. Select 5 methods: pick from the **highest-matching signal categories first**
+4. If multiple signals match, blend methods from each matching category
+5. Slots 1-2 MUST come from the strongest-matching signal category
+6. Only fall back to Quick Picks (bottom of file) when NO signal matches at all
+
+**CRITICAL: Do NOT default to Quick Picks when the requirement has any identifiable context signal. Scan for ALL signals below before selecting.**
+
+#### Context-to-Method Mapping
+
+Scan the requirement for these signals. When detected, prioritize the listed methods:
+
+| Context Signal | Keywords / Indicators | Recommended Methods (prioritize in order) |
+|---|---|---|
+| **Security / Auth / Permissions** | login, auth, password, role, permission, access control, token, encryption, RBAC, SSO, OAuth | #17 Red Team vs Blue Team, #23 Security Audit Personas, #34 Pre-mortem, #37 Identify Risks, #38 Chaos Monkey |
+| **UI / UX / Design** | screen, page, form, button, layout, dashboard, modal, responsive, user interface, wireframe, navigation | #4 User Persona Focus Group, #10 Customer Support Theater, #25 SCAMPER, #6 Cross-Functional War Room, #44 Expand/Contract for Audience |
+| **Architecture / System Design** | microservice, API, database, schema, integration, migration, scalability, distributed, event-driven, queue | #20 Architecture Decision Records, #11 Tree of Thoughts, #39 First Principles, #22 Algorithm Olympics, #33 Comparative Analysis Matrix |
+| **Performance / Scaling** | slow, latency, throughput, cache, optimization, load, concurrent, bottleneck, memory, indexing | #24 Performance Profiler Panel, #35 Failure Mode Analysis, #38 Chaos Monkey, #22 Algorithm Olympics, #26 Reverse Engineering |
+| **New Product / Feature Ideation** | new feature, idea, concept, innovation, MVP, prototype, greenfield, brainstorm, opportunity | #25 SCAMPER, #9 Improv Yes-And, #28 Random Input Stimulus, #30 Genre Mashup, #18 Shark Tank Pitch |
+| **Bug Fix / Incident / Debugging** | bug, error, crash, incident, broken, failing, regression, root cause, outage, exception | #40 5 Whys Deep Dive, #21 Rubber Duck Debugging, #47 Occam's Razor, #35 Failure Mode Analysis, #49 Hindsight Reflection |
+| **Migration / Refactoring** | migrate, refactor, legacy, upgrade, deprecate, rewrite, modernize, technical debt, replace | #34 Pre-mortem, #5 Time Traveler Council, #26 Reverse Engineering, #20 Architecture Decision Records, #37 Identify Risks |
+| **Business Process / Workflow** | workflow, process, approval, notification, status, lifecycle, state machine, escalation, SLA | #1 Stakeholder Round Table, #4 User Persona Focus Group, #6 Cross-Functional War Room, #33 Comparative Analysis Matrix, #16 Reasoning via Planning |
+| **Data / Reporting / Analytics** | report, dashboard, metrics, KPI, analytics, chart, aggregation, export, data warehouse, BI | #33 Comparative Analysis Matrix, #12 Graph of Thoughts, #1 Stakeholder Round Table, #44 Expand/Contract for Audience, #26 Reverse Engineering |
+| **Compliance / Legal / Regulatory** | compliance, GDPR, HIPAA, audit, regulation, policy, data retention, consent, privacy, PCI | #23 Security Audit Personas, #34 Pre-mortem, #48 Trolley Problem Variations, #37 Identify Risks, #31 Literature Review Personas |
+| **Testing / QA / Quality** | test, QA, coverage, regression, automation, acceptance criteria, validation, edge case | #14 Self-Consistency Validation, #36 Challenge from Critical Perspective, #38 Chaos Monkey, #35 Failure Mode Analysis, #19 Code Review Gauntlet |
+| **Communication / Notification** | email, notification, SMS, alert, message, webhook, push notification, real-time, broadcast | #10 Customer Support Theater, #4 User Persona Focus Group, #27 What If Scenarios, #8 Good Cop Bad Cop, #34 Pre-mortem |
+| **Multi-Stakeholder / Cross-Team** | stakeholder, cross-team, alignment, multiple departments, competing priorities, sign-off | #1 Stakeholder Round Table, #3 Debate Club Showdown, #6 Cross-Functional War Room, #2 Expert Panel Review, #8 Good Cop Bad Cop |
+| **Strategic / Long-Term Planning** | roadmap, strategy, vision, long-term, quarterly, OKR, initiative, horizon, milestone | #5 Time Traveler Council, #16 Reasoning via Planning, #49 Hindsight Reflection, #18 Shark Tank Pitch, #39 First Principles |
+| **API / Integration / Third-Party** | API, REST, GraphQL, webhook, integration, third-party, SDK, connector, sync, endpoint | #20 Architecture Decision Records, #17 Red Team vs Blue Team, #35 Failure Mode Analysis, #33 Comparative Analysis Matrix, #27 What If Scenarios |
+
+**Multi-signal blending:** If a requirement matches 2+ signals (e.g., "security + API"), take slots 1-2 from the strongest signal, slot 3 from the second signal, and slots 4-5 from either or a complementary category for balance.
 
 **Step 2: Present & Handle**
 
@@ -167,9 +194,9 @@ x. Proceed / No Further Actions
 
 ---
 
-## Quick Picks (Default 5 for BA Workflow)
+## Quick Picks (LAST RESORT — only when no context signal matches)
 
-When no specific context suggests otherwise, present these first:
+**IMPORTANT: These are fallback defaults ONLY. If the requirement matches ANY signal in the Context-to-Method Mapping table above, use those mapped methods instead. These Quick Picks are for truly generic or ambiguous requirements where no signal can be detected:**
 
 1. **#40 — 5 Whys Deep Dive** — Understand the real business need
 2. **#4 — User Persona Focus Group** — Validate user value

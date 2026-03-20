@@ -1,15 +1,14 @@
 # BA Workflow Plugin for Claude Code
 
-A streamlined 9-step Business Analysis workflow plugin that takes you from a rough requirement to Jira-ready user stories — with Socratic discovery, structured PO review, and Given/When/Then enforcement.
+A streamlined 7-step Business Analysis workflow plugin that takes you from a rough requirement to Jira-ready user stories — with Socratic discovery, PO review per story, and Given/When/Then enforcement.
 
 ## What It Does
 
 | Phase | Steps | Description |
 |-------|-------|-------------|
 | **Phase 1** | Steps 1-3 | Requirements gathering, Socratic discovery, elicitation methods (50 techniques), workflow detection |
-| **Phase 2** | Steps 4-5 | Story complexity scoring (0-4), PRD creation |
-| **Phase 3** | Step 6 | Two-stage PO review (spec compliance + quality) |
-| **Phase 4** | Steps 7-8 | User story generation (Given/When/Then enforced), Jira sync |
+| **Phase 2** | Steps 4-6 | Story complexity scoring (0-4), user story creation, PO review per story (spec compliance + quality) |
+| **Phase 3** | Step 7 | Jira sync |
 
 ---
 
@@ -130,14 +129,14 @@ rm -rf ~/.claude/plugins/cache/ba-workflow-marketplace/
 The plugin creates output files in your project. Remove them if no longer needed:
 
 ```bash
-# Remove workflow outputs (PRDs, stories, state files)
+# Remove workflow outputs (stories, state files)
 rm -rf docs/ba-workflows/
 
 # Remove project-level config
 rm -f docs/ba-workflow-config.json
 ```
 
-> **Note:** Only remove project outputs if you're sure you don't need the generated PRDs and stories. They are independent documents — the plugin is not needed to read them.
+> **Note:** Only remove project outputs if you're sure you don't need the generated stories. They are independent documents — the plugin is not needed to read them.
 
 ---
 
@@ -148,11 +147,10 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 | Command | Purpose |
 |---------|---------|
 | `/ba-workflow:init` | Configure workspace, Jira settings (one-time setup) |
-| `/ba-workflow:go <requirement>` | Run full 9-step workflow (master command) |
+| `/ba-workflow:go <requirement>` | Run full 7-step workflow (master command) |
 | `/ba-workflow:analyze <requirement>` | Phase 1: Requirements + Elicitation + Workflow Detection |
-| `/ba-workflow:prd` | Phase 2: Complexity + PRD Creation |
-| `/ba-workflow:review` | Phase 3: PO Review + Correction Loop |
-| `/ba-workflow:stories` | Phase 4: Story Creation + Jira Sync |
+| `/ba-workflow:stories` | Phase 2-3: Complexity + Story Creation + PO Review + Jira Sync |
+| `/ba-workflow:review` | PO Story Review (standalone, re-review existing stories) |
 
 ## Quick Start
 
@@ -165,8 +163,6 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 
 # Or run phases individually:
 /ba-workflow:analyze Add user authentication with Google OAuth
-/ba-workflow:prd
-/ba-workflow:review
 /ba-workflow:stories
 ```
 
@@ -179,9 +175,9 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 | Skill | Phase | What It Does |
 |-------|-------|-------------|
 | **Socratic Discovery** | Phase 1 | Surfaces implicit requirements, identifies unmade decisions, asks targeted questions with defaults |
-| **Two-Stage Review** | Phase 3 | Stage 1: Spec compliance. Stage 2: Quality. Severity: CRITICAL/IMPORTANT/MINOR |
-| **Codebase Context** | Phase 4 | Scans existing code patterns so stories align with real architecture |
-| **Testable Criteria** | Phase 4 | Enforces Given/When/Then on all acceptance criteria. Flags vague phrases |
+| **Two-Stage Review** | Phase 2 | Stage 1: Spec compliance per story. Stage 2: Quality. Severity: CRITICAL/IMPORTANT/MINOR |
+| **Codebase Context** | Phase 2 | Scans existing code patterns so stories align with real architecture |
+| **Testable Criteria** | Phase 2 | Enforces Given/When/Then on all acceptance criteria. Flags vague phrases |
 
 ---
 
@@ -189,7 +185,7 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 
 ### Agent Personas
 - **Mary** (Business Analyst) — Asks only non-technical business questions across 8 categories
-- **John** (Product Owner) — Reviews PRDs with two-stage structured feedback and approval/revision flow
+- **John** (Product Owner) — Reviews each story with two-stage structured feedback and approval/revision flow
 
 ### 50 Elicitation Methods
 Ported from BMAD's advanced elicitation system across 10 categories:
@@ -216,8 +212,6 @@ Each workflow run gets its own isolated folder — no file collisions between fe
 docs/ba-workflows/
   user-auth-google/          # Workflow 1
     state.json
-    PRD.md
-    PO-review-feedback.md
     jira-sync-status.json
     system-context.md
     stories/
@@ -237,17 +231,17 @@ docs/ba-workflows/
 - Scans your `docs/business-docs/` folder for existing documentation
 - Scores relevance (0-100%) against the requirement
 - Extracts dependencies and integration points
-- Feeds detected workflows into PRD dependencies and impact analysis
+- Feeds detected workflows into story dependencies and impact analysis
 
 ### Complexity Levels
 
-| Level | Scope | Stories | PRD Depth |
-|-------|-------|---------|-----------|
-| 0 | Atomic change | 1 | Minimal |
-| 1 | Small feature | 1-10 | Simple |
-| 2 | Medium project | 5-15 | Structured |
-| 3 | Complex system | 12-40 | Comprehensive |
-| 4 | Enterprise | 40+ | Enterprise |
+| Level | Scope | Stories |
+|-------|-------|---------|
+| 0 | Atomic change | 1 |
+| 1 | Small feature | 1-10 |
+| 2 | Medium project | 5-15 |
+| 3 | Complex system | 12-40 |
+| 4 | Enterprise | 40+ |
 
 ---
 
@@ -258,13 +252,12 @@ ba-workflow/
   .claude-plugin/
     plugin.json               # Plugin metadata
     marketplace.json          # Marketplace registry
-  commands/                   # 6 slash commands (namespaced as ba-workflow:*)
+  commands/                   # 5 slash commands (namespaced as ba-workflow:*)
     init.md                   # /ba-workflow:init
     go.md                     # /ba-workflow:go
     analyze.md                # /ba-workflow:analyze
-    prd.md                    # /ba-workflow:prd
-    review.md                 # /ba-workflow:review
     stories.md                # /ba-workflow:stories
+    review.md                 # /ba-workflow:review
   agents/                     # Agent personas
     analyst.md                # Mary — Business Analyst
     product-owner.md          # John — Product Owner
@@ -274,7 +267,6 @@ ba-workflow/
     codebase-context.md
     testable-criteria.md
   templates/                  # Output templates
-    prd-template.md           # PRD document template
     story-template.md         # User story template
   elicitation-methods.md      # 50 methods + execution engine
   config.md                   # Default settings reference
@@ -310,7 +302,7 @@ Add to `~/.claude/settings.json` (global) or `.claude/settings.local.json` (proj
 
 After adding, **restart Claude Code** for the MCP server to connect. On first use, it will prompt you to authenticate with your Atlassian account.
 
-> **No Jira?** No problem. Run `/ba-workflow:init` and choose "Skip Jira". The plugin generates all PRDs and stories locally — Jira sync is just the optional last step.
+> **No Jira?** No problem. Run `/ba-workflow:init` and choose "Skip Jira". The plugin generates all stories locally — Jira sync is just the optional last step.
 
 ---
 

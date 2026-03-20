@@ -1,56 +1,58 @@
-# Codebase Context Generation
+# Codebase Context for Business Analysis
 
 ## Core Principle
-Before writing stories, understand how the existing system works so stories align with real architecture — not imagined architecture.
+Read the code to understand **what the system does from a business perspective** — not how it's built. The goal is to discover business rules, user flows, edge cases, and constraints that are buried in code but missing from documentation. This helps the BA write better stories, NOT to guide developers on implementation.
+
+## What This Is NOT
+- NOT a technical architecture review
+- NOT a guide for developers on which files to change
+- Does NOT produce technical terms in stories (no mentions of migrations, services, controllers, DTOs, APIs, database schemas, ORMs, etc.)
+- Stories are for business stakeholders — they describe WHAT the system should do, never HOW
 
 ## When to Apply
-- Phase 4, before story generation (ba-stories Step 7)
+- Phase 2, before story generation
+- **Builds on** `{workspace}/{workflow_id}/project-scan.md` from Step 0 (knows where to look)
 - Generates `{workspace}/{workflow_id}/system-context.md`
 
-## What to Scan
+## What to Extract from Code
 
-### 1. Project Structure
+### 1. Business Rules Hidden in Code
 ```
-Scan the project root and document:
-- Module/directory structure (e.g., src/modules/*)
-- Entry points (main.ts, app.module.ts)
-- Config files (database, environment)
-- Test structure and patterns
+Read source files to find:
+- Validation rules (e.g., "password must be 8+ chars" → story edge case)
+- Status transitions (e.g., order: pending → confirmed → shipped → delivered)
+- Permission checks (e.g., "only admins can approve refunds" → role-based AC)
+- Calculation logic (e.g., "discount applies only if cart > $50")
+- Rate limits or thresholds (e.g., "max 3 login attempts")
 ```
+Translate each finding into **business language**.
 
-### 2. Naming Conventions (from actual code)
+### 2. User-Facing Behavior
 ```
-Extract real examples:
-- File naming: kebab-case? PascalCase? (show 3 examples)
-- Class naming: (show 3 examples)
-- Database tables: snake_case? (show 3 examples)
-- API routes: /api/v1/resource? (show 3 examples)
-```
-
-### 3. Key Patterns (with real code references)
-```
-For each pattern, cite the actual file:
-- How entities are defined (example: src/modules/utility/entities/utility.entity.ts)
-- How services are structured (example: src/modules/scraping/services/...)
-- How controllers handle requests (example: src/modules/web-api/controllers/...)
-- How DTOs validate input (example: src/modules/.../dto/...)
-- How migrations are created (example: src/database/migrations/...)
+Read code to understand:
+- What happens when a user performs an action (success path)
+- What error messages users see (failure paths)
+- What notifications/emails are triggered
+- What data users can see vs. what is hidden
+- Default values and auto-populated fields
 ```
 
-### 4. Infrastructure Constraints
+### 3. Edge Cases from Code Logic
 ```
-From CLAUDE.md, config files, and docs:
-- Database type and ORM (PostgreSQL + TypeORM)
-- Queue system (BullMQ + Redis)
-- External services (Playwright, proxy, Twilio)
-- Environment variable patterns
+Look for:
+- Boundary conditions (what if quantity is 0? what if date is in the past?)
+- Null/empty handling (what happens if optional fields are missing?)
+- Concurrent scenarios (what if two users edit the same record?)
+- External dependency failures (what does the user see if payment fails?)
 ```
+Express each as a business scenario, not a technical condition.
 
-### 5. Existing Business Rules
+### 4. Existing Business Workflows
 ```
-From docs/business-docs/:
-- List which modules have documented business rules
-- Note any rules that affect the current requirement
+From docs/business-docs/ and code:
+- Which business processes already exist that touch this requirement?
+- What are the dependencies between workflows?
+- Are there business rules that conflict with or constrain the new requirement?
 ```
 
 ## Output Format
@@ -58,49 +60,39 @@ From docs/business-docs/:
 Save to `{workspace}/{workflow_id}/system-context.md`:
 
 ```markdown
-# System Context for {workflow_id}
+# Business Context for {workflow_id}
 
 Generated: {timestamp}
+Purpose: Business rules and edge cases discovered from codebase analysis
 
-## Project Structure
-[extracted structure]
+## Discovered Business Rules
+| Rule | Current Behavior | Relevance to Requirement |
+|------|-----------------|-------------------------|
+| {business rule in plain language} | {what the system does today} | {how this affects new stories} |
 
-## Naming Conventions
-| Type | Convention | Example |
-|------|-----------|---------|
-| Files | kebab-case | generic-template-scraper.service.ts |
-| Classes | PascalCase | GenericTemplateScraperService |
-| DB Tables | snake_case | outage_reports |
-| DB Columns | snake_case | utility_id |
+## User-Facing Behavior
+| Action | Success Outcome | Failure Outcome |
+|--------|----------------|-----------------|
+| {user action} | {what user sees} | {what user sees on failure} |
 
-## Key Patterns
-### Entity Pattern
-[real example with file path]
+## Edge Cases to Address in Stories
+- {scenario in business language}
+- {scenario in business language}
+- ...
 
-### Service Pattern
-[real example with file path]
+## Related Business Workflows
+- {workflow name}: {how it connects to this requirement}
 
-### Controller Pattern
-[real example with file path]
-
-## Infrastructure
-- Database: PostgreSQL + TypeORM
-- Queue: BullMQ + Redis
-- [other relevant infrastructure]
-
-## Relevant Business Rules
-[rules from docs/business-docs/ that affect this requirement]
-
-## Story Writing Guidelines
-Based on the above context, stories for this workflow should:
-- Follow [specific pattern] for new entities
-- Use [specific service pattern] for business logic
-- Reference [specific migration pattern] for schema changes
+## Constraints for Story Writing
+- {business constraint that stories must respect}
+- {business constraint that stories must respect}
 ```
 
 ## Integration with Story Creation
+
 When ba-stories generates stories:
 1. Read system-context.md
-2. Add "Dev Notes" section to each story referencing relevant patterns
-3. Ensure story tasks align with existing conventions
-4. Flag if any story requires a pattern that doesn't exist yet
+2. Incorporate discovered business rules into Acceptance Criteria
+3. Add discovered edge cases to the Edge Cases section of relevant stories
+4. Ensure stories don't contradict existing business workflows
+5. **NEVER add technical implementation notes to stories**

@@ -191,6 +191,6 @@ Phase 1: Requirements Analysis - COMPLETE
   Step 2: Elicitation Methods       - Done|Skipped
   Step 3: Workflow Detection         - Done (X workflows selected)
 
-Next: Run /ba-workflow:prd to create the PRD (Phase 2)
+Next: Run /ba-workflow:stories for Story Creation & PO Review (Phase 2)
 Or: Run /ba-workflow:go to continue automatically
 ```

@@ -1,7 +1,6 @@
 # Story {{story_num}}: {{story_title}}
 
 **Status:** drafted
-**PRD Reference:** {{prd_file}}
 **Jira Key:** _(pending sync)_
 
 ---
@@ -12,14 +11,13 @@ As a {{role}},
 I want {{action}},
 so that {{benefit}}.
 
+## Description
+
+
 ## Acceptance Criteria
 
 1. {{acceptance_criteria}}
 
-## Tasks / Subtasks
-
-- [ ] Task 1 (AC: #1)
-  - [ ] Subtask 1.1
 
 ## Business Context
 
@@ -29,17 +27,6 @@ so that {{benefit}}.
 
 {{user_journey}}
 
-## Workflow Dependencies
-
-| Workflow | Integration Point | Business Rule |
-|----------|------------------|---------------|
-| {{workflow}} | {{integration}} | {{rule}} |
-
-## Impact Analysis
-
-| Area | Impact | Risk |
-|------|--------|------|
-| {{area}} | {{impact}} | {{risk}} |
 
 ## Edge Cases
 
@@ -49,11 +36,7 @@ so that {{benefit}}.
 
 - {{prerequisite}}
 
-## Dev Notes
+## Dependencies
 
-- Relevant architecture patterns and constraints
-- Source tree components to touch
+- {{related_stories_or_workflows}}
 
-### References
-
-- [Source: {{prd_file}}#FR{{number}}]

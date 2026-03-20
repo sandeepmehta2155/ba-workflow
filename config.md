@@ -1,11 +1,11 @@
 # BA Workflow Configuration
 
 ## Default Settings
-These are the default values. Run `/ba-init` to customize.
+These are the default values. Run `/ba-workflow:init` to customize.
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| output_folder | `docs/` | Where PRDs and review feedback are saved |
+| output_folder | `docs/` | Where workflow outputs are saved |
 | story_dir | `docs/stories/` | Where story files are saved |
 | jira_mcp_enabled | `true` | Whether to offer Jira sync |
 | jira_project_key | _(ask at runtime)_ | Jira project key (e.g., OUTAGE) |
@@ -16,16 +16,15 @@ These are the default values. Run `/ba-init` to customize.
 ## Status File
 Workflow progress is tracked in: `docs/ba-workflow-status.md`
 
-## Business Rules Source
-Project business rules index: `.claude/ba-workflow/business-rules.md`
+## Business Documentation Source
 Business docs folder: `docs/business-docs/`
 
 ## Complexity Levels
 
-| Level | Scope | Story Count | PRD Depth |
-|-------|-------|-------------|-----------|
-| 0 | Single atomic change | 1 | Minimal |
-| 1 | Small feature | 1-10 | Simple |
-| 2 | Medium project | 5-15 | Structured |
-| 3 | Complex system | 12-40 | Comprehensive |
-| 4 | Enterprise scale | 40+ | Enterprise |
+| Level | Scope | Story Count |
+|-------|-------|-------------|
+| 0 | Single atomic change | 1 |
+| 1 | Small feature | 1-10 |
+| 2 | Medium project | 5-15 |
+| 3 | Complex system | 12-40 |
+| 4 | Enterprise scale | 40+ |

@@ -8,8 +8,8 @@
   "plugins": [
     {
       "name": "ba-workflow",
-      "description": "9-step BA workflow: requirements → elicitation → PRD → PO review → stories → Jira sync. Includes 50 elicitation methods, analyst/PO agent personas, and full Jira MCP integration.",
-      "version": "1.4.0",
+      "description": "7-step BA workflow: requirements → elicitation → stories → PO review per story → Jira sync. Includes 50 elicitation methods, analyst/PO agent personas, and full Jira MCP integration.",
+      "version": "1.5.0",
       "source": "./"
     }
   ]

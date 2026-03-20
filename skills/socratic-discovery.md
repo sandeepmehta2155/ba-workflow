@@ -1,7 +1,7 @@
 # Socratic Requirement Discovery
 
 ## Core Principle
-Every explicit request hides implicit requirements. Surface them BEFORE writing PRDs, not after.
+Every explicit request hides implicit requirements. Surface them BEFORE creating stories, not after.
 
 ## When to Apply
 - Phase 1, Step 1 — layer on top of Analyst's 8 question categories

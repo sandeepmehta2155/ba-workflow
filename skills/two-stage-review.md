@@ -1,68 +1,65 @@
-# Two-Stage PRD Review
+# Two-Stage Story Review
 
 ## Core Principle
 Separate **"does it match what was asked?"** from **"is it well-written?"** — two different failure modes.
 
 ## When to Apply
-- Phase 3 (PO Review) — structures how John reviews the PRD
-- Also usable for story review before Jira sync
+- Phase 2, Step 6 (PO Review) — structures how John reviews each story
 
 ## Stage 1: Specification Compliance
-> "Does the PRD do EXACTLY what was discovered — no more, no less?"
+> "Does the story capture EXACTLY what was discovered — no more, no less?"
 
 ### Checklist
 
 | # | Check | How to Verify | Severity if Failed |
 |---|-------|---------------|-------------------|
-| 1 | Every Phase 1 requirement is in the PRD | Cross-reference requirement list → PRD sections | CRITICAL |
-| 2 | No requirements were added that weren't discovered | Check each PRD item has a source in Phase 1 | IMPORTANT |
-| 3 | Scope matches — not over-scoped | Compare PRD scope vs discovery scope boundaries | CRITICAL |
-| 4 | Scope matches — not under-scoped | Check no discovered requirements were dropped | CRITICAL |
-| 5 | Deferred items are in Out-of-Scope, not silently removed | Verify deferred decisions appear in section 8 | IMPORTANT |
-| 6 | Workflow dependencies match detected workflows | Cross-ref PRD section 6 vs Step 3 selections | IMPORTANT |
+| 1 | Story requirements trace back to Phase 1 discoveries | Cross-reference story ACs → Phase 1 requirement data | CRITICAL |
+| 2 | No requirements were added that weren't discovered | Check each AC has a source in Phase 1 | IMPORTANT |
+| 3 | Scope matches — story not over-scoped | Compare story scope vs relevant requirement boundaries | CRITICAL |
+| 4 | Scope matches — story not under-scoped | Check no relevant discovered requirements were dropped | CRITICAL |
+| 5 | Workflow dependencies match detected workflows | Cross-ref story dependencies vs Step 3 selections | IMPORTANT |
 
 ### Output Format
 ```
-Stage 1: Specification Compliance
-=================================
-[PASS] All 12 requirements mapped to PRD sections
-[FAIL] CRITICAL: Requirement #4 (audit logging) not found in PRD
-[FAIL] IMPORTANT: PRD includes "push notifications" — not in discovered requirements
+Stage 1: Specification Compliance — Story: {title}
+=========================================================
+[PASS] All requirements traced to Phase 1 discoveries
+[FAIL] CRITICAL: Requirement about audit logging not found in story ACs
+[FAIL] IMPORTANT: Story includes "push notifications" — not in discovered requirements
 [PASS] Scope boundaries match
-[PASS] Deferred items documented
+[PASS] Dependencies match
 
-Result: 4/6 passed — CRITICAL issues found, must fix before Stage 2
+Result: 3/5 passed — CRITICAL issues found, must fix before Stage 2
 ```
 
 **Rule:** If ANY critical issue in Stage 1, fix before running Stage 2.
 
 ## Stage 2: Quality Review
-> "Is the PRD clear, testable, and unambiguous?"
+> "Is the story clear, testable, and unambiguous?"
 
 ### Checklist
 
 | # | Check | How to Verify | Severity if Failed |
 |---|-------|---------------|-------------------|
-| 1 | Acceptance criteria are testable (Given/When/Then possible) | Try converting each AC to GWT | CRITICAL |
+| 1 | All acceptance criteria use Given/When/Then format | Check each AC | CRITICAL |
 | 2 | Business rules are explicit, not implied | Each rule has its own numbered item | IMPORTANT |
-| 3 | Edge cases are documented | At least 3 edge cases per major feature | IMPORTANT |
+| 3 | Edge cases are documented | At least 1-2 edge cases per story | IMPORTANT |
 | 4 | User roles and permissions are specific | Named roles with listed capabilities | IMPORTANT |
-| 5 | Success criteria are measurable | Numbers, percentages, or boolean conditions | MINOR |
-| 6 | No conflicting requirements | Cross-check FRs for contradictions | CRITICAL |
-| 7 | Dependencies are actionable | Each dependency has a clear owner/source | MINOR |
-| 8 | Priority is assigned (Must/Should/Could/Won't) | Every FR has a priority | IMPORTANT |
+| 5 | No conflicting acceptance criteria | Cross-check ACs for contradictions | CRITICAL |
+| 6 | As/Want/So is specific and user-focused | Clear user role, action, and value | IMPORTANT |
+| 7 | Tasks are actionable and appropriately scoped | Each task is a clear unit of work | MINOR |
 
 ### Output Format
 ```
-Stage 2: Quality Review
-========================
-[PASS] 10/12 acceptance criteria are testable
-[FAIL] CRITICAL: FR005 and FR009 contradict (both claim different default sort order)
+Stage 2: Quality Review — Story: {title}
+==========================================
+[PASS] 8/8 acceptance criteria use Given/When/Then
+[FAIL] CRITICAL: AC #3 and AC #5 contradict (different default behaviors)
 [FAIL] IMPORTANT: No edge cases documented for offline scenarios
 [PASS] User roles specific with capabilities listed
-[FAIL] MINOR: Success criteria use "improved" instead of measurable targets
+[PASS] As/Want/So is clear and user-focused
 
-Result: 5/8 passed — 1 CRITICAL, 1 IMPORTANT, 1 MINOR
+Result: 5/7 passed — 1 CRITICAL, 1 IMPORTANT
 ```
 
 ## Severity Definitions
@@ -70,21 +67,21 @@ Result: 5/8 passed — 1 CRITICAL, 1 IMPORTANT, 1 MINOR
 | Severity | Meaning | Action |
 |----------|---------|--------|
 | **CRITICAL** | Missing/wrong requirement, contradictions, untestable criteria | **Must fix before approval** |
-| **IMPORTANT** | Ambiguous rules, missing edge cases, unclear priorities | **Should fix, can approve with plan to address** |
-| **MINOR** | Formatting, measurability, optional improvements | **Note for future, don't block approval** |
+| **IMPORTANT** | Ambiguous rules, missing edge cases, unclear scope | **Should fix, can approve with plan to address** |
+| **MINOR** | Formatting, task granularity, optional improvements | **Note for future, don't block approval** |
 
 ## Combined Review Output
 
 ```markdown
-## PO Review — Two-Stage Assessment
+## PO Review — Story: {story_title}
 
 ### Stage 1: Specification Compliance
-Result: [X/6 passed]
+Result: [X/5 passed]
 Critical Issues: [list]
 Important Issues: [list]
 
 ### Stage 2: Quality Review
-Result: [X/8 passed]
+Result: [X/7 passed]
 Critical Issues: [list]
 Important Issues: [list]
 Minor Issues: [list]
@@ -95,13 +92,10 @@ Minor Issues: [list]
 ### Required Changes (ordered by severity)
 1. [CRITICAL] [description] — must fix
 2. [IMPORTANT] [description] — should fix
-
-### Approval Conditions (if APPROVED WITH CONDITIONS)
-- [condition that must be met before story creation]
 ```
 
 ## Integration with PO Agent (John)
-When the PO agent reviews the PRD:
+When the PO agent reviews each story:
 1. Read this skill first
 2. Run Stage 1 completely before Stage 2
 3. Use the severity levels in feedback
