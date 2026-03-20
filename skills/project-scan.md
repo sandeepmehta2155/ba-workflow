@@ -100,6 +100,25 @@ Top-level directories:
 
 If no code-related config files found, note "Documentation-only project" and proceed.
 
+## Skill Contract
+
+### Entry Conditions
+- Requirement received from user (Step 1a complete)
+- Config loaded from `docs/ba-workflow-config.json`
+- `{workspace}/{workflow_id}/` folder created
+
+### Exit Conditions
+- `{workspace}/{workflow_id}/project-scan.md` saved
+- Tech stack identified (language at minimum)
+- Business docs listed (or noted as "none found")
+- Scan output under 2KB
+- No source files were read
+
+### Previous Skill: none (first skill in chain)
+### Next Skill: `socratic-discovery` (Step 1c) — informed by scan results
+
+---
+
 ## How Other Phases Use This
 
 | Phase | What It Gets From Scan |

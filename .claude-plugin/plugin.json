@@ -21,14 +21,8 @@
     "analyst",
     "subagent"
   ],
-  "agents": {
-    "analyst": {
-      "description": "Mary — Strategic Business Analyst for story generation",
-      "file": "agents/analyst.md"
-    },
-    "product-owner": {
-      "description": "John — Investigative Product Owner for story review",
-      "file": "agents/product-owner.md"
-    }
-  }
+  "agents": [
+    "./agents/analyst.md",
+    "./agents/product-owner.md"
+  ]
 }

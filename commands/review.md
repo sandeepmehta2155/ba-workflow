@@ -1,5 +1,8 @@
 BA Workflow - PO Story Review (Step 6): $ARGUMENTS
 
+## Platform Compatibility
+Works on all platforms. No subagent dispatch or MCP required. See `docs/platform-support.md` for tool mapping.
+
 ## Prerequisites
 1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-workflow:init`.
 2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. Read `{workspace}/{workflow_id}/state.json`.

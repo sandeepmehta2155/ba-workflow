@@ -1,5 +1,8 @@
 BA Workflow - Phase 1: Requirements Analysis (Steps 1-2): $ARGUMENTS
 
+## Platform Compatibility
+Optimized for Claude Code. On other platforms, see `docs/platform-support.md` for tool mapping. Core workflow works on all platforms — only subagent dispatch and MCP/Jira require Claude Code.
+
 ## Clean Output for Business Analysts (CRITICAL)
 
 **This workflow is used by business analysts, not developers.** Keep visible output clean and professional.

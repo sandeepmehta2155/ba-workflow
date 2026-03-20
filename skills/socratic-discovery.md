@@ -97,6 +97,24 @@ Append to the requirement understanding:
 | 4 | Non-admin view | No non-admin view (MVP) | Phase 2 planning |
 ```
 
+## Skill Contract
+
+### Entry Conditions
+- Requirement received and parsed (Step 1a complete)
+- Project scan complete (`project-scan.md` exists)
+- Analyst agent persona loaded
+
+### Exit Conditions
+- Implicit requirements documented
+- Decisions made or deferred with defaults
+- Discovered requirements appended to requirement understanding
+- At least 3 question categories answered (or user override)
+
+### Previous Skill: `project-scan` (Step 1b)
+### Next Skill: `elicitation-methods` (Step 2, optional) OR `codebase-context` (Phase 2)
+
+---
+
 ## Anti-Patterns to Avoid
 - Asking "what else do you need?" (too open-ended — surface it yourself)
 - Listing 10+ decision points (overwhelming — pick top 4)

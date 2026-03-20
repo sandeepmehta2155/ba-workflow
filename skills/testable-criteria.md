@@ -104,3 +104,19 @@ Flag these phrases — they're almost always untestable:
 | "as needed" | No trigger defined | "What condition triggers this?" |
 
 When any of these phrases appear in an AC, **halt and rewrite** before proceeding.
+
+## Skill Contract
+
+### Entry Conditions
+- `system-context.md` exists (codebase-context skill completed)
+- Story template loaded
+- Analyst persona active (generating stories)
+
+### Exit Conditions
+- Every AC in every story uses Given/When/Then (or bullet-point equivalent)
+- Zero vague phrases remain (all flagged phrases rewritten)
+- At least 1 negative/edge case AC per story
+- Each AC covers exactly one scenario
+
+### Previous Skill: `codebase-context` (provides business rules for ACs)
+### Next Skill: `two-stage-review` (PO reviews the stories with enforced ACs)

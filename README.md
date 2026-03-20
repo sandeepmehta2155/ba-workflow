@@ -1,6 +1,8 @@
-# BA Workflow Plugin for Claude Code
+# BA Workflow Plugin
 
 A streamlined 7-step Business Analysis workflow plugin that takes you from a rough requirement to Jira-ready user stories — with Socratic discovery, PO review per story, and Given/When/Then enforcement.
+
+**Platforms:** Claude Code (full support) | Cursor, Gemini CLI, OpenCode (core workflow) | Codex (minimal). See `docs/platform-support.md` for details.
 
 ## What It Does
 

@@ -77,6 +77,23 @@ After all generation subagents complete, the coordinator (this session) must:
    Ready for PO Review.
    ```
 
+## Skill Contract
+
+### Entry Conditions
+- Story complexity determined (Step 4 complete, complexity 2+)
+- Phase 1 `state.json` available with all requirements data
+- `codebase-context` and `testable-criteria` skills loaded
+
+### Exit Conditions
+- All stories generated and saved (generation subagents complete)
+- Reconciliation done: no duplicates, no gaps, sequential numbering
+- OR: PO reviews collected for all stories (review subagents complete)
+
+### Previous Skill: `codebase-context` (provides system-context.md for subagents)
+### Next Skill: `two-stage-review` (if coordinating generation) OR Jira sync (if coordinating review)
+
+---
+
 ## Platform Compatibility
 
 If the Agent tool is unavailable (non-Claude Code platforms):

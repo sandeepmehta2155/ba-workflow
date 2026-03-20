@@ -108,6 +108,25 @@ These rules govern the review flow. They are not suggestions.
 7. **Re-review after fixes:** When Analyst updates a story, run BOTH stages again from scratch — do not assume Stage 1 still passes after changes.
 </HARD-GATE>
 
+## Skill Contract
+
+### Entry Conditions
+- Stories generated and saved to `{workspace}/{workflow_id}/stories/`
+- `testable-criteria` skill applied (all ACs are Given/When/Then)
+- Phase 1 `state.json` available (for spec compliance cross-reference)
+- PO agent persona loaded (or fresh PO subagent dispatched)
+
+### Exit Conditions
+- Every story has a review result: APPROVED, NEEDS REVISION, or overridden
+- Zero stories remain in "drafted" status
+- All CRITICAL issues resolved (or user explicitly overrode)
+- Review feedback saved alongside each story
+
+### Previous Skill: `testable-criteria` (ensures ACs are reviewable)
+### Next Skill: none (final quality gate before Jira sync)
+
+---
+
 ## Integration with PO Agent (John)
 When the PO agent reviews each story:
 1. Read this skill first

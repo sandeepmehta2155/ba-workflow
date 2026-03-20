@@ -50,5 +50,16 @@ CHECK: At least 1 story is APPROVED
 WARN:  Any stories were overridden (user chose to bypass PO)
 ```
 
+## Skill Contract
+
+### Entry Conditions
+- Command execution starting (any command)
+
+### Exit Conditions
+- This skill is never "complete" — it applies continuously throughout execution
+
+### Previous Skill: none (loaded first, always)
+### Next Skill: all other skills (enforcement applies to every step)
+
 ## How to Reference This Skill
 Load this skill at the START of any command execution (`go.md`, `analyze.md`, `stories.md`). It applies to all steps.

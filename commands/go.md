@@ -3,6 +3,9 @@ BA Workflow - Full 7-Step Business Analysis Workflow (Master Command): $ARGUMENT
 ## Overview
 This is the master command that orchestrates the complete BA workflow through all 3 phases (7 steps). It runs each phase sequentially, maintaining state between them. Each workflow run is scoped to its own folder.
 
+## Platform Compatibility
+This workflow is optimized for Claude Code but works on other platforms. If running outside Claude Code, see `docs/platform-support.md` for tool mapping and fallback behavior. Key differences: subagent dispatch falls back to sequential mode, MCP/Jira may be unavailable, and slash commands may need manual invocation.
+
 ## Clean Output for Business Analysts (CRITICAL)
 
 **This workflow is used by business analysts, not developers.** Your visible output must be clean, professional, and free of technical noise.
@@ -20,6 +23,9 @@ This is the master command that orchestrates the complete BA workflow through al
 
 **Good example:**
 > Please provide the client requirement or rough specification for the feature/enhancement you want to analyze.
+
+## Skill Chain
+Read `skills/CHAIN.md` for the full skill execution order and chaining rules. Skills execute sequentially within each phase, with HARD-GATEs between phases.
 
 ## Just-in-Time Loading (CRITICAL)
 

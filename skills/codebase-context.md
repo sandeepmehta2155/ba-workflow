@@ -88,6 +88,24 @@ Purpose: Business rules and edge cases discovered from codebase analysis
 - {business constraint that stories must respect}
 ```
 
+## Skill Contract
+
+### Entry Conditions
+- Phase 1 complete (`state.json` with `status: "phase_1_complete"`)
+- `project-scan.md` exists (knows where to look in codebase)
+- Story complexity determined (Step 4 complete)
+
+### Exit Conditions
+- `{workspace}/{workflow_id}/system-context.md` saved
+- Business rules extracted and expressed in business language
+- Edge cases documented as business scenarios
+- No technical implementation details in output
+
+### Previous Skill: `elicitation-methods` (Phase 1) or `project-scan` (if elicitation skipped)
+### Next Skill: `testable-criteria` (applied during story generation)
+
+---
+
 ## Integration with Story Creation
 
 When ba-stories generates stories:

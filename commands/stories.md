@@ -1,5 +1,8 @@
 BA Workflow - Phase 2: Story Creation & PO Review (Steps 4-6): $ARGUMENTS
 
+## Platform Compatibility
+Optimized for Claude Code. On other platforms: subagent dispatch (Steps 5-6) falls back to sequential mode, Jira sync (Step 7) requires MCP. See `docs/platform-support.md`.
+
 ## Clean Output for Business Analysts (CRITICAL)
 
 **This workflow is used by business analysts, not developers.** Keep visible output clean and professional.
@@ -298,8 +301,15 @@ For each story, present the PO feedback to the user:
    ```
 
 4. **If yes:**
-   a. **Auto-detect Jira project key** from config or previous syncs. If found, confirm with user. If not, ask.
-   b. **For each approved story file:**
+   a. **Check MCP availability** — If `mcp__Atlassian-MCP__createJiraIssue` is not available (platform doesn't support MCP, or Atlassian MCP not configured):
+      ```
+      Jira MCP is not available on this platform.
+      Stories are saved locally at: {workspace}/{workflow_id}/stories/
+      You can import them to Jira manually or configure Atlassian MCP (see docs/platform-support.md).
+      ```
+      Skip to completion.
+   b. **Auto-detect Jira project key** from config or previous syncs. If found, confirm with user. If not, ask.
+   c. **For each approved story file:**
       - Create Jira issue using `mcp__Atlassian-MCP__createJiraIssue` with:
         - Summary: Story title
         - Description: Full story content (formatted for Jira)
