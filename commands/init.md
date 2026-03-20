@@ -1,72 +1,88 @@
 Initialize BA Workflow configuration for this project.
 
 ## Purpose
-Set up the BA workflow by asking configuration questions and saving preferences. Run this once (or again to reconfigure).
+Set up the BA workflow by auto-detecting settings and presenting a single confirmation screen. Run this once (or again to reconfigure).
+
+## Design Principle
+**Auto-detect first, confirm once.** Instead of asking questions one at a time, detect everything possible upfront and present a single consolidated configuration screen. The user reviews and either accepts all defaults or changes specific items by number — one interaction instead of many.
 
 ## Steps
 
-1. **Read current config** from `the plugin's `config.md`` to understand defaults.
+1. **Silent detection phase** — do ALL of this before showing anything to the user:
+   a. Read current config from `docs/ba-workflow-config.json` (if exists) and the plugin's `config.md` for defaults.
+   b. Detect Jira MCP availability by listing MCP tools.
+   c. Check if `docs/ba-workflows/` exists.
+   d. Check if `docs/business-docs/` exists.
+   e. Scan workspace for existing workflow folders.
 
-2. **Detect Jira MCP availability** — before asking any Jira questions, check if the Atlassian MCP server is already available by listing MCP tools.
+2. **Present single configuration screen** — show everything detected with a numbered menu. Use AskUserQuestion to collect the response in ONE prompt:
 
-3. **Ask the user these setup questions** one at a time, showing the current default in brackets:
-
-   **Q1: Workspace Root**
-   Where should all BA workflow outputs be organized? Each workflow run gets its own subfolder here. [default: `docs/ba-workflows/`]
-
-   **If Jira MCP is already detected (step 2):** skip Q2 and Q3. Auto-set `jira_mcp_enabled: true` and inform the user:
    ```
-   ✅ Jira MCP detected — Jira integration enabled automatically.
+   ━━━ BA Workflow Setup ━━━
+
+   Detected settings (enter numbers to change, or press Enter to accept all):
+
+     1. Workspace Root:     docs/ba-workflows/
+     2. Jira Integration:   Enabled (MCP detected)     ← or "Disabled (MCP not found)"
+     3. Jira Project Key:   (ask each time)
+
+   Status:
+     [✓] Workspace directory exists
+     [✓] Business docs folder exists               ← or [!] docs/business-docs/ not found — create it and add business documents
+     [✓] Jira MCP connected                        ← or [!] Jira MCP not detected
+
+   Existing workflows:
+     admin-storm-creation/  (complete, 8 stories)
+     entity-history-log/    (phase 1)
+     — or: (none yet)
+
+   ━━━━━━━━━━━━━━━━━━━━━━━
+
+   Enter numbers to change (e.g., "1,3"), or press Enter to accept all:
    ```
-   Then ask only:
 
-   **Q2a: Jira Project Key**
-   What is your Jira project key? (e.g., OUTAGE) Leave blank to be asked each time. [default: blank]
+   **Important formatting rules:**
+   - Show Jira status based on MCP detection from step 1b
+   - Show existing config values if re-running init
+   - Use [✓] for detected/ready items, [!] for warnings
 
-   **If Jira MCP is NOT detected (step 2):** ask the full Jira setup questions:
+3. **Handle user response** — single branch:
 
-   **Q2: Jira Integration**
-   Do you want Jira sync enabled? The workflow will always ASK before syncing. (yes/no) [default: yes]
+   - **User presses Enter / says "ok" / "looks good"**: Accept all detected defaults. Proceed to step 5.
 
-   **Q3: Jira Project Key**
-   What is your Jira project key? (e.g., OUTAGE) Leave blank to be asked each time. [default: blank]
+   - **User enters numbers (e.g., "1,3" or "2")**: For each number selected, ask ONLY those specific follow-up questions in a single grouped prompt. Example if user picks "1,3":
+     ```
+     1. Workspace Root — enter new path [current: docs/ba-workflows/]:
+     3. Jira Project Key — enter key (e.g., OUTAGE) or blank for ask-each-time:
+     ```
+     Then proceed to step 5.
 
-4. **Validate paths exist** — if workspace root doesn't exist, create it.
+   - **User picks "2" to change Jira integration**:
+     - If toggling ON but MCP not detected, show Jira MCP setup info:
+       ```
+       Jira sync requires the Atlassian MCP server. Add to settings:
 
-5. **Verify business docs** — check that `docs/business-docs/` directory exists. Warn if missing (workflow detection in Step 3 uses this folder).
-
-6. **Verify Jira MCP (only if Jira enabled but MCP not detected in step 2)** — if the user answered yes to Q2 but MCP was not detected, display:
-   ```
-   ⚠️  Atlassian MCP server not detected.
-
-   Jira sync requires the Atlassian MCP server. You have two options:
-
-   Option A: Add to ~/.claude/settings.json (global — all projects):
-   {
-     "mcpServers": {
-       "Atlassian-MCP": {
-         "type": "stdio",
-         "command": "npx",
-         "args": ["-y", "mcp-remote@latest", "https://mcp.atlassian.com/v1/sse"]
+       ~/.claude/settings.json (global) or .claude/settings.local.json (project):
+       {
+         "mcpServers": {
+           "Atlassian-MCP": {
+             "type": "stdio",
+             "command": "npx",
+             "args": ["-y", "mcp-remote@latest", "https://mcp.atlassian.com/v1/sse"]
+           }
+         }
        }
-     }
-   }
 
-   Option B: Add to .claude/settings.local.json (this project only):
-   Same config as above.
+       Options:
+         a) I'll set up now — pause init, restart Claude Code, re-run /ba-workflow:init
+         b) Skip Jira for now — continue without it
+         c) Already configured — continue with Jira enabled
+       ```
+     - If toggling OFF: set `jira_mcp_enabled: false` and continue.
 
-   After adding, restart Claude Code for MCP to connect.
+4. **Create directories** — silently create workspace root and business-docs if they don't exist. No confirmation needed for directory creation.
 
-   How would you like to proceed?
-   1. I'll set up Jira MCP now — pause init, I'll restart and re-run /ba-workflow:init
-   2. Skip Jira for now — disable Jira sync, I can enable it later
-   3. Jira MCP is already configured elsewhere — continue
-   ```
-   - If user picks 1: halt init, remind to restart Claude Code after adding MCP config
-   - If user picks 2: set `jira_mcp_enabled: false` in config and continue
-   - If user picks 3: continue with Jira enabled
-
-7. **Save configuration** — write the user's answers to `docs/ba-workflow-config.json`:
+5. **Save configuration** — write to `docs/ba-workflow-config.json`:
    ```json
    {
      "workspace": "docs/ba-workflows/",
@@ -75,44 +91,32 @@ Set up the BA workflow by asking configuration questions and saving preferences.
      "jira_story_type": "Story",
      "communication_language": "English",
      "document_output_language": "English",
-     "initialized_at": "2026-03-18T00:00:00Z"
+     "initialized_at": "2026-03-21T00:00:00Z"
    }
    ```
 
-8. **List existing workflows** — scan workspace for existing workflow folders and display:
-   ```
-   Existing workflows:
-     admin-storm-creation/  (complete, 8 stories, synced to Jira)
-     entity-history-log/    (phase 1, requirements gathered)
-     [empty - no workflows yet]
-   ```
-
-9. **Display summary** of saved configuration and available commands:
+6. **Display final summary** — brief confirmation, no redundant info:
    ```
    BA Workflow initialized!
+   Config saved: docs/ba-workflow-config.json
 
-   Configuration saved to: docs/ba-workflow-config.json
-   Workspace: docs/ba-workflows/
+   Workspace: docs/ba-workflows/{feature-name}/
+     state.json          — workflow progress
+     stories/            — generated user stories
 
-   Each workflow creates its own folder:
-     docs/ba-workflows/{feature-name}/
-       state.json                    # Workflow progress
-       jira-sync-status.json         # Jira sync mapping
-       stories/                      # Generated user stories (PO reviewed)
-         01-story-title.md
-         02-another-story.md
-
-   Available commands:
-     /ba-workflow:go <requirement>  - Run full 7-step workflow (master)
-     /ba-workflow:analyze <req>     - Steps 1-3: Requirements + Elicitation + Workflow Detection
-     /ba-workflow:stories           - Steps 4-7: Complexity + Story Creation + PO Review + Jira Sync
-     /ba-workflow:review            - Step 6: PO Story Review (standalone)
-     /ba-workflow:init              - Reconfigure settings (this command)
+   Commands:
+     /ba-workflow:go <requirement>  — full 7-step workflow
+     /ba-workflow:analyze <req>     — requirements + elicitation
+     /ba-workflow:stories           — story creation + PO review
+     /ba-workflow:review            — standalone PO review
+     /ba-workflow:init              — reconfigure (this command)
    ```
 
 ## Key Rules
-- Accept Enter/blank to keep defaults
+- **One interaction, not many** — auto-detect everything, present once, confirm once
+- Accept Enter/blank to keep all defaults
 - All paths are relative to project root
-- Create directories if they don't exist
+- Create directories silently — don't ask permission for mkdir
 - Never hardcode absolute paths
 - Config is global; each workflow run creates its own scoped folder
+- Do NOT use separate AskUserQuestion calls for each setting — batch them
