@@ -119,20 +119,13 @@ Use detected workflows from Step 1b to inform your questions — reference exist
 
 ### INTERACTIVE MODE — STRICT CONVERSATIONAL LOOP
 
-**Do NOT output any text for this step. ONLY invoke the AskUserQuestion tool.**
+**Always use interactive mode — walk through questions one category at a time.**
 
-CALL the `AskUserQuestion` tool (invoke it like you would invoke Read, Bash, or Edit — it is a tool, not text to display). Pass these parameters:
-- questions: array with ONE question object
-- question: "How would you like to answer clarifying questions?"
-- header: "Q&A Mode"
-- multiSelect: false
-- options: three options — "Interactive (Recommended)" with description "One category at a time — adapt questions based on your answers", "Skip all" with description "Proceed with requirement as-is, use smart defaults", "Essential only" with description "Only Scope, Business Context, and Boundaries (3 categories)"
-
-**THEN STOP. Do not write any text output. Do not preview categories. Your message is ONLY the tool call.**
+Proceed directly to the question loop below. Do NOT ask the user to choose a mode.
 
 ---
 
-### After user selects mode — QUESTION LOOP
+### QUESTION LOOP
 
 <HARD-GATE>
 Each response contains EXACTLY ONE category. Not two. Not "here's the rest." ONE.
@@ -166,7 +159,6 @@ If your response contains numbered lists (1. 2. 3.), lettered lists (a) b) c)), 
 7. Scope & Boundaries
 8. Business Context
 
-**If user selected mode 3 (Essential only), use only categories: 1, 7, 8 (3 total).**
 
 ### WHY THIS MATTERS
 Dumping all questions at once overwhelms the user and defeats the purpose of interactive discovery. The user MUST be able to have a conversation, not fill out a form. Each answer may change what you ask next — adapt your questions based on previous answers.
