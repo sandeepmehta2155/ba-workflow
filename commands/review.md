@@ -60,22 +60,11 @@ Reviewing story X of Y
 
 5. **If NEEDS REVISION:**
    a. Present the required changes to the user
-   b. Use `AskUserQuestion`:
-      ```
-      AskUserQuestion({
-        questions: [{
-          question: "How would you like to handle the PO feedback for this story?",
-          header: "Revision",
-          multiSelect: false,
-          options: [
-            { label: "Auto-fix & re-review (Recommended)", description: "Apply PO feedback automatically, then re-submit for fresh review" },
-            { label: "Approve anyway", description: "Override PO — accept story as-is" },
-            { label: "Edit manually", description: "You'll edit the story file, then re-run /ba-workflow:review" },
-            { label: "Skip this story", description: "Exclude from final output" }
-          ]
-        }]
-      })
-      ```
+   b. CALL the `AskUserQuestion` tool with:
+      - question: "How would you like to handle the PO feedback for this story?"
+      - header: "Revision"
+      - multiSelect: false
+      - options: "Auto-fix & re-review (Recommended)" with description "Apply PO feedback automatically, then re-submit for fresh review", "Approve anyway" with description "Override PO — accept story as-is", "Edit manually" with description "You'll edit the story file, then re-run /ba-workflow:review", "Skip this story" with description "Exclude from final output"
    c. **If "Auto-fix & re-review":**
       - Switch back to Analyst persona
       - Update the story addressing each required change

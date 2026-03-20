@@ -3,39 +3,35 @@
 ## Core Principle
 Every step exists because skipping it causes downstream failure. Requirements missed in Phase 1 become stories that fail PO review. Stories that skip PO review create Jira tickets that get rejected by the team.
 
-## MANDATORY: Use `AskUserQuestion` for ALL User Interactions
+## MANDATORY: CALL the `AskUserQuestion` Tool for ALL User Interactions
 
 <HARD-GATE>
-**EVERY user-facing choice, question, or decision point MUST use the `AskUserQuestion` tool.** This gives users interactive arrow-key selection instead of typing text responses.
+**EVERY user-facing choice, question, or decision point MUST invoke the `AskUserQuestion` tool — the actual tool call, NOT printing text to the screen.**
 
-NEVER present plain text menus like:
-```
-1. Option A
-2. Option B
-Enter choice (1 or 2):
-```
+This is a TOOL CALL like Read, Write, Bash, or Edit. You must invoke it the same way you invoke any other tool. It renders an interactive selection UI where the user navigates with arrow keys and presses Enter — they do NOT type text.
 
-ALWAYS use:
-```
-AskUserQuestion({
-  questions: [{
-    question: "Your question here?",
-    header: "Short Label",
-    multiSelect: false,
-    options: [
-      { label: "Option A (Recommended)", description: "What this does" },
-      { label: "Option B", description: "What this does" }
-    ]
-  }]
-})
-```
+### What you MUST NOT do:
+- Do NOT print numbered lists and ask the user to type a number
+- Do NOT print lettered options (a/b/c/d) and ask the user to type a letter
+- Do NOT write questions as plain text output and wait for typed responses
+- Do NOT show "Enter choice:", "Type your answer:", or any text input prompt
+- Do NOT display the AskUserQuestion parameters as text — CALL THE TOOL
 
-Rules:
-- Recommended option goes FIRST with "(Recommended)" in the label
-- Max 4 questions per call, 2-4 options per question
-- "Other" is auto-added — user can always type custom input
-- Use `multiSelect: true` when choices aren't mutually exclusive
-- NEVER ask open-ended text questions — always provide concrete options
+### What you MUST do:
+- INVOKE the `AskUserQuestion` tool (the same way you invoke Read or Bash)
+- Pass `questions` array with `question`, `header`, `multiSelect`, and `options` fields
+- Put the recommended option FIRST with "(Recommended)" appended to its label
+- Each question needs 2-4 options with `label` and `description` fields
+- The tool auto-adds an "Other" option — do NOT add one manually
+
+### Anti-pattern detection:
+If your response contains ANY of these patterns, you are VIOLATING this rule:
+- "1.", "2.", "3." followed by options in your text output
+- "Enter choice", "Type", "Select", "Choose" in your text output
+- "a)", "b)", "c)" option listings in your text output
+- Any question mark at the end of your text output that expects typed input
+
+The ONLY way to ask the user a question is by CALLING the `AskUserQuestion` tool.
 </HARD-GATE>
 
 ## Anti-Circumvention: Red Flags Table

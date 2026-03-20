@@ -119,81 +119,42 @@ Use detected workflows from Step 1b to inform your questions — reference exist
 
 ### INTERACTIVE MODE — STRICT CONVERSATIONAL LOOP
 
-**YOUR ENTIRE RESPONSE FOR THIS STEP MUST USE AskUserQuestion. NOTHING ELSE.**
+**Do NOT output any text for this step. ONLY invoke the AskUserQuestion tool.**
 
-Use the `AskUserQuestion` tool with EXACTLY this:
-```
-AskUserQuestion({
-  questions: [{
-    question: "How would you like to answer clarifying questions?",
-    header: "Q&A Mode",
-    multiSelect: false,
-    options: [
-      { label: "Interactive (Recommended)", description: "One category at a time — adapt questions based on your answers" },
-      { label: "Skip all", description: "Proceed with requirement as-is, use smart defaults" },
-      { label: "Essential only", description: "Only Scope, Business Context, and Boundaries (3 categories)" }
-    ]
-  }]
-})
-```
+CALL the `AskUserQuestion` tool (invoke it like you would invoke Read, Bash, or Edit — it is a tool, not text to display). Pass these parameters:
+- questions: array with ONE question object
+- question: "How would you like to answer clarifying questions?"
+- header: "Q&A Mode"
+- multiSelect: false
+- options: three options — "Interactive (Recommended)" with description "One category at a time — adapt questions based on your answers", "Skip all" with description "Proceed with requirement as-is, use smart defaults", "Essential only" with description "Only Scope, Business Context, and Boundaries (3 categories)"
 
-**THEN STOP. Do not write anything after this. Do not preview categories. Do not list what's coming next. Your message ENDS here.**
+**THEN STOP. Do not write any text output. Do not preview categories. Your message is ONLY the tool call.**
 
 ---
 
 ### After user selects mode — QUESTION LOOP
 
 <HARD-GATE>
-Each response you send contains EXACTLY ONE category via `AskUserQuestion`. Not two. Not "here's the rest." ONE.
-Do NOT combine categories to "save time." Do NOT preview upcoming categories. Do NOT summarize previous answers alongside new questions. The user's last answer may change what you ask next — you cannot predict it.
+Each response contains EXACTLY ONE category. Not two. Not "here's the rest." ONE.
+Do NOT combine categories. Do NOT preview upcoming categories. Do NOT summarize previous answers alongside new questions.
 </HARD-GATE>
 
-**USE `AskUserQuestion` FOR EVERY CATEGORY. This gives the user interactive arrow-key selection instead of typing.**
+**For each category: output one line of text for progress, then CALL the `AskUserQuestion` tool.**
 
-For each category, show a one-line progress header, then call `AskUserQuestion` with 2-4 questions (max 4 per call — tool limit). Each question MUST have concrete, specific options derived from the requirement and project scan.
+The progress line is: `✓ {N}/{total} complete`
 
-**Example for a category:**
-```
-✓ 1/8 — Scope, Behavior & Goal
-
-AskUserQuestion({
-  questions: [
-    {
-      question: "What is the primary scope of this feature?",
-      header: "Scope",
-      multiSelect: false,
-      options: [
-        { label: "New standalone feature (Recommended)", description: "Build from scratch, independent of existing modules" },
-        { label: "Extension of existing feature", description: "Add capability to an existing module" },
-        { label: "Modification of current behavior", description: "Change how something already works" }
-      ]
-    },
-    {
-      question: "What is the main goal for the user?",
-      header: "Goal",
-      multiSelect: false,
-      options: [
-        { label: "Efficiency (Recommended)", description: "Save time or reduce manual steps" },
-        { label: "New capability", description: "Enable something not currently possible" },
-        { label: "Better visibility", description: "Improve monitoring, reporting, or awareness" }
-      ]
-    }
-  ]
-})
-```
+Then INVOKE (not print) the `AskUserQuestion` tool with 2-4 questions for that category. Each question must have:
+- question: A specific decision question (not open-ended)
+- header: Short label (max 12 chars)
+- multiSelect: false (unless choices aren't mutually exclusive)
+- options: 2-4 concrete options derived from the requirement and project scan. Put the recommended option FIRST with "(Recommended)" in its label. Do NOT add an "Other" option — the tool adds it automatically.
 
 <HARD-GATE>
-EVERY question MUST use `AskUserQuestion` with concrete options. NEVER ask open-ended text questions. NEVER dump plain text menus for the user to type responses to. The recommended option should be listed FIRST with "(Recommended)" in the label. The "Other" option is auto-added by the tool — do NOT add it manually.
-AskUserQuestion supports max 4 questions per call and 2-4 options per question. If a category needs more than 4 questions, split into two AskUserQuestion calls.
+You MUST invoke the AskUserQuestion tool — the actual tool, not a text representation of it.
+If your response contains numbered lists (1. 2. 3.), lettered lists (a) b) c)), or "Enter choice" / "Type your answer" text, you are VIOLATING this rule. The user must see an interactive selection UI with arrow keys, not text they have to type into.
 </HARD-GATE>
 
-**THEN STOP. Do not show the next category. Do not summarize. Do not preview what comes next. YOUR MESSAGE ENDS AFTER THE AskUserQuestion CALL.**
-
-**After user responds, show a one-line acknowledgment and the NEXT single category:**
-```
-✓ {N}/{total} complete
-```
-Then present the next category using `AskUserQuestion` again. **STOP again.**
+**After user responds to the tool, show the progress line and CALL AskUserQuestion for the NEXT category. STOP after each call.**
 
 **Category order (present ONE AT A TIME across separate responses):**
 1. Scope, Behavior & Goal
@@ -235,48 +196,21 @@ If tempted to ask about databases, APIs, caching, or code — DON'T. Defer to: "
 
 1. **Read the full elicitation engine** from `the plugin's `elicitation-methods.md``. Follow its Execution Engine section EXACTLY.
 
-2. **Always ask** (never skip silently). Present 5 smart-selected methods using `AskUserQuestion`:
+2. **Always ask** (never skip silently). CALL the `AskUserQuestion` tool with:
+   - question: "Which elicitation method would you like to apply to deepen the requirements?"
+   - header: "Elicitation"
+   - multiSelect: true
+   - options: 4 smart-selected methods relevant to this requirement. First option has "(Recommended)" in its label. Each option label is the method name, description explains relevance to THIS requirement.
 
-   ```
-   AskUserQuestion({
-     questions: [{
-       question: "Which elicitation method would you like to apply to deepen the requirements?",
-       header: "Elicitation",
-       multiSelect: true,
-       options: [
-         { label: "[Method 1] (Recommended)", description: "[short description relevant to THIS requirement]" },
-         { label: "[Method 2]", description: "[short description relevant to THIS requirement]" },
-         { label: "[Method 3]", description: "[short description relevant to THIS requirement]" },
-         { label: "[Method 4]", description: "[short description relevant to THIS requirement]" }
-       ]
-     }]
-   })
-   ```
-
-   Note: Use `multiSelect: true` so user can pick multiple methods. The "Other" option (auto-added) serves as skip/reshuffle — if user selects "Other" and types "reshuffle", present 5 different methods. If user selects "Other" and types "skip", proceed without elicitation.
+   The "Other" option is auto-added. If user selects "Other" and types "skip", proceed without elicitation. If they type "reshuffle", present 4 different methods.
 
 3. **Handle responses:**
-   - **Method(s) selected**: Execute selected method(s) on the requirement. Show enhanced insights. Then use `AskUserQuestion` to confirm:
-     ```
-     AskUserQuestion({
-       questions: [{
-         question: "Apply these elicitation insights to the requirements?",
-         header: "Apply",
-         multiSelect: false,
-         options: [
-           { label: "Apply & continue (Recommended)", description: "Apply insights and pick more methods" },
-           { label: "Apply & proceed", description: "Apply insights and move to next step" },
-           { label: "Discard", description: "Skip these insights, pick different methods" }
-         ]
-       }]
-     })
-     ```
-   - **"Apply & continue"**: Apply changes, re-present method selection with NEW methods.
+   - **Method(s) selected**: Execute selected method(s). Show enhanced insights as text. Then CALL the `AskUserQuestion` tool with question "Apply these elicitation insights to the requirements?", header "Apply", multiSelect false, and three options: "Apply & continue (Recommended)" / "Apply & proceed" / "Discard".
+   - **"Apply & continue"**: Apply changes, CALL `AskUserQuestion` again with NEW methods.
    - **"Apply & proceed"**: Apply changes, move to next step.
-   - **"Discard"**: Discard insights, re-present method selection.
-   - **User selects "Other" with "skip"**: Note "elicitation skipped" and proceed.
+   - **"Discard"**: Discard insights, CALL `AskUserQuestion` again with different methods.
 
-4. **CRITICAL: Always re-present the elicitation menu after each method execution** (unless user chose "proceed"). The loop continues until user proceeds.
+4. **CRITICAL: Always re-invoke the AskUserQuestion tool after each method execution** (unless user chose "proceed"). The loop continues until user proceeds.
 
 5. **If user selects "Other" with "skip" immediately:** Note "elicitation skipped" and proceed.
 

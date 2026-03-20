@@ -31,33 +31,19 @@ Set up the BA workflow by auto-detecting settings and presenting a single confir
      — or: (none yet)
    ```
 
-   Then use `AskUserQuestion` to confirm settings:
-   ```
-   AskUserQuestion({
-     questions: [
-       {
-         question: "Where should workflow outputs be saved?",
-         header: "Workspace",
-         multiSelect: false,
-         options: [
-           { label: "docs/ba-workflows/ (Recommended)", description: "Auto-detected default workspace path" },
-           { label: "docs/workflows/", description: "Alternative location" },
-           { label: "ba-output/", description: "Project root subfolder" }
-         ]
-       },
-       {
-         question: "Enable Jira integration?",
-         header: "Jira",
-         multiSelect: false,
-         options: [
-           { label: "Enabled (Recommended)", description: "MCP detected — sync stories to Jira automatically" },
-           { label: "Disabled", description: "Stories saved locally only" }
-         ]
-       }
-     ]
-   })
-   ```
-   Note: Adapt options based on detection results. If MCP not found, show "Disabled (Recommended)" first with description "MCP not detected — enable later with /ba-workflow:init".
+   Then CALL the `AskUserQuestion` tool with TWO questions in a single call:
+
+   **Question 1:**
+   - question: "Where should workflow outputs be saved?"
+   - header: "Workspace"
+   - multiSelect: false
+   - options: "docs/ba-workflows/ (Recommended)" with description "Auto-detected default workspace path", "docs/workflows/" with description "Alternative location", "ba-output/" with description "Project root subfolder"
+
+   **Question 2:**
+   - question: "Enable Jira integration?"
+   - header: "Jira"
+   - multiSelect: false
+   - options: If MCP detected, put "Enabled (Recommended)" first with description "MCP detected — sync stories to Jira automatically", then "Disabled". If MCP not found, put "Disabled (Recommended)" first with description "MCP not detected — enable later with /ba-workflow:init", then "Enabled".
 
 3. **Handle user response** — single branch:
 
@@ -85,21 +71,11 @@ Set up the BA workflow by auto-detecting settings and presenting a single confir
          }
        }
        ```
-       Then:
-       ```
-       AskUserQuestion({
-         questions: [{
-           question: "How would you like to handle Jira setup?",
-           header: "Jira Setup",
-           multiSelect: false,
-           options: [
-             { label: "Skip Jira for now (Recommended)", description: "Continue without Jira — enable later with /ba-workflow:init" },
-             { label: "I'll set up now", description: "Pause init, restart Claude Code, re-run /ba-workflow:init" },
-             { label: "Already configured", description: "MCP is set up — continue with Jira enabled" }
-           ]
-         }]
-       })
-       ```
+       Then CALL the `AskUserQuestion` tool with:
+       - question: "How would you like to handle Jira setup?"
+       - header: "Jira Setup"
+       - multiSelect: false
+       - options: "Skip Jira for now (Recommended)" with description "Continue without Jira — enable later with /ba-workflow:init", "I'll set up now" with description "Pause init, restart Claude Code, re-run /ba-workflow:init", "Already configured" with description "MCP is set up — continue with Jira enabled"
 
 4. **Create directories** — silently create workspace root and business-docs if they don't exist. No confirmation needed for directory creation.
 

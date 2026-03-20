@@ -58,33 +58,11 @@ Step X of 3 complete | XX% of Phase 2
 
 2. Calculate a suggested complexity level (0-4) with confidence score.
 
-3. **Present to user using `AskUserQuestion`:**
-
-   First show analysis context:
-   ```
-   Based on analysis of your requirement:
-   Suggested Complexity: Level X (Confidence: XX%)
-   Reasoning: [why this level was suggested]
-   Expected Story Count: X-Y stories
-   ```
-
-   Then call:
-   ```
-   AskUserQuestion({
-     questions: [{
-       question: "What complexity level fits this requirement?",
-       header: "Complexity",
-       multiSelect: false,
-       options: [
-         { label: "Level X (Recommended)", description: "Auto-detected: [reasoning]. X-Y stories expected" },
-         { label: "Level 0", description: "Single atomic change — 1 story" },
-         { label: "Level 1", description: "Small feature — 1-10 stories" },
-         { label: "Level 2", description: "Medium project — 5-15 stories" }
-       ]
-     }]
-   })
-   ```
-   Note: Show the recommended level first. Show remaining levels as options (max 4 total — omit levels that are clearly irrelevant). User can pick "Other" to specify Level 3 or 4 if not shown.
+3. **Present to user:** First output a brief text summary of the analysis (suggested level, confidence, reasoning, expected story count). Then CALL the `AskUserQuestion` tool with:
+   - question: "What complexity level fits this requirement?"
+   - header: "Complexity"
+   - multiSelect: false
+   - options: Put the auto-detected recommended level FIRST with "(Recommended)" in its label and reasoning in description. Then list 2-3 other relevant levels with their story count ranges in descriptions. Omit levels that are clearly irrelevant. User can pick "Other" for Level 3 or 4 if not shown.
 
 4. Store the chosen complexity level.
 
@@ -95,25 +73,11 @@ Step X of 3 complete | XX% of Phase 2
 ### Check for Existing Stories
 1. Check `{workspace}/{workflow_id}/stories/` for existing story files.
 
-2. **If existing stories found**, use `AskUserQuestion`:
-   ```
-   Existing story files found in {workflow_id}/stories/:
-   - [list files]
-   ```
-   Then call:
-   ```
-   AskUserQuestion({
-     questions: [{
-       question: "How would you like to handle existing stories?",
-       header: "Stories",
-       multiSelect: false,
-       options: [
-         { label: "Update existing (Recommended)", description: "Merge new requirements into existing story files" },
-         { label: "Create new stories", description: "Generate fresh stories from requirements, keep existing ones" }
-       ]
-     }]
-   })
-   ```
+2. **If existing stories found**, list the filenames as text output, then CALL the `AskUserQuestion` tool with:
+   - question: "How would you like to handle existing stories?"
+   - header: "Stories"
+   - multiSelect: false
+   - options: "Update existing (Recommended)" with description "Merge new requirements into existing story files", and "Create new stories" with description "Generate fresh stories from requirements, keep existing ones"
 
 ### Option 1: Update Existing Stories
 3. Ask which stories to update (filenames or "all").
@@ -164,19 +128,11 @@ a. **Cluster requirements** — Group Phase 1 requirements into 2-5 feature clus
      - [requirement summary]
 
    ```
-   Then use `AskUserQuestion`:
-   ```
-   AskUserQuestion({
-     questions: [{
-       question: "Accept the proposed story clusters?",
-       header: "Clusters",
-       multiSelect: false,
-       options: [
-         { label: "Accept clusters (Recommended)", description: "Proceed with parallel story generation using these clusters" },
-         { label: "Adjust clusters", description: "Modify the grouping before generating" }
-       ]
-     }]
-   })
+   Then CALL the `AskUserQuestion` tool with:
+   - question: "Accept the proposed story clusters?"
+   - header: "Clusters"
+   - multiSelect: false
+   - options: "Accept clusters (Recommended)" with description "Proceed with parallel story generation using these clusters", and "Adjust clusters" with description "Modify the grouping before generating"
 
 b. **Dispatch one Agent subagent per cluster** — Each subagent receives:
    - The full Phase 1 `state.json` content (do NOT make subagent read the file — provide inline)
@@ -209,28 +165,11 @@ d. **Subagent response handling:**
 
 8. **Save each story** as: `{workspace}/{workflow_id}/stories/{story_num}-{story-title-kebab}.md`
 
-9. **Present story summary and use `AskUserQuestion`:**
-   ```
-   X story draft(s) generated:
-
-   1. {filename} — "{title}"
-      ACs: X | Dependencies: X | Tasks: X
-   ```
-   Then call:
-   ```
-   AskUserQuestion({
-     questions: [{
-       question: "How would you like to proceed with the generated stories?",
-       header: "Next Step",
-       multiSelect: false,
-       options: [
-         { label: "Approve all, proceed to PO Review (Recommended)", description: "Send all drafts to Product Owner for review" },
-         { label: "Review and refine", description: "Edit individual stories before PO review" },
-         { label: "Regenerate", description: "Regenerate with different grouping (by feature/role/workflow)" }
-       ]
-     }]
-   })
-   ```
+9. **Present story summary** as text (filenames, titles, AC/dependency/task counts), then CALL the `AskUserQuestion` tool with:
+   - question: "How would you like to proceed with the generated stories?"
+   - header: "Next Step"
+   - multiSelect: false
+   - options: "Approve all, proceed to PO Review (Recommended)" with description "Send all drafts to Product Owner for review", "Review and refine" with description "Edit individual stories before PO review", "Regenerate" with description "Regenerate with different grouping (by feature/role/workflow)"
 
 ---
 
@@ -289,22 +228,11 @@ For each story, present the PO feedback to the user:
 
 5. **If a story NEEDS REVISION:**
    a. Present the required changes to the user
-   b. Use `AskUserQuestion`:
-      ```
-      AskUserQuestion({
-        questions: [{
-          question: "How would you like to handle the PO feedback for this story?",
-          header: "Revision",
-          multiSelect: false,
-          options: [
-            { label: "Auto-fix & re-review (Recommended)", description: "Apply PO feedback automatically, then re-submit for fresh review" },
-            { label: "Approve anyway", description: "Override PO — accept story as-is" },
-            { label: "Edit manually", description: "You'll edit the story file, then re-run /ba-workflow:review" },
-            { label: "Skip this story", description: "Exclude from final output" }
-          ]
-        }]
-      })
-      ```
+   b. CALL the `AskUserQuestion` tool with:
+      - question: "How would you like to handle the PO feedback for this story?"
+      - header: "Revision"
+      - multiSelect: false
+      - options: "Auto-fix & re-review (Recommended)" with description "Apply PO feedback automatically, then re-submit for fresh review", "Approve anyway" with description "Override PO — accept story as-is", "Edit manually" with description "You'll edit the story file, then re-run /ba-workflow:review", "Skip this story" with description "Exclude from final output"
    c. **If "Auto-fix & re-review":**
       - Switch to Analyst persona (this session)
       - Update the story addressing each required change
@@ -346,20 +274,11 @@ For each story, present the PO feedback to the user:
    If any stories have status other than APPROVED or "overridden" → do NOT include them in the sync prompt.
    </HARD-GATE>
 
-   Use `AskUserQuestion`:
-   ```
-   AskUserQuestion({
-     questions: [{
-       question: "Push approved stories to Jira?",
-       header: "Jira Sync",
-       multiSelect: false,
-       options: [
-         { label: "Yes, sync to Jira (Recommended)", description: "Create Jira issues for all approved stories" },
-         { label: "No, keep local only", description: "Stories saved locally — sync later if needed" }
-       ]
-     }]
-   })
-   ```
+   CALL the `AskUserQuestion` tool with:
+   - question: "Push approved stories to Jira?"
+   - header: "Jira Sync"
+   - multiSelect: false
+   - options: "Yes, sync to Jira (Recommended)" with description "Create Jira issues for all approved stories", and "No, keep local only" with description "Stories saved locally — sync later if needed"
 
 4. **If yes:**
    a. **Check MCP availability** — If `mcp__Atlassian-MCP__createJiraIssue` is not available (platform doesn't support MCP, or Atlassian MCP not configured):
