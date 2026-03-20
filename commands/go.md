@@ -3,19 +3,22 @@ BA Workflow - Full 7-Step Business Analysis Workflow (Master Command): $ARGUMENT
 ## Overview
 This is the master command that orchestrates the complete BA workflow through all 3 phases (7 steps). It runs each phase sequentially, maintaining state between them. Each workflow run is scoped to its own folder.
 
-## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, run the `/ba-workflow:init` setup flow first (ask the setup questions inline).
-2. If config exists, verify workspace directory exists. Create if missing.
+## Just-in-Time Loading (CRITICAL)
 
-## Skills (read from `skills/` directory before starting)
+**DO NOT read config, skills, agents, or scan for workflows upfront.** Start by asking for the requirement immediately. Load resources only when the step that needs them begins:
 
-| Skill | Applied In | Purpose |
-|-------|-----------|---------|
-| `skills/project-scan.md` | Phase 1, Step 1b (after receiving requirement) | Lightweight project scan for context |
-| `skills/socratic-discovery.md` | Phase 1, Step 1 | Surface implicit requirements, identify unmade decisions |
-| `skills/two-stage-review.md` | Phase 2, Step 6 | Structured PO review of each story: spec compliance + quality |
-| `skills/codebase-context.md` | Phase 2, before stories | Discover business rules and edge cases from code for better stories |
-| `skills/testable-criteria.md` | Phase 2, story creation | Enforce Given/When/Then on all ACs |
+| Resource | Load When | Not Before |
+|----------|-----------|------------|
+| `docs/ba-workflow-config.json` | Step 1b (after receiving requirement, before project scan) |
+| `skills/project-scan.md` | Step 1b (project scan) |
+| `agents/analyst.md` | Step 1c (clarifying questions) |
+| `skills/socratic-discovery.md` | Step 1c (clarifying questions) |
+| `skills/codebase-context.md` | Phase 2 (before stories) |
+| `skills/testable-criteria.md` | Phase 2 (story creation) |
+| `agents/product-owner.md` | Phase 2, Step 6 (PO review) |
+| `skills/two-stage-review.md` | Phase 2, Step 6 (PO review) |
+
+If `docs/ba-workflow-config.json` doesn't exist when loaded, run `/ba-workflow:init` setup inline at that point.
 
 ## Workflow Scoping
 
@@ -29,8 +32,9 @@ Each run creates its own folder under `{workspace}/{workflow_id}/`:
     02-story-name.md
 ```
 
-**If resuming**: Scan workspace for in-progress workflows. Offer to resume or start new.
-**If new**: Derive workflow_id after understanding the requirement (kebab-case). Confirm with user.
+**Scoping happens AFTER receiving the requirement (Step 1a), not before.**
+- **If resuming**: Scan workspace for in-progress workflows only if user mentions resuming.
+- **If new**: Derive workflow_id after understanding the requirement (kebab-case). Confirm with user.
 
 ## Execution Flow
 
@@ -141,5 +145,5 @@ Stories are ready for the development team!
 6. **Flexible answering** — Accept skip/N/A/partial for clarifying questions
 7. **Workflow detection** — Only reference workflows from `docs/business-docs/`
 8. **Templates** — Use templates from `the plugin's `templates/``` for stories
-9. **Resume support** — Scan for in-progress workflows before starting new ones
+9. **Resume support** — Only scan for in-progress workflows if user mentions resuming
 10. **PO reviews each story** — Every story must be individually reviewed and approved by PO before Jira sync

@@ -1,28 +1,26 @@
 BA Workflow - Phase 1: Requirements Analysis (Steps 1-3): $ARGUMENTS
 
-## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If it doesn't exist, tell user to run `/ba-workflow:init` first.
-2. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona for ALL interactions in this phase.
-3. If `docs/business-docs/` exists, note it for Step 3 workflow detection.
+## Just-in-Time Loading (CRITICAL)
 
-## Skills Injected (read these before starting)
-- **`skills/project-scan.md`** — Apply in Step 1b, after receiving the initial requirement but before clarifying questions. Lightweight surface scan for project context.
-- **`skills/socratic-discovery.md`** — Apply in Step 1c after project scan. Parse explicit asks → surface implicit requirements → identify unmade decisions → ask targeted questions with options + defaults.
+**DO NOT read config, skills, agents, or scan for workflows upfront.** Start by asking for the requirement immediately (Step 1a). Load resources only when the step that needs them begins:
 
-## Workflow Scoping (CRITICAL)
+| Resource | Load When |
+|----------|-----------|
+| `docs/ba-workflow-config.json` | Step 1b (after receiving requirement) |
+| `skills/project-scan.md` | Step 1b (project scan) |
+| `agents/analyst.md` | Step 1c (before clarifying questions) |
+| `skills/socratic-discovery.md` | Step 1c (before clarifying questions) |
+| `docs/business-docs/` | Step 3 (workflow detection) |
 
-Before starting, establish the **workflow folder** for this run:
+If `docs/ba-workflow-config.json` doesn't exist when loaded, tell user to run `/ba-workflow:init` first.
 
-1. **If resuming**: Check if user specifies an existing workflow folder. Scan `{workspace}/` for folders with incomplete `state.json`. If found, ask:
-   ```
-   Found in-progress workflow(s):
-     1. admin-storm-creation/ (phase 1, started 2026-03-18)
-     2. [Start new workflow]
+## Workflow Scoping
 
-   Resume existing or start new?
-   ```
+**Scoping happens AFTER receiving the requirement (Step 1a), not before.**
 
-2. **If new**: After Step 1 (once the requirement is understood), derive a `workflow_id` (kebab-case, e.g. `admin-storm-creation`, `entity-history-log`, `user-auth-google`). Ask user to confirm or edit:
+1. **If resuming**: Only scan for in-progress workflows if user mentions resuming.
+
+2. **If new**: After receiving the requirement, derive a `workflow_id` (kebab-case, e.g. `admin-storm-creation`, `entity-history-log`, `user-auth-google`). Ask user to confirm or edit:
    ```
    Workflow folder: {workspace}/{workflow_id}/
    Accept or enter different name:
