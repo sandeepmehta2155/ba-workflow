@@ -3,6 +3,41 @@
 ## Core Principle
 Every step exists because skipping it causes downstream failure. Requirements missed in Phase 1 become stories that fail PO review. Stories that skip PO review create Jira tickets that get rejected by the team.
 
+## MANDATORY: Use `AskUserQuestion` for ALL User Interactions
+
+<HARD-GATE>
+**EVERY user-facing choice, question, or decision point MUST use the `AskUserQuestion` tool.** This gives users interactive arrow-key selection instead of typing text responses.
+
+NEVER present plain text menus like:
+```
+1. Option A
+2. Option B
+Enter choice (1 or 2):
+```
+
+ALWAYS use:
+```
+AskUserQuestion({
+  questions: [{
+    question: "Your question here?",
+    header: "Short Label",
+    multiSelect: false,
+    options: [
+      { label: "Option A (Recommended)", description: "What this does" },
+      { label: "Option B", description: "What this does" }
+    ]
+  }]
+})
+```
+
+Rules:
+- Recommended option goes FIRST with "(Recommended)" in the label
+- Max 4 questions per call, 2-4 options per question
+- "Other" is auto-added — user can always type custom input
+- Use `multiSelect: true` when choices aren't mutually exclusive
+- NEVER ask open-ended text questions — always provide concrete options
+</HARD-GATE>
+
 ## Anti-Circumvention: Red Flags Table
 
 If you catch yourself thinking any of these, STOP — you are rationalizing skipping a step:
@@ -19,6 +54,7 @@ If you catch yourself thinking any of these, STOP — you are rationalizing skip
 | "PO review is just a formality here" | Two-stage review catches specification drift and quality issues even in "obvious" stories. Run both stages. |
 | "I'll fix the story format later" | Given/When/Then enforcement happens during generation, not after. Vague ACs now = vague ACs forever. |
 | "Let me push to Jira first, we can fix later" | ALWAYS ask before Jira sync. Once in Jira, stories are visible to the entire team. Get it right first. |
+| "I'll just use a plain text menu here" | ALWAYS use `AskUserQuestion`. Users get arrow-key selection, not typing. No exceptions. |
 
 ## Enforcement Severity Levels
 

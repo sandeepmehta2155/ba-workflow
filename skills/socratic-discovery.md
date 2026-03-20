@@ -49,28 +49,33 @@ Decision Points (not yet decided):
 ```
 
 ### Step 4: Ask Targeted Questions
-For each decision point, present **concrete options with recommended defaults** (never open-ended):
+For each decision point, use `AskUserQuestion` with **concrete options and recommended defaults** (never open-ended):
 
 ```
-Question 1 of 4: Data Freshness
-
-How fresh should the dashboard data be?
-  a) Real-time (updates every few seconds) — complex, higher cost
-  b) Near real-time (updates every 5 minutes) — moderate complexity ← RECOMMENDED
-  c) Periodic (updates hourly/daily) — simple, might feel stale
-  d) On-demand (user clicks refresh) — simplest
-
-Recommendation: (b) balances freshness with simplicity.
-Your choice (a/b/c/d) or skip:
+AskUserQuestion({
+  questions: [
+    {
+      question: "How fresh should the dashboard data be?",
+      header: "Freshness",
+      multiSelect: false,
+      options: [
+        { label: "Near real-time (Recommended)", description: "Updates every 5 minutes — balances freshness with simplicity" },
+        { label: "Real-time", description: "Updates every few seconds — complex, higher cost" },
+        { label: "Periodic", description: "Updates hourly/daily — simple, might feel stale" },
+        { label: "On-demand", description: "User clicks refresh — simplest approach" }
+      ]
+    }
+  ]
+})
 ```
 
 **Rules for questions:**
-- Maximum 4 questions per discovery round
-- Always provide options (never "what do you think?")
-- Always mark a recommended default
-- Accept "skip" — use the recommended default
+- Maximum 4 questions per `AskUserQuestion` call (tool limit)
+- Always use `AskUserQuestion` with concrete options (never plain text menus)
+- Recommended option goes FIRST with "(Recommended)" in the label
+- "Other" is auto-added by the tool — user can type custom input
 - Questions must be NON-TECHNICAL (business decisions only)
-- **ONE question or one tightly-related group at a time — then STOP and wait for the answer**
+- **ONE category at a time — then STOP and wait for the answer**
 - **Adapt follow-up questions based on the answer received** — do not use a static script
 
 ### Step 5: Document Discoveries

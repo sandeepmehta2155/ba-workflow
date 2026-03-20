@@ -15,36 +15,49 @@ Set up the BA workflow by auto-detecting settings and presenting a single confir
    d. Check if `docs/business-docs/` exists.
    e. Scan workspace for existing workflow folders.
 
-2. **Present single configuration screen** — show everything detected with a numbered menu. Use AskUserQuestion to collect the response in ONE prompt:
+2. **Present configuration using `AskUserQuestion`** — show status summary first, then use interactive selection:
 
+   First display the status summary:
    ```
    ━━━ BA Workflow Setup ━━━
 
-   Detected settings (enter numbers to change, or press Enter to accept all):
-
-     1. Workspace Root:     docs/ba-workflows/
-     2. Jira Integration:   Enabled (MCP detected)     ← or "Disabled (MCP not found)"
-     3. Jira Project Key:   (ask each time)
-
-   Status:
-     [✓] Workspace directory exists
-     [✓] Business docs folder exists               ← or [!] docs/business-docs/ not found — create it and add business documents
+   Detected:
+     [✓] Workspace directory exists               ← or [!] will be created
+     [✓] Business docs folder exists               ← or [!] docs/business-docs/ not found
      [✓] Jira MCP connected                        ← or [!] Jira MCP not detected
 
    Existing workflows:
      admin-storm-creation/  (complete, 8 stories)
-     entity-history-log/    (phase 1)
      — or: (none yet)
-
-   ━━━━━━━━━━━━━━━━━━━━━━━
-
-   Enter numbers to change (e.g., "1,3"), or press Enter to accept all:
    ```
 
-   **Important formatting rules:**
-   - Show Jira status based on MCP detection from step 1b
-   - Show existing config values if re-running init
-   - Use [✓] for detected/ready items, [!] for warnings
+   Then use `AskUserQuestion` to confirm settings:
+   ```
+   AskUserQuestion({
+     questions: [
+       {
+         question: "Where should workflow outputs be saved?",
+         header: "Workspace",
+         multiSelect: false,
+         options: [
+           { label: "docs/ba-workflows/ (Recommended)", description: "Auto-detected default workspace path" },
+           { label: "docs/workflows/", description: "Alternative location" },
+           { label: "ba-output/", description: "Project root subfolder" }
+         ]
+       },
+       {
+         question: "Enable Jira integration?",
+         header: "Jira",
+         multiSelect: false,
+         options: [
+           { label: "Enabled (Recommended)", description: "MCP detected — sync stories to Jira automatically" },
+           { label: "Disabled", description: "Stories saved locally only" }
+         ]
+       }
+     ]
+   })
+   ```
+   Note: Adapt options based on detection results. If MCP not found, show "Disabled (Recommended)" first with description "MCP not detected — enable later with /ba-workflow:init".
 
 3. **Handle user response** — single branch:
 
@@ -57,8 +70,7 @@ Set up the BA workflow by auto-detecting settings and presenting a single confir
      ```
      Then proceed to step 5.
 
-   - **User picks "2" to change Jira integration**:
-     - If toggling ON but MCP not detected, show Jira MCP setup info:
+   - **If user enables Jira but MCP not detected**, show Jira MCP setup info, then use `AskUserQuestion`:
        ```
        Jira sync requires the Atlassian MCP server. Add to settings:
 
@@ -72,13 +84,22 @@ Set up the BA workflow by auto-detecting settings and presenting a single confir
            }
          }
        }
-
-       Options:
-         a) I'll set up now — pause init, restart Claude Code, re-run /ba-workflow:init
-         b) Skip Jira for now — continue without it
-         c) Already configured — continue with Jira enabled
        ```
-     - If toggling OFF: set `jira_mcp_enabled: false` and continue.
+       Then:
+       ```
+       AskUserQuestion({
+         questions: [{
+           question: "How would you like to handle Jira setup?",
+           header: "Jira Setup",
+           multiSelect: false,
+           options: [
+             { label: "Skip Jira for now (Recommended)", description: "Continue without Jira — enable later with /ba-workflow:init" },
+             { label: "I'll set up now", description: "Pause init, restart Claude Code, re-run /ba-workflow:init" },
+             { label: "Already configured", description: "MCP is set up — continue with Jira enabled" }
+           ]
+         }]
+       })
+       ```
 
 4. **Create directories** — silently create workspace root and business-docs if they don't exist. No confirmation needed for directory creation.
 
