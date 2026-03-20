@@ -41,7 +41,6 @@ If you catch yourself thinking any of these, STOP — you are rationalizing skip
 | Agent Thought | Reality |
 |---------------|---------|
 | "The requirement is clear enough, skip clarifying questions" | Implicit requirements cause 60% of story rework. Socratic discovery exists for a reason. Ask anyway. |
-| "I can generate stories without scanning code" | Stories without code context miss existing business rules, validation logic, and edge cases. Run codebase-context. |
 | "This story is obviously fine, skip PO review" | Every story gets two-stage review. The Analyst wrote it — a different perspective must review it. No exceptions. |
 | "Let me batch all questions at once to save time" | One category at a time. User overwhelm = poor answers = poor stories. Speed now = rework later. |
 | "The user seems impatient, skip elicitation methods" | Always OFFER elicitation. The user decides to skip, not you. Present the menu. |

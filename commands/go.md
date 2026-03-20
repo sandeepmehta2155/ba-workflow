@@ -38,7 +38,6 @@ Read `skills/CHAIN.md` for the full skill execution order and chaining rules. Sk
 | `skills/project-scan.md` | Step 1b (project scan) |
 | `agents/analyst.md` | Step 1c (clarifying questions) |
 | `skills/socratic-discovery.md` | Step 1c (clarifying questions) |
-| `skills/codebase-context.md` | Phase 2 (before stories) |
 | `skills/testable-criteria.md` | Phase 2 (story creation) |
 | `agents/product-owner.md` | Phase 2, Step 6 (PO review) |
 | `skills/two-stage-review.md` | Phase 2, Step 6 (PO review) |

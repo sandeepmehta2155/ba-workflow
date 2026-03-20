@@ -34,7 +34,6 @@ Before ANY action in this command, validate ALL of the following:
 Stories go to `{workspace}/{workflow_id}/stories/`.
 
 ## Skills Injected (read these before starting)
-- **`skills/codebase-context.md`** — Run BEFORE generating stories. Scan existing code patterns. Generate `system-context.md` in the workflow folder. Stories reference these patterns in Dev Notes.
 - **`skills/testable-criteria.md`** — ENFORCE Given/When/Then format on ALL acceptance criteria. If an AC can't be expressed as GWT, it's too vague — force refinement. Flag vague phrases.
 - **`skills/two-stage-review.md`** — Structures PO review of each story. Stage 1: Spec Compliance. Stage 2: Quality. Use severity levels: CRITICAL/IMPORTANT/MINOR.
 - **`skills/subagent-coordination.md`** — Read BEFORE Step 5 if complexity is 2+. Governs parallel story generation, independent PO review dispatch, reconciliation, and platform fallback.
