@@ -9,11 +9,24 @@ BA Workflow - Phase 2: Story Creation & PO Review (Steps 4-6): $ARGUMENTS
 3. **ONLY show structured outputs** — banners, summaries, questions, and menus as defined in each step
 4. **Between steps** = only the progress banners. No filler.
 
+## Skills Loaded Immediately
+- **`skills/enforcement.md`** — Read FIRST. Anti-circumvention rules and state validation gates apply to all steps.
+
 ## Prerequisites
-1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-workflow:init`.
-2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. Read `{workspace}/{workflow_id}/state.json`. Phase 1 must be complete.
-3. Read the story template from `the plugin's `templates/``story-template.md`.
-4. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona for story creation.
+
+<HARD-GATE>
+Before ANY action in this command, validate ALL of the following:
+1. Read config from `docs/ba-workflow-config.json`. If missing → STOP, tell user to run `/ba-workflow:init`.
+2. Find the active workflow: Scan `{workspace}/` for folders. If multiple exist, ask user which to continue.
+3. Read `{workspace}/{workflow_id}/state.json` and VERIFY:
+   - `status` === `"phase_1_complete"` — If not → STOP, tell user to run `/ba-workflow:analyze` first.
+   - `requirement` field is non-empty — If empty → STOP, Phase 1 was incomplete.
+   - `clarifying_answers` has data — If missing → WARN user that no clarifying questions were answered.
+4. If ANY check fails → STOP and tell user what's missing. Do NOT generate stories from incomplete requirements.
+</HARD-GATE>
+
+5. Read the story template from `the plugin's `templates/``story-template.md`.
+6. Read the Analyst agent from `the plugin's `agents/`analyst.md`. Adopt this persona for story creation.
 
 Stories go to `{workspace}/{workflow_id}/stories/`.
 
@@ -21,6 +34,7 @@ Stories go to `{workspace}/{workflow_id}/stories/`.
 - **`skills/codebase-context.md`** — Run BEFORE generating stories. Scan existing code patterns. Generate `system-context.md` in the workflow folder. Stories reference these patterns in Dev Notes.
 - **`skills/testable-criteria.md`** — ENFORCE Given/When/Then format on ALL acceptance criteria. If an AC can't be expressed as GWT, it's too vague — force refinement. Flag vague phrases.
 - **`skills/two-stage-review.md`** — Structures PO review of each story. Stage 1: Spec Compliance. Stage 2: Quality. Use severity levels: CRITICAL/IMPORTANT/MINOR.
+- **`skills/subagent-coordination.md`** — Read BEFORE Step 5 if complexity is 2+. Governs parallel story generation, independent PO review dispatch, reconciliation, and platform fallback.
 
 ## Progress Tracking
 ```
@@ -106,14 +120,59 @@ Step X of 3 complete | XX% of Phase 2
    - Group related requirements by feature/functionality
    - Identify story boundaries based on user value
 
-7. **Generate stories** using the story template. For each story populate:
-   - Story title and As/Want/So format from requirements
-   - Acceptance criteria from functional requirements (Given/When/Then format)
-   - Business context from requirement background
-   - Workflow Dependencies from detected workflows (Step 3)
-   - Impact Analysis from workflow analysis
-   - Edge cases and prerequisites from elicitation
-   - Status: "drafted"
+7. **Choose generation strategy based on complexity:**
+
+#### Complexity 0-1 (Sequential — this session)
+Generate stories directly in this session using the Analyst persona:
+- For each story, populate using the story template
+- Apply `skills/testable-criteria.md` to each story
+- Save immediately after generating
+
+#### Complexity 2-4 (Parallel — subagent dispatch)
+For 5+ stories, use parallel Agent subagents for faster, higher-quality generation:
+
+a. **Cluster requirements** — Group Phase 1 requirements into 2-5 feature clusters based on functionality. Present clusters to user for confirmation:
+   ```
+   Proposed story clusters for parallel generation:
+
+   Cluster 1: [name] — [X requirements]
+     - [requirement summary]
+     - [requirement summary]
+
+   Cluster 2: [name] — [X requirements]
+     - [requirement summary]
+
+   Accept clustering or adjust? (y/adjust):
+   ```
+
+b. **Dispatch one Agent subagent per cluster** — Each subagent receives:
+   - The full Phase 1 `state.json` content (do NOT make subagent read the file — provide inline)
+   - The specific requirement cluster to generate stories for
+   - The story template content (inline)
+   - The `skills/testable-criteria.md` content (inline)
+   - The `system-context.md` content if it exists (inline)
+   - Clear instruction: generate stories for THIS cluster only, save to `{workspace}/{workflow_id}/stories/`
+
+   Use `subagent_type: "ba-workflow:analyst"` for each dispatch.
+
+c. **Collect and reconcile** — After all subagents complete:
+   - Read all generated story files
+   - Check for duplicate coverage (same requirement in multiple stories)
+   - Check for gaps (requirements not covered by any story)
+   - Check for cross-story contradictions in acceptance criteria
+   - Renumber stories sequentially: `01-`, `02-`, etc.
+   - If issues found, fix in this session (do not re-dispatch)
+
+d. **Subagent response handling:**
+
+   | Status | Action |
+   |--------|--------|
+   | Stories generated successfully | Collect output, proceed to reconciliation |
+   | Subagent asks for clarification | Provide missing Phase 1 context, re-dispatch |
+   | Subagent reports blocked | Check if missing requirement — escalate to user |
+   | Two clusters produced overlapping stories | Merge duplicates in reconciliation step |
+
+#### All complexities — common steps after generation:
 
 8. **Save each story** as: `{workspace}/{workflow_id}/stories/{story_num}-{story-title-kebab}.md`
 
@@ -136,35 +195,54 @@ Step X of 3 complete | XX% of Phase 2
 
 ## Step 6: PO Review (per story)
 
-### Switch to PO Persona
-1. Read the PO agent from `the plugin's `agents/`product-owner.md`. Adopt this persona.
+### Why Subagent Review
+The Analyst generated the stories — the same session carries the Analyst's reasoning and biases. A **fresh subagent** with only the PO persona reviews without that context pollution. This produces genuinely independent reviews.
 
-### Review Each Story
-2. **For each story**, the PO reviews by evaluating:
-   - **Completeness**: All relevant requirements addressed? Acceptance criteria cover the scope?
-   - **Clarity**: Requirements unambiguous? ACs verifiable with Given/When/Then?
-   - **Business Alignment**: Aligns with business goals? User value clear?
-   - **Gaps**: Missing edge cases, user roles, or acceptance criteria?
-   - **Dependencies**: Workflow dependencies identified? Impact analysis present?
-   - **Testability**: Can every AC be objectively tested?
+### Review Strategy
 
-3. **Generate review feedback for each story:**
-   ```markdown
-   ## PO Review — Story: {story_title}
+**Choose review approach based on story count:**
 
-   ### Approval Status: [APPROVED / NEEDS REVISION]
+#### 1-3 stories: In-session PO review
+- Read the PO agent from `the plugin's `agents/`product-owner.md`. Adopt this persona.
+- Review each story sequentially in this session.
 
-   ### Strengths
-   - [What's well done]
+#### 4+ stories: Subagent PO review (recommended)
+- Dispatch a **fresh Agent subagent per story** for independent review.
+- Use `subagent_type: "ba-workflow:product-owner"` for each dispatch.
+- Each subagent receives (all inline — do NOT make subagent read files):
+  - The story file content
+  - The Phase 1 `state.json` content (for spec compliance cross-reference)
+  - The `skills/two-stage-review.md` content
+  - The `agents/product-owner.md` content
+  - Instruction: "Review this story using the two-stage review skill. Return structured feedback in the Combined Review Output format. Do NOT have access to the Analyst's generation reasoning."
+- Dispatch up to 3 reviews in parallel (do not overwhelm).
+- Collect all review results before presenting to user.
 
-   ### Required Changes (if NEEDS REVISION)
-   1. [Specific change] - Severity: CRITICAL/IMPORTANT/MINOR
+**Subagent response handling:**
 
-   ### Suggestions (optional improvements)
-   1. [Suggestion]
-   ```
+| Status | Action |
+|--------|--------|
+| APPROVED | Collect feedback, mark story approved |
+| NEEDS REVISION | Collect feedback with specific issues, present to user |
+| Subagent asks for context | Provide missing Phase 1 data, re-dispatch FRESH subagent (do not resume) |
+| Review seems superficial (all PASS, no substantive comments) | Re-dispatch with stronger instruction: "Challenge this story. Look for implicit assumptions." |
 
-4. **Present feedback for each story to user.**
+### Present Review Results
+For each story, present the PO feedback to the user:
+```markdown
+## PO Review — Story: {story_title}
+
+### Approval Status: [APPROVED / NEEDS REVISION]
+
+### Strengths
+- [What's well done]
+
+### Required Changes (if NEEDS REVISION)
+1. [Specific change] - Severity: CRITICAL/IMPORTANT/MINOR
+
+### Suggestions (optional improvements)
+1. [Suggestion]
+```
 
 ### Correction Loop (per story)
 
@@ -172,11 +250,10 @@ Step X of 3 complete | XX% of Phase 2
    a. Present the required changes to the user
    b. Ask: "Would you like me to update this story based on the feedback? (y/n)"
    c. **If yes:**
-      - Switch back to Analyst persona
+      - Switch to Analyst persona (this session)
       - Update the story addressing each required change
       - Save updated story to the same file
-      - Switch back to PO persona
-      - Re-review the updated story
+      - Dispatch a **FRESH** PO subagent to re-review (do NOT resume the previous reviewer — fresh perspective catches new issues introduced during fixes)
       - Repeat until APPROVED or user says to stop
    d. **If no:** Ask user what they'd like to do:
       - Approve anyway (override PO)
@@ -209,7 +286,13 @@ Step X of 3 complete | XX% of Phase 2
    ```
    Skip to completion.
 
-3. **If enabled, ALWAYS ask:**
+3. <HARD-GATE>
+   **If enabled, ALWAYS ask before syncing. NEVER auto-push to Jira.**
+   Every approved story must have passed PO review (APPROVED status) before Jira sync is offered.
+   If any stories have status other than APPROVED or "overridden" → do NOT include them in the sync prompt.
+   </HARD-GATE>
+
+   Ask:
    ```
    Would you like to push these stories to Jira? (y/n)
    ```

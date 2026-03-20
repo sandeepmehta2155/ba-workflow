@@ -70,6 +70,8 @@ Your choice (a/b/c/d) or skip:
 - Always mark a recommended default
 - Accept "skip" — use the recommended default
 - Questions must be NON-TECHNICAL (business decisions only)
+- **ONE question or one tightly-related group at a time — then STOP and wait for the answer**
+- **Adapt follow-up questions based on the answer received** — do not use a static script
 
 ### Step 5: Document Discoveries
 Append to the requirement understanding:

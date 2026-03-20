@@ -16,6 +16,7 @@ BA Workflow - Phase 1: Requirements Analysis (Steps 1-2): $ARGUMENTS
 
 | Resource | Load When |
 |----------|-----------|
+| `skills/enforcement.md` | Immediately (before any step) — applies to all steps |
 | `docs/ba-workflow-config.json` | Step 1b (after receiving requirement) |
 | `skills/project-scan.md` | Step 1b (project scan) |
 | `agents/analyst.md` | Step 1c (before clarifying questions) |
@@ -54,7 +55,12 @@ Step X of 2 complete | XX% of Phase 1
 1. **If $ARGUMENTS is provided**, use it as the initial requirement. Otherwise ask:
    > Please provide the client requirement or rough specification for the feature/enhancement you want to analyze.
 
-2. **STOP here and wait for the requirement before doing anything else.**
+2. <HARD-GATE>
+   **STOP here and wait for the requirement before doing anything else.**
+   Do NOT read config, scan the project, load skills, or perform any action.
+   Do NOT attempt to infer the requirement from context or file contents.
+   This applies regardless of how obvious the next step seems.
+   </HARD-GATE>
 
 3. **Detect requirement format:**
    - Scan for Jira issue key pattern `[A-Z]+-\d+` (e.g., OUTAGE-123)
@@ -108,49 +114,80 @@ This is awareness only — no source code is read. Deep code analysis happens in
 
 Use detected workflows from Step 1b to inform your questions — reference existing business rules, edge cases, and integration points found in workflow docs.
 
-1. **INTERACTIVE QUESTIONING — ONE CATEGORY AT A TIME.**
+### INTERACTIVE MODE — STRICT CONVERSATIONAL LOOP
 
-   **CRITICAL RULE: Ask ONE category of questions, then STOP AND WAIT for the user's answer before proceeding to the next category. NEVER present all questions at once.**
+**YOUR ENTIRE RESPONSE FOR THIS STEP MUST CONTAIN ONLY THE MODE SELECTION QUESTION. NOTHING ELSE.**
 
-   First, ask the user their preferred mode:
-   ```
-   How would you like to answer clarifying questions?
-   1. One category at a time (recommended — interactive)
-   2. Skip all — proceed with requirement as-is
-   3. Essential only (Scope, Business Context, Boundaries)
-   ```
+Present ONLY this:
+```
+How would you like to answer clarifying questions?
+1. One category at a time (recommended — interactive)
+2. Skip all — proceed with requirement as-is
+3. Essential only (Scope, Business Context, Boundaries)
+```
 
-   **Then, for each category, follow this exact loop:**
-   ```
-   a) Show category name and progress: "Category 1 of 8: Scope, Behavior & Goal"
-   b) Ask 2-4 questions for ONLY this category
-   c) STOP. Wait for user response.
-   d) Accept the answer (or "skip" / "N/A" / "defer")
-   e) Only AFTER receiving the answer, move to next category
-   f) Show progress: "✓ 1/8 complete — Next: User Interface"
-   ```
+**THEN STOP. Do not write anything after this menu. Do not preview categories. Do not list what's coming next. Your message ENDS here.**
 
-   **Category order:**
-   1. Scope, Behavior & Goal
-   2. User Interface
-   3. Default State
-   4. Integration (Business Logic Only)
-   5. User Roles & Permissions
-   6. Edge Cases
-   7. Scope & Boundaries
-   8. Business Context
+---
 
-   **The user can say "proceed" or "done" at any point to skip remaining categories.**
+### After user selects mode — QUESTION LOOP
 
-4. **Flexible answering rules:**
-   - Accept "skip", "N/A", "I don't know", "defer" as valid responses for any question
-   - Allow partial answers
-   - Minimum 3 categories to proceed (but allow override if user explicitly says "proceed")
-   - User can type "proceed" at any time to skip remaining categories
+<HARD-GATE>
+Each response you send contains EXACTLY ONE category. Not two. Not "here's the rest." ONE.
+Do NOT combine categories to "save time." Do NOT preview upcoming categories. Do NOT summarize previous answers alongside new questions. The user's last answer may change what you ask next — you cannot predict it.
+</HARD-GATE>
 
-5. **CRITICAL: ONLY non-technical business questions.** If tempted to ask about databases, APIs, caching, or code — DON'T. Defer to: "This will be addressed by the Architect during development."
+**Your response template for each category (copy this exactly):**
 
-6. **Store results** mentally for use in Steps 2-3. Note which categories were answered vs skipped.
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+Category {N} of {total}: {Category Name}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+{2-4 questions, each with concrete options and a recommended default}
+
+Type your answers, "skip" to use defaults, or "done" to proceed with remaining defaults.
+```
+
+**THEN STOP. Do not show the next category. Do not summarize. Do not preview what comes next. YOUR MESSAGE ENDS AFTER THE QUESTIONS.**
+
+**After user responds, show a one-line acknowledgment and the NEXT single category:**
+```
+✓ {N}/{total} complete
+```
+Then show the next category using the same template above. **STOP again.**
+
+**Category order (present ONE AT A TIME across separate responses):**
+1. Scope, Behavior & Goal
+2. User Interface
+3. Default State
+4. Integration (Business Logic Only)
+5. User Roles & Permissions
+6. Edge Cases
+7. Scope & Boundaries
+8. Business Context
+
+**If user selected mode 3 (Essential only), use only categories: 1, 7, 8 (3 total).**
+
+### WHY THIS MATTERS
+Dumping all questions at once overwhelms the user and defeats the purpose of interactive discovery. The user MUST be able to have a conversation, not fill out a form. Each answer may change what you ask next — adapt your questions based on previous answers.
+
+### ADAPTIVE QUESTIONING
+- After each answer, **adjust upcoming questions** based on what you learned
+- If an answer reveals scope is narrow, skip irrelevant categories
+- If an answer reveals complexity, add follow-up questions within the current category (max 2 follow-ups)
+- Reference the user's own words from previous answers in your next questions
+
+### Flexible answering rules
+- Accept "skip", "N/A", "I don't know", "defer" as valid responses for any question
+- Allow partial answers
+- Minimum 3 categories to proceed (but allow override if user explicitly says "proceed" or "done")
+- User can type "proceed" or "done" at any time to skip remaining categories
+
+### CRITICAL: ONLY non-technical business questions
+If tempted to ask about databases, APIs, caching, or code — DON'T. Defer to: "This will be addressed by the Architect during development."
+
+### Store results mentally for use in Steps 2-3. Note which categories were answered vs skipped.
 
 **Note:** Steps 1a, 1b, and 1c together form Step 1 (Requirements Gathering + Workflow Detection).
 

@@ -27,6 +27,7 @@ This is the master command that orchestrates the complete BA workflow through al
 
 | Resource | Load When | Not Before |
 |----------|-----------|------------|
+| `skills/enforcement.md` | Immediately (before any step) | — applies to all steps |
 | `docs/ba-workflow-config.json` | Step 1b (after receiving requirement, before project scan) |
 | `skills/project-scan.md` | Step 1b (project scan) |
 | `agents/analyst.md` | Step 1c (clarifying questions) |
@@ -35,6 +36,7 @@ This is the master command that orchestrates the complete BA workflow through al
 | `skills/testable-criteria.md` | Phase 2 (story creation) |
 | `agents/product-owner.md` | Phase 2, Step 6 (PO review) |
 | `skills/two-stage-review.md` | Phase 2, Step 6 (PO review) |
+| `skills/subagent-coordination.md` | Phase 2, Step 5 (if complexity 2+) |
 
 If `docs/ba-workflow-config.json` doesn't exist when loaded, run `/ba-workflow:init` setup inline at that point.
 
@@ -66,7 +68,10 @@ Execute the full `/ba-workflow:analyze` workflow:
 - **Step 1a:** Get the initial requirement FIRST using Analyst agent (read `the plugin's `agents/`analyst.md`)
   - Use `$ARGUMENTS` as the initial requirement if provided
   - If no arguments, ask: "Please provide the client requirement or rough specification for the feature/enhancement you want to analyze."
-  - **STOP here and wait for the requirement before doing anything else**
+  - <HARD-GATE>
+    **STOP here and wait for the requirement before doing anything else.**
+    Do NOT read config, scan the project, load skills, or take any action until the requirement is received.
+    </HARD-GATE>
 - **Step 1b:** Project Scan + Workflow Detection — run AFTER receiving the requirement
   - Run a **surface-level** project scan (read `skills/project-scan.md`)
   - Skip if resuming and `{workspace}/{workflow_id}/project-scan.md` already exists
@@ -83,12 +88,26 @@ Execute the full `/ba-workflow:analyze` workflow:
       Workflows:     {count} relevant to requirement
     ```
   - This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
-- **Step 1c:** Ask clarifying business questions (8 categories, flexible answering)
+- **Step 1c:** Ask clarifying business questions — **INTERACTIVE, ONE CATEGORY AT A TIME**
+  - <HARD-GATE>
+    **FIRST** present ONLY the mode selection menu (interactive / skip all / essential only). **STOP and wait for response.**
+    **THEN** present ONE category per response. After each response, acknowledge and present the NEXT single category.
+    **NEVER present multiple categories in a single response. NEVER dump all questions at once.**
+    Each answer may change your next questions — adapt dynamically.
+    </HARD-GATE>
   - Use detected workflows from Step 1b to inform questions — reference existing business rules, edge cases, and integration points found in workflow docs
   - ONLY non-technical business questions
 - **Step 2:** Optional elicitation methods (read `the plugin's `elicitation-methods.md``, always ask, never skip silently)
 
 Save state to `{workspace}/{workflow_id}/state.json` after Phase 1.
+
+<HARD-GATE>
+Before transitioning to Phase 2, VERIFY:
+1. `state.json` exists with `status: "phase_1_complete"`
+2. `requirement` field is non-empty
+3. At least 3 clarifying question categories were answered OR user explicitly said "proceed"
+If ANY check fails — STOP. Do NOT proceed to story creation with incomplete requirements.
+</HARD-GATE>
 
 ```
 Phase 1 COMPLETE — Transitioning to Phase 2...
@@ -103,10 +122,12 @@ Execute the full `/ba-workflow:stories` workflow:
 - **Step 5:** Create user stories directly from Phase 1 requirements data
   - Use story template from `the plugin's `templates/``story-template.md`
   - Auto-determine count from complexity level
-  - Group requirements into stories by feature/functionality
+  - **Complexity 0-1:** Generate sequentially in this session
+  - **Complexity 2-4:** Read `skills/subagent-coordination.md`, dispatch parallel Agent subagents per requirement cluster, reconcile results
   - Save to `{workspace}/{workflow_id}/stories/`
 - **Step 6:** PO reviews EACH story individually
-  - Switch to PO agent (read `the plugin's `agents/`product-owner.md`)
+  - **1-3 stories:** In-session PO persona (read `the plugin's `agents/`product-owner.md`)
+  - **4+ stories:** Dispatch fresh PO subagent per story for independent review (see `skills/subagent-coordination.md`)
   - Review each story for completeness, clarity, business alignment, testable ACs
   - If NEEDS REVISION: correction loop (Analyst updates story -> PO re-reviews -> repeat until approved)
   - Save PO feedback alongside each story

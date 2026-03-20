@@ -94,6 +94,20 @@ Minor Issues: [list]
 2. [IMPORTANT] [description] — should fix
 ```
 
+## Flow Control Rules
+
+<HARD-GATE>
+These rules govern the review flow. They are not suggestions.
+
+1. **Stage 1 CRITICAL found** → BLOCK Stage 2. Return story to Analyst for fixes. Do NOT run quality review on a story that doesn't match the spec.
+2. **Stage 2 CRITICAL found** → BLOCK approval. Return story to Analyst. Repeat review after fixes.
+3. **IMPORTANT issue found** → Flag for user decision. Default action: fix. User may override with acknowledgment.
+4. **MINOR issue found** → Note in review output. Do NOT block approval.
+5. **Approval requires:** Zero CRITICAL issues across BOTH stages AND zero unresolved IMPORTANT issues (unless user explicitly overrides).
+6. **Review order is mandatory:** Stage 1 first, Stage 2 second. NEVER run them in parallel or reverse order.
+7. **Re-review after fixes:** When Analyst updates a story, run BOTH stages again from scratch — do not assume Stage 1 still passes after changes.
+</HARD-GATE>
+
 ## Integration with PO Agent (John)
 When the PO agent reviews each story:
 1. Read this skill first
