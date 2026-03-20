@@ -1,5 +1,14 @@
 BA Workflow - Phase 2: Story Creation & PO Review (Steps 4-6): $ARGUMENTS
 
+## Clean Output for Business Analysts (CRITICAL)
+
+**This workflow is used by business analysts, not developers.** Keep visible output clean and professional.
+
+1. **DO NOT narrate internal actions** — no "Let me read...", "Searching for...", "Loading..."
+2. **DO NOT announce tool usage** — file reads, searches, and agent work happen silently
+3. **ONLY show structured outputs** — banners, summaries, questions, and menus as defined in each step
+4. **Between steps** = only the progress banners. No filler.
+
 ## Prerequisites
 1. Read config from `docs/ba-workflow-config.json`. If missing, tell user to run `/ba-workflow:init`.
 2. **Find the active workflow:** Scan `{workspace}/` for folders. If multiple exist, ask user which to continue. Read `{workspace}/{workflow_id}/state.json`. Phase 1 must be complete.

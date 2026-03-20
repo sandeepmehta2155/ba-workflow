@@ -3,6 +3,24 @@ BA Workflow - Full 7-Step Business Analysis Workflow (Master Command): $ARGUMENT
 ## Overview
 This is the master command that orchestrates the complete BA workflow through all 3 phases (7 steps). It runs each phase sequentially, maintaining state between them. Each workflow run is scoped to its own folder.
 
+## Clean Output for Business Analysts (CRITICAL)
+
+**This workflow is used by business analysts, not developers.** Your visible output must be clean, professional, and free of technical noise.
+
+### Rules:
+1. **DO NOT narrate internal actions.** Never say things like "Let me read the config file", "Searching for patterns", "Now let me check...", "Good, config exists", etc.
+2. **DO NOT announce tool usage.** File reads, glob searches, agent dispatches, and bash commands should happen silently. The user should never see references to tools, searches, or file operations.
+3. **ONLY show the structured outputs defined in this workflow** — banners, summaries, questions, and menus. Nothing else.
+4. **Your first visible output** should be either the requirement question (if no $ARGUMENTS) or an acknowledgment of the provided requirement — not setup chatter.
+5. **Between steps**, show only the progress banners defined below. No filler text.
+
+**Bad example (never do this):**
+> Let me set up the BA workflow. First, I'll check for the config and relevant files.
+> Good, config exists. Now let me read the skill files...
+
+**Good example:**
+> Please provide the client requirement or rough specification for the feature/enhancement you want to analyze.
+
 ## Just-in-Time Loading (CRITICAL)
 
 **DO NOT read config, skills, agents, or scan for workflows upfront.** Start by asking for the requirement immediately. Load resources only when the step that needs them begins:

@@ -1,5 +1,15 @@
 BA Workflow - Phase 1: Requirements Analysis (Steps 1-2): $ARGUMENTS
 
+## Clean Output for Business Analysts (CRITICAL)
+
+**This workflow is used by business analysts, not developers.** Keep visible output clean and professional.
+
+1. **DO NOT narrate internal actions** — no "Let me read...", "Searching for...", "Good, found..."
+2. **DO NOT announce tool usage** — file reads, searches, and agent work happen silently
+3. **ONLY show structured outputs** — banners, summaries, questions, and menus as defined in each step
+4. **First visible output** = the requirement question (or acknowledgment of $ARGUMENTS)
+5. **Between steps** = only the progress banners. No filler.
+
 ## Just-in-Time Loading (CRITICAL)
 
 **DO NOT read config, skills, agents, or scan for workflows upfront.** Start by asking for the requirement immediately (Step 1a). Load resources only when the step that needs them begins:
