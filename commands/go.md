@@ -42,18 +42,19 @@ Execute each phase in sequence. Between phases, display a transition banner and 
 
 ---
 
-### Phase 1: Requirements Analysis (Steps 1-3)
+### Phase 1: Requirements Analysis (Steps 1-2)
 
 Execute the full `/ba-workflow:analyze` workflow:
 - **Step 1a:** Get the initial requirement FIRST using Analyst agent (read `the plugin's `agents/`analyst.md`)
   - Use `$ARGUMENTS` as the initial requirement if provided
   - If no arguments, ask: "Please provide the client requirement or rough specification for the feature/enhancement you want to analyze."
   - **STOP here and wait for the requirement before doing anything else**
-- **Step 1b:** Project Scan (Lightweight) — run AFTER receiving the requirement
+- **Step 1b:** Project Scan + Workflow Detection — run AFTER receiving the requirement
   - Run a **surface-level** project scan (read `skills/project-scan.md`)
   - Skip if resuming and `{workspace}/{workflow_id}/project-scan.md` already exists
   - Run 3 parallel Glob searches — Directory layout, business docs filenames, config files
   - Detect tech stack from config file names
+  - **Workflow Detection** — scan `docs/business-docs/` for relevant workflows, score relevance, let user select which to include. This informs the clarifying questions in Step 1c.
   - Generate scan output — Save to `{workspace}/{workflow_id}/project-scan.md`
   - Display summary:
     ```
@@ -61,12 +62,13 @@ Execute the full `/ba-workflow:analyze` workflow:
       Tech Stack:    {language} + {framework}
       Project Shape: {count} top-level directories
       Business Docs: {count} found in docs/business-docs/
+      Workflows:     {count} relevant to requirement
     ```
   - This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
 - **Step 1c:** Ask clarifying business questions (8 categories, flexible answering)
+  - Use detected workflows from Step 1b to inform questions — reference existing business rules, edge cases, and integration points found in workflow docs
   - ONLY non-technical business questions
 - **Step 2:** Optional elicitation methods (read `the plugin's `elicitation-methods.md``, always ask, never skip silently)
-- **Step 3:** Workflow detection (scan `docs/business-docs/`, score relevance, let user select)
 
 Save state to `{workspace}/{workflow_id}/state.json` after Phase 1.
 

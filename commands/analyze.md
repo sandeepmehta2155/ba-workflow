@@ -1,4 +1,4 @@
-BA Workflow - Phase 1: Requirements Analysis (Steps 1-3): $ARGUMENTS
+BA Workflow - Phase 1: Requirements Analysis (Steps 1-2): $ARGUMENTS
 
 ## Just-in-Time Loading (CRITICAL)
 
@@ -10,7 +10,7 @@ BA Workflow - Phase 1: Requirements Analysis (Steps 1-3): $ARGUMENTS
 | `skills/project-scan.md` | Step 1b (project scan) |
 | `agents/analyst.md` | Step 1c (before clarifying questions) |
 | `skills/socratic-discovery.md` | Step 1c (before clarifying questions) |
-| `docs/business-docs/` | Step 3 (workflow detection) |
+| `docs/business-docs/` | Step 1b (workflow detection, alongside project scan) |
 
 If `docs/ba-workflow-config.json` doesn't exist when loaded, tell user to run `/ba-workflow:init` first.
 
@@ -34,7 +34,7 @@ All outputs for this workflow go into this folder.
 Display progress after each step completion:
 ```
 BA Workflow | {workflow_id} | Phase 1: Requirements Analysis
-Step X of 3 complete | XX% of Phase 1
+Step X of 2 complete | XX% of Phase 1
 ```
 
 ---
@@ -53,21 +53,41 @@ Step X of 3 complete | XX% of Phase 1
 
 ---
 
-## Step 1b: Project Scan (Lightweight)
+## Step 1b: Project Scan + Workflow Detection
 
-After receiving the requirement, run a **surface-level** project scan (read `skills/project-scan.md`):
+After receiving the requirement, run a **surface-level** project scan (read `skills/project-scan.md`) AND detect relevant workflows:
 
 1. **Skip if resuming** — If `{workspace}/{workflow_id}/project-scan.md` already exists, read it and proceed
 2. **Run 3 parallel Glob searches** — Directory layout, business docs filenames, config files
 3. **Detect tech stack** from config file names (read package.json/equivalent only if framework detection needed)
-4. **Generate scan output** — Save to `{workspace}/{workflow_id}/project-scan.md`
-5. **Display summary** to user:
+4. **Workflow Detection** — scan `docs/business-docs/` for workflow docs relevant to the requirement:
+   - If folder doesn't exist, skip and note "no business docs found"
+   - For each file found, read and score relevance against the requirement
+   - Score: Directly relevant (80-100%), Indirectly relevant (50-79%), Not relevant (<50%)
+   - Extract dependencies and integration points
+   - Present results:
+     ```
+     Detected Workflows (from docs/business-docs/):
+
+     1. [filename.md] — Relevance: XX%
+        Why: [specific reason this workflow relates to the requirement]
+        Dependencies: [extracted from file]
+        Key steps that apply: [specific sections]
+
+     Recommended Additional Workflows:
+     - [filename.md] — Recommendation: [why to consider]
+     ```
+   - Ask user to confirm: "Which workflows to include? Enter numbers, 'all', or 'recommended':"
+   - **CRITICAL:** Only reference workflows that exist in `docs/business-docs/`. Never invent workflows.
+5. **Generate scan output** — Save to `{workspace}/{workflow_id}/project-scan.md`
+6. **Display summary** to user:
 
 ```
 Project Scan Complete
   Tech Stack:    {language} + {framework}
   Project Shape: {count} top-level directories
   Business Docs: {count} found in docs/business-docs/
+  Workflows:     {count} relevant to requirement
 ```
 
 This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
@@ -75,6 +95,8 @@ This is awareness only — no source code is read. Deep code analysis happens in
 ---
 
 ## Step 1c: Clarifying Questions
+
+Use detected workflows from Step 1b to inform your questions — reference existing business rules, edge cases, and integration points found in workflow docs.
 
 1. **INTERACTIVE QUESTIONING — ONE CATEGORY AT A TIME.**
 
@@ -120,7 +142,7 @@ This is awareness only — no source code is read. Deep code analysis happens in
 
 6. **Store results** mentally for use in Steps 2-3. Note which categories were answered vs skipped.
 
-**Note:** Steps 1a, 1b, and 1c together form Step 1 (Requirements Gathering).
+**Note:** Steps 1a, 1b, and 1c together form Step 1 (Requirements Gathering + Workflow Detection).
 
 ---
 
@@ -157,36 +179,6 @@ This is awareness only — no source code is read. Deep code analysis happens in
 
 ---
 
-## Step 3: Workflow Detection
-
-1. **Scan `docs/business-docs/` folder** for all workflow documentation files. If folder doesn't exist, skip and note "no business docs found."
-
-2. **For each file found**, analyze relevance to the requirement:
-   - Read the file content
-   - Match requirement keywords against workflow content
-   - Score relevance: Directly relevant (80-100%), Indirectly relevant (50-79%), Not relevant (<50%)
-   - Extract dependencies and integration points from the file
-
-3. **Present results as a structured list:**
-   ```
-   Detected Workflows (from docs/business-docs/):
-
-   1. [filename.md] — Relevance: XX%
-      Why: [specific reason this workflow relates to the requirement]
-      Dependencies: [extracted from file]
-      Key steps that apply: [specific sections]
-
-   Recommended Additional Workflows:
-   - [filename.md] — Recommendation: [why to consider]
-   ```
-
-4. **Ask user to confirm which workflows to include:**
-   > Which workflows would you like to include? Enter numbers (e.g., "1,2,3"), "all", or "recommended":
-
-5. **CRITICAL:** Only reference workflows that exist in `docs/business-docs/`. Never invent workflows.
-
----
-
 ## Phase 1 Complete
 
 Save all gathered data to `{workspace}/{workflow_id}/state.json`:
@@ -215,9 +207,8 @@ Display:
 Phase 1: Requirements Analysis - COMPLETE
   Workflow: {workflow_id}
   Folder:  {workspace}/{workflow_id}/
-  Step 1: Requirements Gathering    - Done (X/8 categories answered)
-  Step 2: Elicitation Methods       - Done|Skipped
-  Step 3: Workflow Detection         - Done (X workflows selected)
+  Step 1: Requirements + Workflow Detection - Done (X/8 categories, X workflows)
+  Step 2: Elicitation Methods               - Done|Skipped
 
 Next: Run /ba-workflow:stories for Story Creation & PO Review (Phase 2)
 Or: Run /ba-workflow:go to continue automatically
