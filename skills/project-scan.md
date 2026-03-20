@@ -4,7 +4,7 @@
 Before asking a single question, know **what exists** — not how it works. This is a lightweight surface scan: detect the project shape, find business docs, identify the tech stack from config files only. No code reading. No pattern extraction. Deep analysis happens later in Phase 2 only if the requirement needs it.
 
 ## When to Apply
-- **Step 0** of `/ba-workflow:go`, before Phase 1 begins
+- **Step 1b** of `/ba-workflow:go` and `/ba-workflow:analyze`, after receiving the initial requirement but before clarifying questions
 - Runs once per workflow; output is reused across all phases
 - Skip if `{workspace}/{workflow_id}/project-scan.md` already exists (resume scenario)
 

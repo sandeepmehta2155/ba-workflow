@@ -6,7 +6,8 @@ BA Workflow - Phase 1: Requirements Analysis (Steps 1-3): $ARGUMENTS
 3. If `docs/business-docs/` exists, note it for Step 3 workflow detection.
 
 ## Skills Injected (read these before starting)
-- **`skills/socratic-discovery.md`** — Apply in Step 1 after receiving requirement. Parse explicit asks → surface implicit requirements → identify unmade decisions → ask targeted questions with options + defaults.
+- **`skills/project-scan.md`** — Apply in Step 1b, after receiving the initial requirement but before clarifying questions. Lightweight surface scan for project context.
+- **`skills/socratic-discovery.md`** — Apply in Step 1c after project scan. Parse explicit asks → surface implicit requirements → identify unmade decisions → ask targeted questions with options + defaults.
 
 ## Workflow Scoping (CRITICAL)
 
@@ -40,17 +41,44 @@ Step X of 3 complete | XX% of Phase 1
 
 ---
 
-## Step 1: Requirements Gathering
+## Step 1a: Get the Initial Requirement
 
 1. **If $ARGUMENTS is provided**, use it as the initial requirement. Otherwise ask:
    > Please provide the client requirement or rough specification for the feature/enhancement you want to analyze.
 
-2. **Detect requirement format:**
+2. **STOP here and wait for the requirement before doing anything else.**
+
+3. **Detect requirement format:**
    - Scan for Jira issue key pattern `[A-Z]+-\d+` (e.g., OUTAGE-123)
    - If Jira format detected: note it, auto-skip questions already answered in the ticket
    - If plain text: proceed with full question flow
 
-3. **INTERACTIVE QUESTIONING — ONE CATEGORY AT A TIME.**
+---
+
+## Step 1b: Project Scan (Lightweight)
+
+After receiving the requirement, run a **surface-level** project scan (read `skills/project-scan.md`):
+
+1. **Skip if resuming** — If `{workspace}/{workflow_id}/project-scan.md` already exists, read it and proceed
+2. **Run 3 parallel Glob searches** — Directory layout, business docs filenames, config files
+3. **Detect tech stack** from config file names (read package.json/equivalent only if framework detection needed)
+4. **Generate scan output** — Save to `{workspace}/{workflow_id}/project-scan.md`
+5. **Display summary** to user:
+
+```
+Project Scan Complete
+  Tech Stack:    {language} + {framework}
+  Project Shape: {count} top-level directories
+  Business Docs: {count} found in docs/business-docs/
+```
+
+This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
+
+---
+
+## Step 1c: Clarifying Questions
+
+1. **INTERACTIVE QUESTIONING — ONE CATEGORY AT A TIME.**
 
    **CRITICAL RULE: Ask ONE category of questions, then STOP AND WAIT for the user's answer before proceeding to the next category. NEVER present all questions at once.**
 
@@ -93,6 +121,8 @@ Step X of 3 complete | XX% of Phase 1
 5. **CRITICAL: ONLY non-technical business questions.** If tempted to ask about databases, APIs, caching, or code — DON'T. Defer to: "This will be addressed by the Architect during development."
 
 6. **Store results** mentally for use in Steps 2-3. Note which categories were answered vs skipped.
+
+**Note:** Steps 1a, 1b, and 1c together form Step 1 (Requirements Gathering).
 
 ---
 

@@ -11,7 +11,7 @@ This is the master command that orchestrates the complete BA workflow through al
 
 | Skill | Applied In | Purpose |
 |-------|-----------|---------|
-| `skills/project-scan.md` | Step 0, before Phase 1 | First-stage parallel project scan for context |
+| `skills/project-scan.md` | Phase 1, Step 1b (after receiving requirement) | Lightweight project scan for context |
 | `skills/socratic-discovery.md` | Phase 1, Step 1 | Surface implicit requirements, identify unmade decisions |
 | `skills/two-stage-review.md` | Phase 2, Step 6 | Structured PO review of each story: spec compliance + quality |
 | `skills/codebase-context.md` | Phase 2, before stories | Discover business rules and edge cases from code for better stories |
@@ -38,33 +38,28 @@ Execute each phase in sequence. Between phases, display a transition banner and 
 
 ---
 
-### Step 0: Project Scan (Lightweight)
-
-Before any questions or analysis, run a **surface-level** project scan (read `skills/project-scan.md`):
-
-1. **Skip if resuming** — If `{workspace}/{workflow_id}/project-scan.md` already exists, read it and proceed
-2. **Run 3 parallel Glob searches** — Directory layout, business docs filenames, config files
-3. **Detect tech stack** from config file names (read package.json/equivalent only if framework detection needed)
-4. **Generate scan output** — Save to `{workspace}/{workflow_id}/project-scan.md`
-5. **Display summary** to user:
-
-```
-Project Scan Complete
-  Tech Stack:    {language} + {framework}
-  Project Shape: {count} top-level directories
-  Business Docs: {count} found in docs/business-docs/
-```
-
-This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
-
----
-
 ### Phase 1: Requirements Analysis (Steps 1-3)
 
 Execute the full `/ba-workflow:analyze` workflow:
-- **Step 1:** Gather requirements using Analyst agent (read `the plugin's `agents/`analyst.md`)
+- **Step 1a:** Get the initial requirement FIRST using Analyst agent (read `the plugin's `agents/`analyst.md`)
   - Use `$ARGUMENTS` as the initial requirement if provided
-  - Ask clarifying business questions (8 categories, flexible answering)
+  - If no arguments, ask: "Please provide the client requirement or rough specification for the feature/enhancement you want to analyze."
+  - **STOP here and wait for the requirement before doing anything else**
+- **Step 1b:** Project Scan (Lightweight) — run AFTER receiving the requirement
+  - Run a **surface-level** project scan (read `skills/project-scan.md`)
+  - Skip if resuming and `{workspace}/{workflow_id}/project-scan.md` already exists
+  - Run 3 parallel Glob searches — Directory layout, business docs filenames, config files
+  - Detect tech stack from config file names
+  - Generate scan output — Save to `{workspace}/{workflow_id}/project-scan.md`
+  - Display summary:
+    ```
+    Project Scan Complete
+      Tech Stack:    {language} + {framework}
+      Project Shape: {count} top-level directories
+      Business Docs: {count} found in docs/business-docs/
+    ```
+  - This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
+- **Step 1c:** Ask clarifying business questions (8 categories, flexible answering)
   - ONLY non-technical business questions
 - **Step 2:** Optional elicitation methods (read `the plugin's `elicitation-methods.md``, always ask, never skip silently)
 - **Step 3:** Workflow detection (scan `docs/business-docs/`, score relevance, let user select)
