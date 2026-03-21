@@ -95,8 +95,8 @@ Execute the full `/ba-workflow:analyze` workflow:
   - This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
 - **Step 1c:** Ask clarifying business questions — **INTERACTIVE, ONE CATEGORY AT A TIME, using `AskUserQuestion` tool**
   - <HARD-GATE>
-    **FIRST** present ONLY the mode selection via `AskUserQuestion` (interactive / skip all / essential only). **STOP and wait for response.**
-    **THEN** present ONE category per response using `AskUserQuestion` with 2-4 questions per call. After each response, acknowledge and present the NEXT single category.
+    **Always use interactive mode.** Do NOT ask the user to choose a mode — go straight into questions.
+    Present ONE category per response using `AskUserQuestion` with 2-4 questions per call. After each response, acknowledge and present the NEXT single category.
     **NEVER present multiple categories in a single response. NEVER dump all questions at once.**
     **EVERY question MUST use `AskUserQuestion` with concrete options — gives users arrow-key selection.** NEVER use plain text menus. NEVER ask open-ended questions.
     Recommended option goes FIRST with "(Recommended)" in the label.
