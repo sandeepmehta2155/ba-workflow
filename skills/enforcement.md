@@ -43,6 +43,7 @@ If you catch yourself thinking any of these, STOP — you are rationalizing skip
 | "The requirement is clear enough, skip clarifying questions" | Implicit requirements cause 60% of story rework. Socratic discovery exists for a reason. Ask anyway. |
 | "This story is obviously fine, skip PO review" | Every story gets two-stage review. The Analyst wrote it — a different perspective must review it. No exceptions. |
 | "Let me batch all questions at once to save time" | One category at a time. User overwhelm = poor answers = poor stories. Speed now = rework later. |
+| "Let me ask which mode they want (interactive/essential/skip)" | There is NO mode selection. Always use interactive mode. Go directly to the first question category. NEVER offer a mode choice. |
 | "The user seems impatient, skip elicitation methods" | Always OFFER elicitation. The user decides to skip, not you. Present the menu. |
 | "This is a small change, one story is enough" | Run complexity analysis. Let the data decide the count. Your intuition about scope is unreliable. |
 | "I already know what they need from context" | You don't. You know what the CODE does, not what the BUSINESS needs. Ask the questions. |

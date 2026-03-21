@@ -121,7 +121,9 @@ Use detected workflows from Step 1b to inform your questions — reference exist
 
 **Always use interactive mode — walk through questions one category at a time.**
 
-Proceed directly to the question loop below. Do NOT ask the user to choose a mode.
+<HARD-GATE>
+Do NOT ask the user how they want to proceed with clarifying questions. Do NOT offer "Interactive", "Essential only", "Skip all", or any mode selection. There is NO mode choice. Go directly to the first question category below. If you present a mode selection question, you are VIOLATING this rule.
+</HARD-GATE>
 
 ---
 
