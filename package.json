@@ -1,6 +1,6 @@
 {
   "name": "analyst-ai",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "Installer for BA Workflow — a Claude Code plugin for business analysis",
   "bin": {
     "analyst-ai": "bin/install.js"

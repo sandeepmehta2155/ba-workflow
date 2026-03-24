@@ -1,0 +1,20 @@
+{
+  "name": "ba-workflow-marketplace",
+  "description": "Business Analysis workflow plugin for Claude Code",
+  "owner": {
+    "name": "Sandeep Mehta",
+    "email": "sandeepmehta2155@users.noreply.github.com"
+  },
+  "plugins": [
+    {
+      "name": "ba-workflow",
+      "description": "7-step Business Analysis workflow: requirements gathering, elicitation, story creation, PO review per story, and Jira sync",
+      "version": "0.0.4",
+      "source": "./",
+      "author": {
+        "name": "Sandeep Mehta",
+        "email": "sandeepmehta2155@users.noreply.github.com"
+      }
+    }
+  ]
+}

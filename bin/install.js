@@ -15,6 +15,7 @@ const PLUGINS_DIR = path.join(CLAUDE_DIR, "plugins");
 const CACHE_DIR = path.join(PLUGINS_DIR, "cache", MARKETPLACE, PLUGIN_NAME);
 const INSTALLED_JSON = path.join(PLUGINS_DIR, "installed_plugins.json");
 const SETTINGS_JSON = path.join(CLAUDE_DIR, "settings.json");
+const KNOWN_MARKETPLACES_JSON = path.join(PLUGINS_DIR, "known_marketplaces.json");
 
 const isUninstall = process.argv.includes("--uninstall") || process.argv.includes("-u");
 
@@ -48,6 +49,15 @@ if (isUninstall) {
       delete settings.extraKnownMarketplaces[MARKETPLACE];
     }
     fs.writeFileSync(SETTINGS_JSON, JSON.stringify(settings, null, 2) + "\n");
+  }
+
+  // Remove from known_marketplaces.json
+  if (fs.existsSync(KNOWN_MARKETPLACES_JSON)) {
+    const km = JSON.parse(fs.readFileSync(KNOWN_MARKETPLACES_JSON, "utf8"));
+    if (km[MARKETPLACE]) {
+      delete km[MARKETPLACE];
+      fs.writeFileSync(KNOWN_MARKETPLACES_JSON, JSON.stringify(km, null, 2) + "\n");
+    }
   }
 
   console.log("ba-workflow plugin removed.");
@@ -131,6 +141,21 @@ settings.extraKnownMarketplaces[MARKETPLACE] = {
 };
 
 fs.writeFileSync(SETTINGS_JSON, JSON.stringify(settings, null, 2) + "\n");
+
+// Register in known_marketplaces.json
+let knownMarketplaces = {};
+if (fs.existsSync(KNOWN_MARKETPLACES_JSON)) {
+  knownMarketplaces = JSON.parse(fs.readFileSync(KNOWN_MARKETPLACES_JSON, "utf8"));
+}
+knownMarketplaces[MARKETPLACE] = {
+  source: {
+    source: "git",
+    url: REPO,
+  },
+  installLocation: path.join(PLUGINS_DIR, "marketplaces", MARKETPLACE),
+  lastUpdated: now,
+};
+fs.writeFileSync(KNOWN_MARKETPLACES_JSON, JSON.stringify(knownMarketplaces, null, 2) + "\n");
 
 // Clean up legacy install path if it exists
 const legacyDir = path.join(PLUGINS_DIR, PLUGIN_NAME);
