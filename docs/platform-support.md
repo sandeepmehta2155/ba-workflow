@@ -14,7 +14,7 @@ BA Workflow is designed as a Claude Code plugin but can be adapted to work on ot
 | **Run commands** | `Bash` tool | `terminal` | `shell` | `Bash` | `shell` |
 | **Subagent dispatch** | `Agent` tool | Not available | Not available | Not available | Not available |
 | **MCP integration** | Native | Via config | Not available | Via config | Via config |
-| **Plugin marketplace** | Yes | Via `/add-plugin` | Not available | Via extensions | Via config |
+| **Plugin system** | Yes | Via `/add-plugin` | Not available | Via extensions | Via config |
 
 ## Feature Availability by Platform
 
@@ -53,8 +53,8 @@ All enforcement rules (HARD-GATEs, severity gates, anti-circumvention) work on e
 ### Claude Code (Native)
 
 ```bash
-# From marketplace
-claude plugin add ba-workflow
+# Via CLI
+claude plugin add https://github.com/sandeepmehta2155/ba-workflow.git
 
 # Or manual clone
 git clone https://github.com/sandeepmehta2155/ba-workflow.git

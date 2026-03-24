@@ -5,28 +5,27 @@ Every story's Acceptance Criteria section MUST use this format:
 ```markdown
 ## Acceptance Criteria
 
-### AC1: [Short description]
-**Given** [precondition]
-**When** [action]
-**Then** [expected outcome]
+1. **[Short description]**
+   - [Condition or context]
+   - [User/system action]
+   - [Expected outcome — observable and verifiable]
 
-### AC2: [Short description]
-**Given** [precondition]
-**When** [action]
-**Then** [expected outcome]
+2. **[Short description]**
+   - [Condition or context]
+   - [User/system action]
+   - [Expected outcome]
 
-### AC3: Edge case — [description]
-**Given** [edge condition]
-**When** [action]
-**Then** [expected behavior]
+3. **Edge case — [description]**
+   - [Condition]
+   - [Expected behavior]
 ```
 
 ## Quality Checks
 
 | Check | Pass | Fail |
 |-------|------|------|
-| Every AC has Given/When/Then | All ACs follow format | Any AC is prose-only paragraph |
-| "Then" is observable | QA can verify by looking/clicking/querying | "system handles it correctly" |
-| "When" is a single action | One trigger per AC | "When user does X and Y and Z" (split into multiple ACs) |
-| "Given" is achievable | Precondition can be set up in test | "Given the system is working properly" (too vague) |
+| Every AC is a numbered point with bullet details | All ACs follow format | Any AC is prose-only paragraph or uses Given/When/Then |
+| Outcome bullet is observable | QA can verify by looking/clicking/querying | "system handles it correctly" |
+| Each AC is a single scenario | One trigger per AC | Multiple unrelated behaviors in one AC |
+| Conditions are specific | Concrete values, thresholds, roles | "Given the system is working properly" (too vague) |
 | Edge cases included | At least 1 negative/edge AC per story | Only happy path ACs |

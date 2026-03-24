@@ -24,7 +24,7 @@ Before ANY action in this command, validate ALL of the following:
 3. Read `{workspace}/{workflow_id}/state.json` and VERIFY:
    - `status` === `"phase_1_complete"` — If not → STOP, tell user to run `/ba-workflow:analyze` first.
    - `requirement` field is non-empty — If empty → STOP, Phase 1 was incomplete.
-   - `clarifying_answers` has data — If missing → WARN user that no clarifying questions were answered.
+   - `brainstorm_output` has data — If missing → WARN user that no brainstorm output was found (requirements may be incomplete).
 4. If ANY check fails → STOP and tell user what's missing. Do NOT generate stories from incomplete requirements.
 </HARD-GATE>
 
@@ -34,7 +34,7 @@ Before ANY action in this command, validate ALL of the following:
 Stories go to `{workspace}/{workflow_id}/stories/`.
 
 ## Skills Injected (read these before starting)
-- **`skills/testable-criteria.md`** — ENFORCE Given/When/Then format on ALL acceptance criteria. If an AC can't be expressed as GWT, it's too vague — force refinement. Flag vague phrases.
+- **`skills/testable-criteria.md`** — ENFORCE numbered point-by-point format on ALL acceptance criteria. If an AC can't be expressed as a clear testable point, it's too vague — force refinement. Flag vague phrases. Do NOT use Given/When/Then (Gherkin) format.
 - **`skills/two-stage-review.md`** — Structures PO review of each story. Stage 1: Spec Compliance. Stage 2: Quality. Use severity levels: CRITICAL/IMPORTANT/MINOR.
 - **`skills/subagent-coordination.md`** — Read BEFORE Step 5 if complexity is 2+. Governs parallel story generation, independent PO review dispatch, reconciliation, and platform fallback.
 
@@ -165,10 +165,14 @@ d. **Subagent response handling:**
 8. **Save each story** as: `{workspace}/{workflow_id}/stories/{story_num}-{story-title-kebab}.md`
 
 9. **Present story summary** as text (filenames, titles, AC/dependency/task counts), then CALL the `AskUserQuestion` tool with:
-   - question: "How would you like to proceed with the generated stories?"
-   - header: "Next Step"
+   - question: "Would you like to review/refine stories before PO Review?"
+   - header: "Pre-Review"
    - multiSelect: false
-   - options: "Approve all, proceed to PO Review (Recommended)" with description "Send all drafts to Product Owner for review", "Review and refine" with description "Edit individual stories before PO review", "Regenerate" with description "Regenerate with different grouping (by feature/role/workflow)"
+   - options: "Proceed to PO Review (Recommended)" with description "Send all drafts directly to Product Owner for review", "Review and refine first" with description "Edit individual stories before PO review", "Regenerate" with description "Regenerate with different grouping (by feature/role/workflow)"
+
+<HARD-GATE>
+**PO Review is MANDATORY.** Every path above must eventually lead to Step 6 (PO Review). "Review and refine" and "Regenerate" are pre-review options — after the user is done editing/regenerating, proceed to PO Review automatically. Do NOT skip PO Review under any circumstance. Do NOT end Phase 2 without PO Review completing.
+</HARD-GATE>
 
 ---
 

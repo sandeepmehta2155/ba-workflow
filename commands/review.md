@@ -29,7 +29,7 @@ Reviewing story X of Y
 
 2. **For each story file** in `{workspace}/{workflow_id}/stories/`, review by evaluating:
    - **Completeness**: All relevant requirements addressed? Acceptance criteria cover the scope?
-   - **Clarity**: Requirements unambiguous? ACs verifiable with Given/When/Then?
+   - **Clarity**: Requirements unambiguous? ACs specific and verifiable (numbered points with bullet details)?
    - **Business Alignment**: Aligns with business goals? User value clear?
    - **Gaps**: Missing edge cases, user roles, or acceptance criteria?
    - **Dependencies**: Workflow dependencies identified? Impact analysis present?

@@ -13,8 +13,8 @@ enforcement (always active)
     │   ├─ project-scan          Step 1b — surface discovery, tech stack, business docs
     │   │   Exit: project-scan.md saved
     │   │
-    │   ├─ socratic-discovery    Step 1c — implicit requirements, unmade decisions
-    │   │   Exit: ≥3 categories answered, discoveries documented
+    │   ├─ brainstorm-input      Step 1c — consume /sc:brainstorm output (run separately by user)
+    │   │   Exit: brainstorm output loaded with goals, functional reqs, acceptance criteria
     │   │
     │   └─ [elicitation-methods] Step 2  — optional, 50 methods, user selects
     │       Exit: insights applied OR user skipped
@@ -23,10 +23,10 @@ enforcement (always active)
     │
     ├── Phase 2: Story Creation & Review
     │   │
-    │   ├─ codebase-context      Before Step 5 — business rules from code
+    │   ├─ codebase-context      Before Step 5 — business rules from Serena plugin memory (no live code scan)
     │   │   Exit: system-context.md saved
     │   │
-    │   ├─ testable-criteria     During Step 5 — Given/When/Then enforcement
+    │   ├─ testable-criteria     During Step 5 — point-by-point AC enforcement
     │   │   Exit: zero vague ACs, all stories formatted
     │   │
     │   ├─ [subagent-coordination] Step 5-6 — if complexity 2+ or 4+ stories
@@ -44,7 +44,7 @@ enforcement (always active)
 ## Analyze Only (`/ba-workflow:analyze`)
 
 ```
-enforcement → project-scan → socratic-discovery → [elicitation-methods]
+enforcement → project-scan → brainstorm-input → [elicitation-methods]
 ```
 
 ## Stories Only (`/ba-workflow:stories`)

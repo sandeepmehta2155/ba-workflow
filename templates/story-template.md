@@ -16,7 +16,10 @@ so that {{benefit}}.
 
 ## Acceptance Criteria
 
-1. {{acceptance_criteria}}
+1. **{{short_description}}**
+   - {{condition_or_context}}
+   - {{user_or_system_action}}
+   - {{expected_observable_outcome}}
 
 
 ## Business Context

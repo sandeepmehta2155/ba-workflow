@@ -1,10 +1,10 @@
 # First-Stage Project Scan
 
 ## Core Principle
-Before asking a single question, know **what exists** — not how it works. This is a lightweight surface scan: detect the project shape, find business docs, identify the tech stack from config files only. No code reading. No pattern extraction. Deep analysis happens later in Phase 2 only if the requirement needs it.
+Before starting requirements discovery, know **what exists** — not how it works. This is a lightweight surface scan: detect the project shape, find business docs, identify the tech stack from config files only. No code reading. No pattern extraction. Phase 2 codebase context comes from Serena plugin's project memory, not live code scanning.
 
 ## When to Apply
-- **Step 1b** of `/ba-workflow:go` and `/ba-workflow:analyze`, after receiving the initial requirement but before clarifying questions
+- **Step 1b** of `/ba-workflow:go` and `/ba-workflow:analyze`, after receiving the initial requirement but before requirements discovery
 - Runs once per workflow; output is reused across all phases
 - Skip if `{workspace}/{workflow_id}/project-scan.md` already exists (resume scenario)
 
@@ -12,7 +12,7 @@ Before asking a single question, know **what exists** — not how it works. This
 - NOT a deep code scan — do not read source files, do not extract patterns
 - NOT an architecture analysis — do not map how modules connect
 - NOT a code review — do not evaluate naming conventions or code quality
-- Deep code understanding happens in Phase 2 (`skills/codebase-context.md`) only when the requirement demands it
+- Phase 2 codebase context comes from Serena plugin's project memory, not live code scanning
 
 ## Scan Flow
 
@@ -115,7 +115,7 @@ If no code-related config files found, note "Documentation-only project" and pro
 - No source files were read
 
 ### Previous Skill: none (first skill in chain)
-### Next Skill: `socratic-discovery` (Step 1c) — informed by scan results
+### Next Skill: `/sc:brainstorm` (Step 1c) — informed by scan results
 
 ---
 
@@ -125,11 +125,11 @@ If no code-related config files found, note "Documentation-only project" and pro
 |-------|----------------------|
 | **Phase 1, Step 1 (Requirements)** | Tech stack awareness — helps Analyst ask relevant business questions |
 | **Phase 1, Step 3 (Workflow Detection)** | Business docs file list — ready to scan for relevance |
-| **Phase 2 (Codebase Context)** | Knows where to look to discover business rules and edge cases from code |
+| **Phase 2 (Codebase Context)** | Serena plugin's project memory provides business rules and edge cases (no live code scan) |
 | **Phase 2 (Stories)** | Business docs context — stories align with existing documented workflows |
 
 ## Token Efficiency
 
 - Scan cost: ~500 tokens (glob results + minimal config read)
 - Reuse value: eliminates redundant directory exploration across phases
-- Deep scanning deferred to Phase 2 where it's scoped to the requirement
+- Phase 2 context comes from Serena plugin memory, not live code scanning

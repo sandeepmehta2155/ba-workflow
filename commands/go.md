@@ -36,8 +36,7 @@ Read `skills/CHAIN.md` for the full skill execution order and chaining rules. Sk
 | `skills/enforcement.md` | Immediately (before any step) | — applies to all steps |
 | `docs/ba-workflow-config.json` | Step 1b (after receiving requirement, before project scan) |
 | `skills/project-scan.md` | Step 1b (project scan) |
-| `agents/analyst.md` | Step 1c (clarifying questions) |
-| `skills/socratic-discovery.md` | Step 1c (clarifying questions) |
+| `agents/analyst.md` | Step 1c (requirements discovery) |
 | `skills/testable-criteria.md` | Phase 2 (story creation) |
 | `agents/product-owner.md` | Phase 2, Step 6 (PO review) |
 | `skills/two-stage-review.md` | Phase 2, Step 6 (PO review) |
@@ -82,7 +81,7 @@ Execute the full `/ba-workflow:analyze` workflow:
   - Skip if resuming and `{workspace}/{workflow_id}/project-scan.md` already exists
   - Run 3 parallel Glob searches — Directory layout, business docs filenames, config files
   - Detect tech stack from config file names
-  - **Workflow Detection** — scan `docs/business-docs/` for relevant workflows, score relevance, let user select which to include. This informs the clarifying questions in Step 1c.
+  - **Workflow Detection** — check `docs/business-docs/` for files. If found, list filenames and let user select which are associated with this requirement (do NOT read/score files upfront — only read user-selected ones). If folder is empty or missing, skip. This informs requirements discovery in Step 1c.
   - Generate scan output — Save to `{workspace}/{workflow_id}/project-scan.md`
   - Display summary:
     ```
@@ -92,18 +91,20 @@ Execute the full `/ba-workflow:analyze` workflow:
       Business Docs: {count} found in docs/business-docs/
       Workflows:     {count} relevant to requirement
     ```
-  - This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
-- **Step 1c:** Ask clarifying business questions — **INTERACTIVE, ONE CATEGORY AT A TIME, using `AskUserQuestion` tool**
+  - This is awareness only — no source code is read. In Phase 2, Serena plugin's project memory is queried for business context (no live code scanning).
+- **Step 1c:** Requirements Discovery — Use Brainstorm Output
+  - Check if the user has already run `/sc:brainstorm` separately and has brainstorm output available (clarified goals, functional requirements, acceptance criteria)
+  - **If brainstorm output exists**: Use it as the requirements input. Read the output and confirm with the user: "I found your brainstorm output. Using it as the requirements basis — anything to add or change?"
+  - **If no brainstorm output**: Tell the user to run `/sc:brainstorm` first as a separate command, then resume the workflow. Display:
+    ```
+    No brainstorm output found.
+    Please run /sc:brainstorm first to explore and clarify your requirements.
+    Then re-run /ba-workflow:go (or /ba-workflow:analyze) to continue.
+    ```
+  - Pass selected workflow docs from Step 1b as additional context alongside brainstorm output
   - <HARD-GATE>
-    **Always use interactive mode.** Do NOT ask the user how they want to proceed with clarifying questions. Do NOT offer "Interactive", "Essential only", "Skip all", or any mode selection. There is NO mode choice — go straight into the first question category.
-    Present ONE category per response using `AskUserQuestion` with 2-4 questions per call. After each response, acknowledge and present the NEXT single category.
-    **NEVER present multiple categories in a single response. NEVER dump all questions at once.**
-    **EVERY question MUST use `AskUserQuestion` with concrete options — gives users arrow-key selection.** NEVER use plain text menus. NEVER ask open-ended questions.
-    Recommended option goes FIRST with "(Recommended)" in the label.
-    Each answer may change your next questions — adapt dynamically.
+    The workflow CANNOT proceed without brainstorm output containing at minimum: clarified user goals, functional requirements, and acceptance criteria. Do NOT substitute with inline questioning. The user must run `/sc:brainstorm` separately.
     </HARD-GATE>
-  - Use detected workflows from Step 1b to inform questions — reference existing business rules, edge cases, and integration points found in workflow docs
-  - ONLY non-technical business questions
 - **Step 2:** Optional elicitation methods (read `the plugin's `elicitation-methods.md``, always ask, never skip silently)
 
 Save state to `{workspace}/{workflow_id}/state.json` after Phase 1.
@@ -112,7 +113,7 @@ Save state to `{workspace}/{workflow_id}/state.json` after Phase 1.
 Before transitioning to Phase 2, VERIFY:
 1. `state.json` exists with `status: "phase_1_complete"`
 2. `requirement` field is non-empty
-3. At least 3 clarifying question categories were answered OR user explicitly said "proceed"
+3. Brainstorm output contains clarified goals, functional requirements, and acceptance criteria OR user explicitly said "proceed"
 If ANY check fails — STOP. Do NOT proceed to story creation with incomplete requirements.
 </HARD-GATE>
 
@@ -133,6 +134,9 @@ Execute the full `/ba-workflow:stories` workflow:
   - **Complexity 2-4:** Read `skills/subagent-coordination.md`, dispatch parallel Agent subagents per requirement cluster, reconcile results
   - Save to `{workspace}/{workflow_id}/stories/`
 - **Step 6:** PO reviews EACH story individually
+  - <HARD-GATE>
+    **PO Review is MANDATORY.** Do NOT skip this step. Do NOT end Phase 2 without every story being reviewed. If the flow gets interrupted or the user refines/regenerates stories, always proceed to PO Review after.
+    </HARD-GATE>
   - **1-3 stories:** In-session PO persona (read `the plugin's `agents/`product-owner.md`)
   - **4+ stories:** Dispatch fresh PO subagent per story for independent review (see `skills/subagent-coordination.md`)
   - Review each story for completeness, clarity, business alignment, testable ACs

@@ -41,7 +41,7 @@ Result: 3/5 passed — CRITICAL issues found, must fix before Stage 2
 
 | # | Check | How to Verify | Severity if Failed |
 |---|-------|---------------|-------------------|
-| 1 | All acceptance criteria use Given/When/Then format | Check each AC | CRITICAL |
+| 1 | All acceptance criteria use numbered point-by-point format with bullet details | Check each AC — no prose paragraphs, no Given/When/Then | CRITICAL |
 | 2 | Business rules are explicit, not implied | Each rule has its own numbered item | IMPORTANT |
 | 3 | Edge cases are documented | At least 1-2 edge cases per story | IMPORTANT |
 | 4 | User roles and permissions are specific | Named roles with listed capabilities | IMPORTANT |
@@ -53,7 +53,7 @@ Result: 3/5 passed — CRITICAL issues found, must fix before Stage 2
 ```
 Stage 2: Quality Review — Story: {title}
 ==========================================
-[PASS] 8/8 acceptance criteria use Given/When/Then
+[PASS] 8/8 acceptance criteria use point-by-point format
 [FAIL] CRITICAL: AC #3 and AC #5 contradict (different default behaviors)
 [FAIL] IMPORTANT: No edge cases documented for offline scenarios
 [PASS] User roles specific with capabilities listed
@@ -112,7 +112,7 @@ These rules govern the review flow. They are not suggestions.
 
 ### Entry Conditions
 - Stories generated and saved to `{workspace}/{workflow_id}/stories/`
-- `testable-criteria` skill applied (all ACs are Given/When/Then)
+- `testable-criteria` skill applied (all ACs are numbered point-by-point with bullet details)
 - Phase 1 `state.json` available (for spec compliance cross-reference)
 - PO agent persona loaded (or fresh PO subagent dispatched)
 

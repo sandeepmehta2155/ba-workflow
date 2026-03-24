@@ -1,11 +1,15 @@
-# Socratic Requirement Discovery
+# Socratic Requirement Discovery (DEPRECATED)
+
+> **DEPRECATED:** This skill has been replaced by SuperClaude's `/sc:brainstorm` for Step 1c requirements discovery. The brainstorm skill provides Socratic dialogue + multi-persona analysis in a single invocation. See `commands/analyze.md` Step 1c for the current approach.
+
+## Legacy Reference (kept for context)
 
 ## Core Principle
 Every explicit request hides implicit requirements. Surface them BEFORE creating stories, not after.
 
 ## When to Apply
-- Phase 1, Step 1 — layer on top of Analyst's 8 question categories
-- After user provides the initial requirement, BEFORE asking clarifying questions
+- **Previously**: Phase 1, Step 1 — layer on top of Analyst's 8 question categories
+- **Now**: Use `/sc:brainstorm --strategy systematic --depth deep` instead
 
 ## Discovery Flow
 

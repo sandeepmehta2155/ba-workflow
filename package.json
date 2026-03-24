@@ -1,0 +1,29 @@
+{
+  "name": "ba-workflow-plugin",
+  "version": "1.6.4",
+  "description": "Installer for BA Workflow — a Claude Code plugin for business analysis",
+  "bin": {
+    "ba-workflow-plugin": "bin/install.js"
+  },
+  "files": [
+    "bin"
+  ],
+  "keywords": [
+    "claude-code",
+    "plugin",
+    "business-analysis",
+    "user-stories",
+    "requirements",
+    "jira",
+    "workflow"
+  ],
+  "author": {
+    "name": "Sandeep Mehta",
+    "email": "sandeepmehta2155@users.noreply.github.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/sandeepmehta2155/ba-workflow.git"
+  },
+  "license": "MIT"
+}

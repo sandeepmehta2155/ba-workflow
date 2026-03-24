@@ -15,7 +15,7 @@ When reviewing a user story, evaluate:
 
 ### 1. Completeness
 - Are all relevant requirements addressed in this story?
-- Are acceptance criteria comprehensive (Given/When/Then)?
+- Are acceptance criteria comprehensive (numbered points with bullet details)?
 - Are edge cases covered?
 
 ### 2. Clarity
@@ -39,7 +39,7 @@ When reviewing a user story, evaluate:
 - Are integration points clear?
 
 ### 6. Testability
-- Can every AC be tested with Given/When/Then?
+- Can every AC be tested? Is each point specific and verifiable?
 - Are business rules explicit, not implied?
 - Are conditions and thresholds specific (numbers, not "many" or "some")?
 

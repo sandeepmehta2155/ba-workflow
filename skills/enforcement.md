@@ -40,15 +40,14 @@ If you catch yourself thinking any of these, STOP — you are rationalizing skip
 
 | Agent Thought | Reality |
 |---------------|---------|
-| "The requirement is clear enough, skip clarifying questions" | Implicit requirements cause 60% of story rework. Socratic discovery exists for a reason. Ask anyway. |
-| "This story is obviously fine, skip PO review" | Every story gets two-stage review. The Analyst wrote it — a different perspective must review it. No exceptions. |
-| "Let me batch all questions at once to save time" | One category at a time. User overwhelm = poor answers = poor stories. Speed now = rework later. |
-| "Let me ask which mode they want (interactive/essential/skip)" | There is NO mode selection. Always use interactive mode. Go directly to the first question category. NEVER offer a mode choice. |
+| "The requirement is clear enough, skip brainstorm" | Implicit requirements cause 60% of story rework. The user must run `/sc:brainstorm` first — do not shortcut it or substitute with inline questions. |
+| "This story is obviously fine, skip PO review" | Every story gets two-stage review. The Analyst wrote it — a different perspective must review it. No exceptions. PO Review is MANDATORY. |
+| "Let me ask clarifying questions instead of requiring brainstorm output" | The workflow requires `/sc:brainstorm` output. Do not substitute with inline questioning. If no brainstorm output exists, stop and tell the user to run it. |
 | "The user seems impatient, skip elicitation methods" | Always OFFER elicitation. The user decides to skip, not you. Present the menu. |
 | "This is a small change, one story is enough" | Run complexity analysis. Let the data decide the count. Your intuition about scope is unreliable. |
 | "I already know what they need from context" | You don't. You know what the CODE does, not what the BUSINESS needs. Ask the questions. |
 | "PO review is just a formality here" | Two-stage review catches specification drift and quality issues even in "obvious" stories. Run both stages. |
-| "I'll fix the story format later" | Given/When/Then enforcement happens during generation, not after. Vague ACs now = vague ACs forever. |
+| "I'll fix the story format later" | Point-by-point AC enforcement happens during generation, not after. Vague ACs now = vague ACs forever. |
 | "Let me push to Jira first, we can fix later" | ALWAYS ask before Jira sync. Once in Jira, stories are visible to the entire team. Get it right first. |
 | "I'll just use a plain text menu here" | ALWAYS use `AskUserQuestion`. Users get arrow-key selection, not typing. No exceptions. |
 
@@ -57,9 +56,9 @@ If you catch yourself thinking any of these, STOP — you are rationalizing skip
 | Level | Meaning | Examples |
 |-------|---------|---------|
 | **HARD-GATE** | Execution MUST stop. Cannot proceed until condition is met. | Requirement not received, Phase 1 incomplete, PO review not done |
-| **MUST** | Required action. Skipping invalidates the output. | Given/When/Then format, two-stage review, state.json save |
+| **MUST** | Required action. Skipping invalidates the output. | Point-by-point AC format, two-stage review, state.json save |
 | **ALWAYS ASK** | User decides, not the agent. Present the option. | Jira sync, elicitation methods, workflow selection |
-| **WARN** | Flag the risk but allow override with user acknowledgment. | Missing edge cases, fewer than 3 categories answered |
+| **WARN** | Flag the risk but allow override with user acknowledgment. | Missing edge cases, incomplete brainstorm output |
 
 ## State Validation Gates
 
@@ -70,7 +69,7 @@ Before each phase transition, validate the state:
 CHECK: state.json exists
 CHECK: status === "phase_1_complete"
 CHECK: requirement is non-empty
-CHECK: categories_completed >= 3 OR user explicitly said "proceed"
+CHECK: brainstorm_output has goals, functional_reqs, and acceptance_criteria OR user explicitly said "proceed"
 WARN:  elicitation_executed === false (acceptable if user chose to skip)
 ```
 

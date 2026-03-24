@@ -22,8 +22,7 @@ Optimized for Claude Code. On other platforms, see `docs/platform-support.md` fo
 | `skills/enforcement.md` | Immediately (before any step) — applies to all steps |
 | `docs/ba-workflow-config.json` | Step 1b (after receiving requirement) |
 | `skills/project-scan.md` | Step 1b (project scan) |
-| `agents/analyst.md` | Step 1c (before clarifying questions) |
-| `skills/socratic-discovery.md` | Step 1c (before clarifying questions) |
+| `agents/analyst.md` | Step 1c (requirements discovery) |
 | `docs/business-docs/` | Step 1b (workflow detection, alongside project scan) |
 
 If `docs/ba-workflow-config.json` doesn't exist when loaded, tell user to run `/ba-workflow:init` first.
@@ -79,25 +78,12 @@ After receiving the requirement, run a **surface-level** project scan (read `ski
 1. **Skip if resuming** — If `{workspace}/{workflow_id}/project-scan.md` already exists, read it and proceed
 2. **Run 3 parallel Glob searches** — Directory layout, business docs filenames, config files
 3. **Detect tech stack** from config file names (read package.json/equivalent only if framework detection needed)
-4. **Workflow Detection** — scan `docs/business-docs/` for workflow docs relevant to the requirement:
-   - If folder doesn't exist, skip and note "no business docs found"
-   - For each file found, read and score relevance against the requirement
-   - Score: Directly relevant (80-100%), Indirectly relevant (50-79%), Not relevant (<50%)
-   - Extract dependencies and integration points
-   - Present results:
-     ```
-     Detected Workflows (from docs/business-docs/):
-
-     1. [filename.md] — Relevance: XX%
-        Why: [specific reason this workflow relates to the requirement]
-        Dependencies: [extracted from file]
-        Key steps that apply: [specific sections]
-
-     Recommended Additional Workflows:
-     - [filename.md] — Recommendation: [why to consider]
-     ```
-   - Ask user to confirm using `AskUserQuestion` with `multiSelect: true`, listing each detected workflow as an option (mark recommended ones with "(Recommended)" in label).
-   - **CRITICAL:** Only reference workflows that exist in `docs/business-docs/`. Never invent workflows.
+4. **Workflow Detection** — check `docs/business-docs/` for existing business documentation:
+   - If folder doesn't exist or is empty, skip workflow detection entirely and note "no business docs found"
+   - If files exist, list them by filename (do NOT read contents, do NOT score relevance, do NOT analyze code for workflows)
+   - Present the file list and ask user to select which ones are associated with this requirement using `AskUserQuestion` with `multiSelect: true`
+   - Only read the contents of files the user selects — these become context for requirements discovery in Step 1c
+   - **CRITICAL:** Workflows = files in `docs/business-docs/`. Never analyze code to detect workflows. Never invent workflows.
 5. **Generate scan output** — Save to `{workspace}/{workflow_id}/project-scan.md`
 6. **Display summary** to user:
 
@@ -109,78 +95,35 @@ Project Scan Complete
   Workflows:     {count} relevant to requirement
 ```
 
-This is awareness only — no source code is read. Deep code analysis happens in Phase 2 if the requirement needs it.
+This is awareness only — no source code is read. In Phase 2, Serena plugin's project memory is queried for business context (no live code scanning).
 
 ---
 
-## Step 1c: Clarifying Questions
+## Step 1c: Requirements Discovery — Use Brainstorm Output
 
-Use detected workflows from Step 1b to inform your questions — reference existing business rules, edge cases, and integration points found in workflow docs.
+The user should run `/sc:brainstorm` as a **separate command** before starting the BA workflow. This step consumes that output — it does NOT run brainstorming inline.
 
-### INTERACTIVE MODE — STRICT CONVERSATIONAL LOOP
+### Check for Brainstorm Output
 
-**Always use interactive mode — walk through questions one category at a time.**
+1. **If brainstorm output exists** (the user ran `/sc:brainstorm` previously):
+   - Read the brainstorm output — it should contain: clarified user goals, functional requirements, non-functional requirements, acceptance criteria, and open questions
+   - Confirm with the user: "I found your brainstorm output. Using it as the requirements basis — anything to add or change?"
+   - Merge with selected workflow docs from Step 1b as additional context
 
-<HARD-GATE>
-Do NOT ask the user how they want to proceed with clarifying questions. Do NOT offer "Interactive", "Essential only", "Skip all", or any mode selection. There is NO mode choice. Go directly to the first question category below. If you present a mode selection question, you are VIOLATING this rule.
-</HARD-GATE>
-
----
-
-### QUESTION LOOP
-
-<HARD-GATE>
-Each response contains EXACTLY ONE category. Not two. Not "here's the rest." ONE.
-Do NOT combine categories. Do NOT preview upcoming categories. Do NOT summarize previous answers alongside new questions.
-</HARD-GATE>
-
-**For each category: output one line of text for progress, then CALL the `AskUserQuestion` tool.**
-
-The progress line is: `✓ {N}/{total} complete`
-
-Then INVOKE (not print) the `AskUserQuestion` tool with 2-4 questions for that category. Each question must have:
-- question: A specific decision question (not open-ended)
-- header: Short label (max 12 chars)
-- multiSelect: false (unless choices aren't mutually exclusive)
-- options: 2-4 concrete options derived from the requirement and project scan. Put the recommended option FIRST with "(Recommended)" in its label. Do NOT add an "Other" option — the tool adds it automatically.
+2. **If no brainstorm output found**:
+   - Tell the user to run `/sc:brainstorm` first. Display:
+     ```
+     No brainstorm output found.
+     Please run /sc:brainstorm first to explore and clarify your requirements.
+     Then re-run /ba-workflow:analyze (or /ba-workflow:go) to continue.
+     ```
+   - **STOP.** Do not proceed or attempt inline questioning as a substitute.
 
 <HARD-GATE>
-You MUST invoke the AskUserQuestion tool — the actual tool, not a text representation of it.
-If your response contains numbered lists (1. 2. 3.), lettered lists (a) b) c)), or "Enter choice" / "Type your answer" text, you are VIOLATING this rule. The user must see an interactive selection UI with arrow keys, not text they have to type into.
+The workflow CANNOT proceed without brainstorm output containing at minimum: clarified user goals, functional requirements, and acceptance criteria. Do NOT substitute with inline questioning. The user must run `/sc:brainstorm` separately.
 </HARD-GATE>
 
-**After user responds to the tool, show the progress line and CALL AskUserQuestion for the NEXT category. STOP after each call.**
-
-**Category order (present ONE AT A TIME across separate responses):**
-1. Scope, Behavior & Goal
-2. User Interface
-3. Default State
-4. Integration (Business Logic Only)
-5. User Roles & Permissions
-6. Edge Cases
-7. Scope & Boundaries
-8. Business Context
-
-
-### WHY THIS MATTERS
-Dumping all questions at once overwhelms the user and defeats the purpose of interactive discovery. The user MUST be able to have a conversation, not fill out a form. Each answer may change what you ask next — adapt your questions based on previous answers.
-
-### ADAPTIVE QUESTIONING
-- After each answer, **adjust upcoming questions** based on what you learned
-- If an answer reveals scope is narrow, skip irrelevant categories
-- If an answer reveals complexity, add follow-up questions within the current category (max 2 follow-ups)
-- Reference the user's own words from previous answers in your next questions
-
-### Flexible answering rules
-- Accept "skip", "N/A", "I don't know", "defer" as valid responses for any question
-- Allow partial answers
-- Minimum 3 categories to proceed (but allow override if user explicitly says "proceed" or "done")
-- User can type "proceed" or "done" at any time to skip remaining categories
-
-### CRITICAL: ONLY non-technical business questions
-If tempted to ask about databases, APIs, caching, or code — DON'T. Defer to: "This will be addressed by the Architect during development."
-
-### Store results mentally for use in Steps 2-3. Note which categories were answered vs skipped.
+### Store brainstorm output for use in Steps 2-6. The requirements specification from `/sc:brainstorm` is the primary input for story creation.
 
 **Note:** Steps 1a, 1b, and 1c together form Step 1 (Requirements Gathering + Workflow Detection).
 
@@ -222,13 +165,10 @@ Save all gathered data to `{workspace}/{workflow_id}/state.json`:
   "started_at": "...",
   "requirement": "...",
   "requirement_format": "text|jira",
-  "clarifying_answers": { ... },
-  "categories_completed": 5,
-  "categories_skipped": 3,
+  "brainstorm_output": { "goals": "...", "functional_reqs": [...], "non_functional_reqs": [...], "acceptance_criteria": [...], "open_questions": [...] },
   "elicitation_executed": true|false,
   "elicitation_insights": "...",
   "selected_workflows": [ ... ],
-  "workflow_analysis": [ ... ],
   "timestamp": "..."
 }
 ```
@@ -238,7 +178,7 @@ Display:
 Phase 1: Requirements Analysis - COMPLETE
   Workflow: {workflow_id}
   Folder:  {workspace}/{workflow_id}/
-  Step 1: Requirements + Workflow Detection - Done (X/8 categories, X workflows)
+  Step 1: Requirements + Workflow Detection - Done (brainstorm complete, X workflows)
   Step 2: Elicitation Methods               - Done|Skipped
 
 Next: Run /ba-workflow:stories for Story Creation & PO Review (Phase 2)

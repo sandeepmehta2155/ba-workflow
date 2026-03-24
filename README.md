@@ -1,6 +1,6 @@
 # BA Workflow Plugin
 
-A streamlined 7-step Business Analysis workflow plugin that takes you from a rough requirement to Jira-ready user stories — with Socratic discovery, PO review per story, and Given/When/Then enforcement.
+A streamlined 7-step Business Analysis workflow plugin that takes you from a rough requirement to Jira-ready user stories — with brainstorm-driven discovery, PO review per story, and testable acceptance criteria enforcement.
 
 **Platforms:** Claude Code (full support) | Cursor, Gemini CLI, OpenCode (core workflow) | Codex (minimal). See `docs/platform-support.md` for details.
 
@@ -8,7 +8,7 @@ A streamlined 7-step Business Analysis workflow plugin that takes you from a rou
 
 | Phase | Steps | Description |
 |-------|-------|-------------|
-| **Phase 1** | Steps 1-3 | Requirements gathering, Socratic discovery, elicitation methods (50 techniques), workflow detection |
+| **Phase 1** | Steps 1-3 | Requirements gathering (via `/sc:brainstorm` output), elicitation methods (50 techniques), workflow detection |
 | **Phase 2** | Steps 4-6 | Story complexity scoring (0-4), user story creation, PO review per story (spec compliance + quality) |
 | **Phase 3** | Step 7 | Jira sync |
 
@@ -16,35 +16,13 @@ A streamlined 7-step Business Analysis workflow plugin that takes you from a rou
 
 ## Installation
 
-### Option 1: Plugin Marketplace (Recommended)
+### Option 1: npx (Recommended)
 
 ```bash
-# In Claude Code, run:
-/plugin marketplace add sandeepmehta2155/ba-workflow
-/plugin install ba-workflow@ba-workflow-marketplace
+npx ba-workflow-plugin
 ```
 
-### Option 2: Manual Settings
-
-Add to `~/.claude/settings.json`:
-
-```json
-{
-  "extraKnownMarketplaces": {
-    "ba-workflow-marketplace": {
-      "source": {
-        "source": "github",
-        "repo": "sandeepmehta2155/ba-workflow"
-      }
-    }
-  },
-  "enabledPlugins": {
-    "ba-workflow@ba-workflow-marketplace": true
-  }
-}
-```
-
-### Option 3: Manual Clone
+### Option 2: Manual Clone
 
 ```bash
 git clone https://github.com/sandeepmehta2155/ba-workflow.git ~/.claude/plugins/ba-workflow
@@ -54,79 +32,26 @@ git clone https://github.com/sandeepmehta2155/ba-workflow.git ~/.claude/plugins/
 
 ## Update
 
-### Update via Plugin Manager
-
 ```bash
-# Update to latest version
-/plugin update ba-workflow
+npx ba-workflow-plugin
 ```
 
-### Manual Update (if cloned)
-
-```bash
-cd ~/.claude/plugins/cache/ba-workflow-marketplace/ba-workflow/1.0.0
-git pull origin main
-```
-
-Or if you cloned manually:
+Or manually:
 
 ```bash
 cd ~/.claude/plugins/ba-workflow
 git pull origin main
 ```
 
-### Check Current Version
-
-```bash
-# View installed plugin info
-/plugin list
-```
-
 ---
 
-## Uninstall & Cleanup
-
-### Step 1: Disable the Plugin
+## Uninstall
 
 ```bash
-# Disable without removing
-/plugin disable ba-workflow@ba-workflow-marketplace
+npx ba-workflow-plugin --uninstall
 ```
 
-### Step 2: Uninstall the Plugin
-
-```bash
-# Remove the plugin completely
-/plugin uninstall ba-workflow@ba-workflow-marketplace
-```
-
-### Step 3: Remove the Marketplace (optional)
-
-```bash
-# Remove the custom marketplace registration
-/plugin marketplace remove ba-workflow-marketplace
-```
-
-Or manually edit `~/.claude/settings.json` and remove:
-```json
-{
-  "extraKnownMarketplaces": {
-    "ba-workflow-marketplace": { ... }   // <-- delete this block
-  },
-  "enabledPlugins": {
-    "ba-workflow@ba-workflow-marketplace": true   // <-- delete this line
-  }
-}
-```
-
-### Step 4: Clean Up Plugin Cache (optional)
-
-```bash
-# Remove cached plugin files
-rm -rf ~/.claude/plugins/cache/ba-workflow-marketplace/
-```
-
-### Step 5: Clean Up Project Outputs (optional)
+### Step 2: Clean Up Project Outputs (optional)
 
 The plugin creates output files in your project. Remove them if no longer needed:
 
@@ -176,17 +101,17 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 
 | Skill | Phase | What It Does |
 |-------|-------|-------------|
-| **Socratic Discovery** | Phase 1 | Surfaces implicit requirements, identifies unmade decisions, asks targeted questions with defaults |
+| **Brainstorm Input** | Phase 1 | Consumes `/sc:brainstorm` output (run separately) — clarified goals, functional requirements, acceptance criteria |
 | **Two-Stage Review** | Phase 2 | Stage 1: Spec compliance per story. Stage 2: Quality. Severity: CRITICAL/IMPORTANT/MINOR |
-| **Codebase Context** | Phase 2 | Scans existing code patterns so stories align with real architecture |
-| **Testable Criteria** | Phase 2 | Enforces Given/When/Then on all acceptance criteria. Flags vague phrases |
+| **Codebase Context** | Phase 2 | Queries Serena plugin's project memory for business rules and edge cases (no live code scanning) |
+| **Testable Criteria** | Phase 2 | Enforces point-by-point format on all acceptance criteria. Flags vague phrases |
 
 ---
 
 ## Features
 
 ### Agent Personas
-- **Mary** (Business Analyst) — Asks only non-technical business questions across 8 categories
+- **Mary** (Business Analyst) — Uses brainstorm output and business docs to drive non-technical requirements discovery
 - **John** (Product Owner) — Reviews each story with two-stage structured feedback and approval/revision flow
 
 ### 50 Elicitation Methods
@@ -230,10 +155,10 @@ docs/ba-workflows/
 - Updates local story files with Jira issue keys
 
 ### Workflow Detection
-- Scans your `docs/business-docs/` folder for existing documentation
-- Scores relevance (0-100%) against the requirement
-- Extracts dependencies and integration points
-- Feeds detected workflows into story dependencies and impact analysis
+- Checks your `docs/business-docs/` folder for existing business documentation
+- Lists filenames and lets the user select which are associated with the requirement
+- Only reads user-selected files — no upfront scoring or analysis
+- Selected workflows inform story dependencies and impact analysis
 
 ### Complexity Levels
 
@@ -253,7 +178,6 @@ docs/ba-workflows/
 ba-workflow/
   .claude-plugin/
     plugin.json               # Plugin metadata
-    marketplace.json          # Marketplace registry
   commands/                   # 5 slash commands (namespaced as ba-workflow:*)
     init.md                   # /ba-workflow:init
     go.md                     # /ba-workflow:go
@@ -264,7 +188,7 @@ ba-workflow/
     analyst.md                # Mary — Business Analyst
     product-owner.md          # John — Product Owner
   skills/                     # 4 focused quality & automation skills
-    socratic-discovery.md
+    socratic-discovery.md  (deprecated — replaced by /sc:brainstorm)
     two-stage-review.md
     codebase-context.md
     testable-criteria.md
