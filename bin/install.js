@@ -5,6 +5,7 @@ const fs = require("fs");
 const path = require("path");
 const os = require("os");
 
+const PKG_VERSION = require("../package.json").version;
 const REPO = "https://github.com/sandeepmehta2155/ba-workflow.git";
 const PLUGIN_NAME = "ba-workflow";
 const MARKETPLACE = "ba-workflow-marketplace";
@@ -53,6 +54,7 @@ if (isUninstall) {
   process.exit(0);
 }
 
+console.log(`\nanalyst-ai installer v${PKG_VERSION}`);
 console.log("Installing ba-workflow plugin for Claude Code...\n");
 
 // Read version from plugin.json in repo (we'll get it after clone)
