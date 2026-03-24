@@ -1,7 +1,7 @@
 {
   "name": "ba-workflow",
   "description": "7-step Business Analysis workflow: requirements gathering, elicitation, story creation, PO review per story, and Jira sync",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "author": {
     "name": "Sandeep Mehta",
     "email": "sandeepmehta2155@users.noreply.github.com"
@@ -24,5 +24,22 @@
   "agents": [
     "./agents/analyst.md",
     "./agents/product-owner.md"
+  ],
+  "commands": [
+    "./commands/init.md",
+    "./commands/go.md",
+    "./commands/analyze.md",
+    "./commands/stories.md",
+    "./commands/review.md"
+  ],
+  "skills": [
+    "./skills/CHAIN.md",
+    "./skills/codebase-context.md",
+    "./skills/enforcement.md",
+    "./skills/project-scan.md",
+    "./skills/socratic-discovery.md",
+    "./skills/subagent-coordination.md",
+    "./skills/testable-criteria.md",
+    "./skills/two-stage-review.md"
   ]
 }
