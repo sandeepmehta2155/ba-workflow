@@ -1,0 +1,4 @@
+node_modules/
+ba-plugin.zip.enc
+ba-plugin.zip.tmp
+.env

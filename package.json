@@ -1,13 +1,21 @@
 {
-  "name": "analyst-ai",
-  "version": "0.0.5",
+  "name": "ba-workflow",
+  "version": "0.0.6",
   "description": "Installer for BA Workflow — a Claude Code plugin for business analysis",
   "bin": {
-    "analyst-ai": "bin/install.js"
+    "ba-workflow": "bin/install.js"
   },
   "files": [
-    "bin"
+    "bin",
+    "lib",
+    "ba-plugin.zip.enc"
   ],
+  "scripts": {
+    "encrypt": "node scripts/encrypt-zip.js"
+  },
+  "dependencies": {
+    "adm-zip": "^0.5.16"
+  },
   "keywords": [
     "claude-code",
     "plugin",
