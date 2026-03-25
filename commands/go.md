@@ -36,7 +36,8 @@ Read `skills/CHAIN.md` for the full skill execution order and chaining rules. Sk
 | `skills/enforcement.md` | Immediately (before any step) | — applies to all steps |
 | `docs/ba-workflow-config.json` | Step 1b (after receiving requirement, before project scan) |
 | `skills/project-scan.md` | Step 1b (project scan) |
-| `agents/analyst.md` | Step 1c (requirements discovery) |
+| `skills/socratic-discovery.md` | Step 1c (brainstorm, if no prior output) |
+| `agents/analyst.md` | Step 1c (brainstorm persona) |
 | `skills/testable-criteria.md` | Phase 2 (story creation) |
 | `agents/product-owner.md` | Phase 2, Step 6 (PO review) |
 | `skills/two-stage-review.md` | Phase 2, Step 6 (PO review) |
@@ -92,18 +93,19 @@ Execute the full `/ba-workflow:analyze` workflow:
       Workflows:     {count} relevant to requirement
     ```
   - This is awareness only — no source code is read. In Phase 2, Serena plugin's project memory is queried for business context (no live code scanning).
-- **Step 1c:** Requirements Discovery — Use Brainstorm Output
-  - Check if the user has already run `/sc:brainstorm` separately and has brainstorm output available (clarified goals, functional requirements, acceptance criteria)
-  - **If brainstorm output exists**: Use it as the requirements input. Read the output and confirm with the user: "I found your brainstorm output. Using it as the requirements basis — anything to add or change?"
-  - **If no brainstorm output**: Tell the user to run `/sc:brainstorm` first as a separate command, then resume the workflow. Display:
-    ```
-    No brainstorm output found.
-    Please run /sc:brainstorm first to explore and clarify your requirements.
-    Then re-run /ba-workflow:go (or /ba-workflow:analyze) to continue.
-    ```
+- **Step 1c:** Requirements Discovery — Brainstorm
+  - Check if the user has already run `/ba-workflow:brainstorm` or `/sc:brainstorm` and has brainstorm output available
+  - **If brainstorm output exists**: Confirm with user via `AskUserQuestion`: use existing, re-run, or add to it
+  - **If no brainstorm output**: Run Socratic brainstorming inline (read `skills/socratic-discovery.md` + `agents/analyst.md`):
+    1. Parse explicit requirements
+    2. Surface implicit requirements
+    3. Identify unmade decisions
+    4. Ask targeted questions via `AskUserQuestion` — ONE category at a time, minimum 3, adapt based on answers
+    5. Compile structured brainstorm output (goals, functional reqs, acceptance criteria)
+    6. Confirm output with user
   - Pass selected workflow docs from Step 1b as additional context alongside brainstorm output
   - <HARD-GATE>
-    The workflow CANNOT proceed without brainstorm output containing at minimum: clarified user goals, functional requirements, and acceptance criteria. Do NOT substitute with inline questioning. The user must run `/sc:brainstorm` separately.
+    The workflow CANNOT proceed without brainstorm output containing at minimum: clarified user goals, functional requirements, and acceptance criteria. Brainstorming runs inline if no prior output exists.
     </HARD-GATE>
 - **Step 2:** Optional elicitation methods (read `the plugin's `elicitation-methods.md``, always ask, never skip silently)
 

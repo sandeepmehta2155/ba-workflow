@@ -22,7 +22,8 @@ Optimized for Claude Code. On other platforms, see `docs/platform-support.md` fo
 | `skills/enforcement.md` | Immediately (before any step) — applies to all steps |
 | `docs/ba-workflow-config.json` | Step 1b (after receiving requirement) |
 | `skills/project-scan.md` | Step 1b (project scan) |
-| `agents/analyst.md` | Step 1c (requirements discovery) |
+| `skills/socratic-discovery.md` | Step 1c (brainstorm, if no prior output) |
+| `agents/analyst.md` | Step 1c (brainstorm persona) |
 | `docs/business-docs/` | Step 1b (workflow detection, alongside project scan) |
 
 If `docs/ba-workflow-config.json` doesn't exist when loaded, tell user to run `/ba-workflow:init` first.
@@ -99,31 +100,39 @@ This is awareness only — no source code is read. In Phase 2, Serena plugin's p
 
 ---
 
-## Step 1c: Requirements Discovery — Use Brainstorm Output
+## Step 1c: Requirements Discovery — Brainstorm
 
-The user should run `/sc:brainstorm` as a **separate command** before starting the BA workflow. This step consumes that output — it does NOT run brainstorming inline.
+This step runs Socratic brainstorming to discover implicit requirements, surface unmade decisions, and produce structured requirements output. It runs inline — no external command needed.
 
-### Check for Brainstorm Output
+### Check for Existing Brainstorm Output
 
-1. **If brainstorm output exists** (the user ran `/sc:brainstorm` previously):
+1. **If brainstorm output already exists** (user ran `/ba-workflow:brainstorm` or `/sc:brainstorm` previously):
    - Read the brainstorm output — it should contain: clarified user goals, functional requirements, non-functional requirements, acceptance criteria, and open questions
-   - Confirm with the user: "I found your brainstorm output. Using it as the requirements basis — anything to add or change?"
+   - Confirm with the user using `AskUserQuestion`: "I found existing brainstorm output. How would you like to proceed?" with options:
+     - "Use existing brainstorm output (Recommended)" — proceed with existing output
+     - "Re-run brainstorming from scratch" — discard and run fresh
+     - "Add to existing output" — run additional discovery rounds on top
    - Merge with selected workflow docs from Step 1b as additional context
 
-2. **If no brainstorm output found**:
-   - Tell the user to run `/sc:brainstorm` first. Display:
-     ```
-     No brainstorm output found.
-     Please run /sc:brainstorm first to explore and clarify your requirements.
-     Then re-run /ba-workflow:analyze (or /ba-workflow:go) to continue.
-     ```
-   - **STOP.** Do not proceed or attempt inline questioning as a substitute.
+2. **If no brainstorm output found** — run brainstorming inline:
+   - Read `skills/socratic-discovery.md` and `agents/analyst.md`
+   - Adopt the **Mary (Business Analyst)** persona
+   - Execute the full Socratic discovery flow:
+     1. **Parse Explicit Requirements** — Extract every explicit ask
+     2. **Surface Implicit Requirements** — What does each explicit item assume?
+     3. **Identify Unmade Decisions** — List unstated decisions
+     4. **Ask Targeted Questions** — Use `AskUserQuestion`, ONE category at a time, adapt based on answers. Minimum 3 categories, maximum 8 (from analyst.md). User can say "enough" to end early.
+     5. **Document Discoveries** — Compile structured brainstorm output
+   - Present the compiled output and confirm with user using `AskUserQuestion`:
+     - "Looks good — proceed (Recommended)"
+     - "I want to add or change something"
+     - "Run more discovery questions"
 
 <HARD-GATE>
-The workflow CANNOT proceed without brainstorm output containing at minimum: clarified user goals, functional requirements, and acceptance criteria. Do NOT substitute with inline questioning. The user must run `/sc:brainstorm` separately.
+The workflow CANNOT proceed without brainstorm output containing at minimum: clarified user goals, functional requirements, and acceptance criteria. Brainstorming runs inline if no prior output exists.
 </HARD-GATE>
 
-### Store brainstorm output for use in Steps 2-6. The requirements specification from `/sc:brainstorm` is the primary input for story creation.
+### Store brainstorm output for use in Steps 2-6. The brainstorm output is the primary input for story creation.
 
 **Note:** Steps 1a, 1b, and 1c together form Step 1 (Requirements Gathering + Workflow Detection).
 

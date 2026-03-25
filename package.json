@@ -1,6 +1,6 @@
 {
   "name": "ba-workflow",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "Installer for BA Workflow — a Claude Code plugin for business analysis",
   "bin": {
     "ba-workflow": "bin/install.js"

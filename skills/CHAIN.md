@@ -13,8 +13,8 @@ enforcement (always active)
     │   ├─ project-scan          Step 1b — surface discovery, tech stack, business docs
     │   │   Exit: project-scan.md saved
     │   │
-    │   ├─ brainstorm-input      Step 1c — consume /sc:brainstorm output (run separately by user)
-    │   │   Exit: brainstorm output loaded with goals, functional reqs, acceptance criteria
+    │   ├─ socratic-discovery    Step 1c — inline Socratic brainstorming (or consume prior output)
+    │   │   Exit: brainstorm output with goals, functional reqs, acceptance criteria
     │   │
     │   └─ [elicitation-methods] Step 2  — optional, 50 methods, user selects
     │       Exit: insights applied OR user skipped
@@ -44,7 +44,7 @@ enforcement (always active)
 ## Analyze Only (`/ba-workflow:analyze`)
 
 ```
-enforcement → project-scan → brainstorm-input → [elicitation-methods]
+enforcement → project-scan → socratic-discovery → [elicitation-methods]
 ```
 
 ## Stories Only (`/ba-workflow:stories`)

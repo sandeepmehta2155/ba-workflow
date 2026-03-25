@@ -8,7 +8,7 @@ A streamlined 7-step Business Analysis workflow plugin that takes you from a rou
 
 | Phase | Steps | Description |
 |-------|-------|-------------|
-| **Phase 1** | Steps 1-3 | Requirements gathering (via `/sc:brainstorm` output), elicitation methods (50 techniques), workflow detection |
+| **Phase 1** | Steps 1-3 | Requirements gathering (Socratic brainstorming), elicitation methods (50 techniques), workflow detection |
 | **Phase 2** | Steps 4-6 | Story complexity scoring (0-4), user story creation, PO review per story (spec compliance + quality) |
 | **Phase 3** | Step 7 | Jira sync |
 
@@ -75,7 +75,8 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 |---------|---------|
 | `/ba-workflow:init` | Configure workspace, Jira settings (one-time setup) |
 | `/ba-workflow:go <requirement>` | Run full 7-step workflow (master command) |
-| `/ba-workflow:analyze <requirement>` | Phase 1: Requirements + Elicitation + Workflow Detection |
+| `/ba-workflow:analyze <requirement>` | Phase 1: Requirements + Brainstorm + Elicitation + Workflow Detection |
+| `/ba-workflow:brainstorm <requirement>` | Standalone Socratic brainstorming (also runs inline in go/analyze) |
 | `/ba-workflow:stories` | Phase 2-3: Complexity + Story Creation + PO Review + Jira Sync |
 | `/ba-workflow:review` | PO Story Review (standalone, re-review existing stories) |
 
@@ -85,11 +86,12 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 # 1. Initialize (one-time setup)
 /ba-workflow:init
 
-# 2. Run the full workflow
+# 2. Run the full workflow (brainstorming runs inline)
 /ba-workflow:go Add user authentication with Google OAuth
 
 # Or run phases individually:
-/ba-workflow:analyze Add user authentication with Google OAuth
+/ba-workflow:brainstorm Add user authentication with Google OAuth   # standalone brainstorm
+/ba-workflow:analyze Add user authentication with Google OAuth       # Phase 1 (includes brainstorm)
 /ba-workflow:stories
 ```
 
@@ -101,7 +103,7 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 
 | Skill | Phase | What It Does |
 |-------|-------|-------------|
-| **Brainstorm Input** | Phase 1 | Consumes `/sc:brainstorm` output (run separately) — clarified goals, functional requirements, acceptance criteria |
+| **Socratic Discovery** | Phase 1 | Inline Socratic brainstorming — discovers implicit requirements, surfaces decisions, produces structured output (goals, functional reqs, acceptance criteria) |
 | **Two-Stage Review** | Phase 2 | Stage 1: Spec compliance per story. Stage 2: Quality. Severity: CRITICAL/IMPORTANT/MINOR |
 | **Codebase Context** | Phase 2 | Queries Serena plugin's project memory for business rules and edge cases (no live code scanning) |
 | **Testable Criteria** | Phase 2 | Enforces point-by-point format on all acceptance criteria. Flags vague phrases |
@@ -111,7 +113,7 @@ All commands are namespaced under `ba-workflow:`. Use them as shown below:
 ## Features
 
 ### Agent Personas
-- **Mary** (Business Analyst) — Uses brainstorm output and business docs to drive non-technical requirements discovery
+- **Mary** (Business Analyst) — Runs Socratic brainstorming and uses business docs to drive non-technical requirements discovery
 - **John** (Product Owner) — Reviews each story with two-stage structured feedback and approval/revision flow
 
 ### 50 Elicitation Methods
@@ -178,17 +180,18 @@ docs/ba-workflows/
 ba-workflow/
   .claude-plugin/
     plugin.json               # Plugin metadata
-  commands/                   # 5 slash commands (namespaced as ba-workflow:*)
+  commands/                   # 6 slash commands (namespaced as ba-workflow:*)
     init.md                   # /ba-workflow:init
     go.md                     # /ba-workflow:go
     analyze.md                # /ba-workflow:analyze
+    brainstorm.md             # /ba-workflow:brainstorm
     stories.md                # /ba-workflow:stories
     review.md                 # /ba-workflow:review
   agents/                     # Agent personas
     analyst.md                # Mary — Business Analyst
     product-owner.md          # John — Product Owner
   skills/                     # 4 focused quality & automation skills
-    socratic-discovery.md  (deprecated — replaced by /sc:brainstorm)
+    socratic-discovery.md
     two-stage-review.md
     codebase-context.md
     testable-criteria.md

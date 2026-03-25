@@ -40,9 +40,9 @@ If you catch yourself thinking any of these, STOP — you are rationalizing skip
 
 | Agent Thought | Reality |
 |---------------|---------|
-| "The requirement is clear enough, skip brainstorm" | Implicit requirements cause 60% of story rework. The user must run `/sc:brainstorm` first — do not shortcut it or substitute with inline questions. |
+| "The requirement is clear enough, skip brainstorm" | Implicit requirements cause 60% of story rework. Run the full Socratic discovery (Step 1c) — do not skip it. |
 | "This story is obviously fine, skip PO review" | Every story gets two-stage review. The Analyst wrote it — a different perspective must review it. No exceptions. PO Review is MANDATORY. |
-| "Let me ask clarifying questions instead of requiring brainstorm output" | The workflow requires `/sc:brainstorm` output. Do not substitute with inline questioning. If no brainstorm output exists, stop and tell the user to run it. |
+| "I'll just ask a couple quick questions instead of full brainstorming" | Run the full Socratic discovery flow from `skills/socratic-discovery.md`. Minimum 3 question categories. Quick questions miss implicit requirements. |
 | "The user seems impatient, skip elicitation methods" | Always OFFER elicitation. The user decides to skip, not you. Present the menu. |
 | "This is a small change, one story is enough" | Run complexity analysis. Let the data decide the count. Your intuition about scope is unreliable. |
 | "I already know what they need from context" | You don't. You know what the CODE does, not what the BUSINESS needs. Ask the questions. |
@@ -69,7 +69,7 @@ Before each phase transition, validate the state:
 CHECK: state.json exists
 CHECK: status === "phase_1_complete"
 CHECK: requirement is non-empty
-CHECK: brainstorm_output has goals, functional_reqs, and acceptance_criteria OR user explicitly said "proceed"
+CHECK: brainstorm_output has goals, functional_reqs, and acceptance_criteria (from inline brainstorm or prior /ba-workflow:brainstorm run)
 WARN:  elicitation_executed === false (acceptable if user chose to skip)
 ```
 

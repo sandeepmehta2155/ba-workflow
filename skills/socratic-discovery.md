@@ -1,15 +1,12 @@
-# Socratic Requirement Discovery (DEPRECATED)
-
-> **DEPRECATED:** This skill has been replaced by SuperClaude's `/sc:brainstorm` for Step 1c requirements discovery. The brainstorm skill provides Socratic dialogue + multi-persona analysis in a single invocation. See `commands/analyze.md` Step 1c for the current approach.
-
-## Legacy Reference (kept for context)
+# Socratic Requirement Discovery
 
 ## Core Principle
 Every explicit request hides implicit requirements. Surface them BEFORE creating stories, not after.
 
 ## When to Apply
-- **Previously**: Phase 1, Step 1 — layer on top of Analyst's 8 question categories
-- **Now**: Use `/sc:brainstorm --strategy systematic --depth deep` instead
+- **Integrated**: Phase 1, Step 1c — automatically triggered within `/ba-workflow:go` and `/ba-workflow:analyze`
+- **Standalone**: Via `/ba-workflow:brainstorm` command
+- Layers on top of Analyst's 8 question categories from `agents/analyst.md`
 
 ## Discovery Flow
 
@@ -65,42 +62,56 @@ Example: For a "data freshness" decision, CALL `AskUserQuestion` with question "
 - Questions must be NON-TECHNICAL (business decisions only)
 - **ONE category at a time — then STOP and wait for the answer**
 - **Adapt follow-up questions based on the answer received** — do not use a static script
+- **User can say "skip" or "enough" to end discovery early** — respect this, minimum 3 categories answered
 
 ### Step 5: Document Discoveries
-Append to the requirement understanding:
+Compile into structured brainstorm output:
 
 ```markdown
-## Discovered Requirements (Socratic Discovery)
+## Brainstorm Output
 
-### Implicit Requirements Found
-1. Data aggregation with time range filtering (implied by "reporting")
-2. Role-based access control (implied by "for admins")
-3. Export functionality (standard for dashboards)
+### Clarified User Goals
+- [Goal 1]
+- [Goal 2]
+
+### Functional Requirements
+- [FR-1] ...
+- [FR-2] ...
+
+### Non-Functional Requirements
+- [NFR-1] ...
+
+### Acceptance Criteria (Draft)
+1. **[Criterion 1]**
+   - [Detail]
+2. **[Criterion 2]**
+   - [Detail]
 
 ### Decisions Made
 | # | Decision | Choice | Rationale |
 |---|----------|--------|-----------|
-| 1 | Data freshness | Near real-time (5 min) | Balances UX and complexity |
-| 2 | Dashboard scope | Single view, filterable | MVP approach |
+| 1 | ... | ... | ... |
 
 ### Decisions Deferred
 | # | Decision | Default Used | Revisit When |
 |---|----------|-------------|-------------|
-| 3 | Admin customization | No customization (MVP) | After launch feedback |
-| 4 | Non-admin view | No non-admin view (MVP) | Phase 2 planning |
+| 1 | ... | ... | ... |
+
+### Open Questions
+- [Question 1]
 ```
 
 ## Skill Contract
 
 ### Entry Conditions
 - Requirement received and parsed (Step 1a complete)
-- Project scan complete (`project-scan.md` exists)
+- Project scan complete (`project-scan.md` exists) — when run as part of workflow
 - Analyst agent persona loaded
 
 ### Exit Conditions
 - Implicit requirements documented
 - Decisions made or deferred with defaults
-- Discovered requirements appended to requirement understanding
+- Structured brainstorm output produced (goals, functional reqs, acceptance criteria at minimum)
 - At least 3 question categories answered (or user override)
 
 ### Previous Skill: `project-scan` (Step 1b)
@@ -113,3 +124,4 @@ Append to the requirement understanding:
 - Listing 10+ decision points (overwhelming — pick top 4)
 - Technical decisions disguised as business questions ("should we use Redis or Postgres?")
 - Accepting "I'll think about it" without setting a default
+- Dumping all questions at once (overwhelming — one category at a time)

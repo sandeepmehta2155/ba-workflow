@@ -1,7 +1,7 @@
 {
   "name": "ba-workflow",
   "description": "7-step Business Analysis workflow: requirements gathering, elicitation, story creation, PO review per story, and Jira sync",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "author": {
     "name": "Sandeep Mehta",
     "email": "sandeepmehta2155@users.noreply.github.com"
@@ -29,6 +29,7 @@
     "./commands/init.md",
     "./commands/go.md",
     "./commands/analyze.md",
+    "./commands/brainstorm.md",
     "./commands/stories.md",
     "./commands/review.md"
   ],
